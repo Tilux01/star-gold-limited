@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your bag | Star Gold Limited</title>
+<meta name="description" content="Review the pieces in your bag, apply a promo code and check out securely with Star Gold Limited.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Inter+Tight:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.svg"><link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/pages.css">
+</head>
+<body data-page="cart">
+<div id="siteHeader"></div>
+<main>
+<div class="container">
+<nav class="breadcrumb"><a href="/">Home</a><span>/</span><span>Bag</span></nav>
+<div class="page-head">
+<div><span class="eyebrow">Checkout</span><h1 class="display">Your bag</h1></div>
+<p class="lede">Reserved for 48 hours. Complimentary delivery unlocks at 150,000.</p>
+</div>
+<div id="cartEmpty" hidden></div>
+<div class="cart-layout" id="cartLayout">
+<div>
+<div class="cart-head"><span>Item</span><span>Details</span><span>Price</span><span>Qty</span><span>Total</span></div>
+<div class="cart-table" id="cartRows"></div>
+<div style="display:flex;justify-content:space-between;margin-top:24px"><a class="btn btn--ghost btn--sm" href="/shop.html">Continue shopping</a></div>
+</div>
+<aside class="summary" id="cartSummary">
+<h3>Order summary</h3>
+<div class="ship-progress"><div class="ship-progress__bar"><span id="shipBar" style="width:0%"></span></div><p id="shipNote"></p></div>
+<form class="promo-row" id="promoForm"><input class="input" id="promoInput" placeholder="Promo code" autocomplete="off"><button class="btn btn--dark btn--sm" type="submit">Apply</button></form>
+<div id="promoBox"></div>
+<div class="summary__row"><span>Subtotal</span><strong id="sumSubtotal">0</strong></div>
+<div class="summary__row"><span>Delivery</span><strong id="sumShipping">0</strong></div>
+<div class="summary__row"><span>Discount</span><strong id="sumDiscount">0</strong></div>
+<div class="summary__total"><span>Total</span><strong id="sumTotal">0</strong></div>
+<a class="btn btn--dark btn--block" href="/checkout.html" id="toCheckout">Proceed to checkout</a>
+<p class="summary__note">Prices include all import duties. Payment by card or bank transfer through our secure checkout. Need help? Chat with us on WhatsApp.</p>
+</aside>
+</div>
+</div>
+</main>
+<div id="siteFooter"></div>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/chrome.js"></script>
+<script src="js/cart.js"></script>
+</body>
+</html>

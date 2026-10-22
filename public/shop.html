@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop All | Star Gold Limited</title>
+<meta name="description" content="Browse the full Star Gold Limited collection. Denim, gowns, shirts, tailoring, shoes, bags and caps sourced from Turkey and China.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Inter+Tight:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.svg"><link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/pages.css">
+</head>
+<body data-page="shop">
+<div id="siteHeader"></div>
+<main>
+<div class="container">
+<div class="breadcrumb"><a href="/">Home</a><span>/</span><span>Shop</span></div>
+<div class="page-head">
+<div>
+<span class="eyebrow">The collection</span>
+<h1 class="display" id="shopTitle">Shop all</h1>
+</div>
+<p class="lede" id="shopLede">Every piece in the house, sorted the way you want it. Filter by category, origin or price and build the wardrobe you actually wear.</p>
+</div>
+</div>
+<div class="container">
+<div class="shop-layout">
+<aside class="filters" id="filters">
+<div class="filter-group">
+<div class="filter-group__head"><span>Category</span><button type="button" data-clear="category">Clear</button></div>
+<div class="filter-list" id="filterCategories"></div>
+</div>
+<div class="filter-group">
+<div class="filter-group__head"><span>Made in</span><button type="button" data-clear="origin">Clear</button></div>
+<div class="filter-list" id="filterOrigins"></div>
+</div>
+<div class="filter-group">
+<div class="filter-group__head"><span>Price</span><button type="button" data-clear="price">Clear</button></div>
+<div class="price-inputs">
+<input class="input" type="number" id="minPrice" placeholder="Min" min="0" step="1000">
+<input class="input" type="number" id="maxPrice" placeholder="Max" min="0" step="1000">
+</div>
+<button class="btn btn--outline btn--block" type="button" id="applyPrice" style="margin-top:10px">Apply price</button>
+</div>
+<div class="filter-group">
+<div class="filter-group__head"><span>Size</span><button type="button" data-clear="size">Clear</button></div>
+<div class="size-grid" id="filterSizes"></div>
+</div>
+<button class="btn btn--ghost btn--block" type="button" id="clearAll" style="margin-top:8px">Reset all filters</button>
+</aside>
+<div>
+<div class="shop-toolbar">
+<div class="shop-toolbar__count" id="shopCount">Loading pieces...</div>
+<div class="shop-toolbar__right">
+<button class="filter-toggle btn btn--outline" type="button" id="filterToggle">Filters</button>
+<select class="input" id="sortSelect" aria-label="Sort products" style="width:auto;min-width:190px">
+<option value="new">Newest first</option>
+<option value="popular">Best selling</option>
+<option value="price-asc">Price: low to high</option>
+<option value="price-desc">Price: high to low</option>
+<option value="rating">Top rated</option>
+</select>
+</div>
+</div>
+<div class="active-filters" id="activeFilters"></div>
+<div class="products" id="shopGrid"></div>
+<div class="shop-empty" id="shopEmpty" hidden>
+<h3>Nothing matched that combination</h3>
+<p>Try fewer filters or search the whole house.</p>
+<button class="btn btn--dark" type="button" id="emptyReset">Reset filters</button>
+</div>
+<div class="pagination" id="pagination"></div>
+</div>
+</div>
+</div>
+</main>
+<div id="siteFooter"></div>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/chrome.js"></script>
+<script src="js/shop.js"></script>
+</body>
+</html>
