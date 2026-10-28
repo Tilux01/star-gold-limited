@@ -215,5 +215,35 @@
     }
   };
 
-  window.SG = { api, auth, cart, wish, money, shortMoney, formatDate, formatDateTime, emit, debounce, escapeHtml, qs };
+
+  const BIZ = {
+    name: "Star Gold Limited",
+    slogan: "Dealers In All Kinds Of Luxury Wears, Shoes and Bags",
+    address: "Shop GF09/FF27, 11 Breadfruit Street, Ajao Plaza, Balogun, Lagos Island, Lagos",
+    addressLine: "11 Breadfruit Street, Ajao Plaza, Balogun, Lagos Island",
+    shop: "Shop GF09/FF27",
+    phone: "08063494273",
+    phone2: "08033876440",
+    phonePretty: "0806 349 4273",
+    phone2Pretty: "0803 387 6440",
+    whatsapp: "2348063494273",
+    email: "igbokweify390@yahoo.com",
+    instagram: "https://instagram.com/stargold_collection",
+    instagramHandle: "@star gold_collection",
+    hours: "Monday to Saturday, 10:00 to 19:00 WAT"
+  };
+  window.SG = { BIZ, api, auth, cart, wish, money, shortMoney, formatDate, formatDateTime, emit, debounce, escapeHtml, qs };
 })();
+SG.CATS = null;
+SG.config = function () {
+  if (SG._cfg) return SG._cfg;
+  SG._cfg = fetch("/api/config").then(function (r) { return r.json(); }).then(function (d) {
+    if (d.categories && d.categories.length) { SG.CATS = d.categories.map(function (c) { return [c.slug, c.label]; }); }
+    SG.CONFIG = d;
+    if (SG.UI && SG.UI.mount) { SG.UI.mount(); }
+    document.dispatchEvent(new Event("sg:config"));
+    return d;
+  }).catch(function () { return null; });
+  return SG._cfg;
+};
+document.addEventListener("DOMContentLoaded", function () { SG.config(); });

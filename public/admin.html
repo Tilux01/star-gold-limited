@@ -1,1 +1,327 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin | Star Gold Limited</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/app.css"><link rel="stylesheet" href="css/pages.css"><link rel="icon" href="assets/mark.svg"></head><body data-page="admin"><div id="siteHeader"></div><main class="container"><div class="section--tight" id="adminGate" hidden><div class="auth-card" style="margin:64px auto"><span class="eyebrow">Private area</span><h1 class="h2" style="margin:12px 0">Staff sign in</h1><p class="lede">This dashboard is limited to Star Gold staff accounts.</p><a class="btn btn--dark" href="/account.html">Go to sign in</a></div></div><div class="admin" id="adminWrap" hidden><aside class="admin-side"><div class="admin-side__label">Star Gold</div><a class="admin-side__link is-active" data-admin-tab="dash" href="#dash">Dashboard</a><a class="admin-side__link" data-admin-tab="products" href="#products">Products</a><a class="admin-side__link" data-admin-tab="orders" href="#orders">Orders</a><a class="admin-side__link" data-admin-tab="customers" href="#customers">Customers</a><div class="admin-side__label" style="margin-top:22px">Store</div><a class="admin-side__link" href="/" target="_blank">View shop</a><a class="admin-side__link" id="adminSignOut" href="#">Sign out</a></aside><div class="admin-main"><div class="admin-top"><div><span class="eyebrow">Control room</span><h1 class="h2" style="margin:8px 0 0">Dashboard</h1></div><div><a class="btn btn--ghost btn--sm" href="/api/admin/summary" target="_blank">API</a> <button class="btn btn--dark btn--sm" id="newProductBtn">New product</button></div></div><section class="admin-panel" data-panel="dash"><div class="stat-grid" id="statGrid"></div><div class="panel-box" style="margin-top:26px"><div class="panel-box__head"><h2>Last 7 days</h2></div><div class="panel-box__body"><div id="chart"></div></div></div><div class="panel-box" style="margin-top:20px"><div class="panel-box__head"><h2>Recent orders</h2></div><div class="table-wrap" id="recentOrders"></div></div></section><section class="admin-panel" data-panel="products" hidden><div class="panel-box"><div class="panel-box__head"><h2>Products</h2><span class="tiny" id="prodCount"></span></div><div class="table-wrap" id="prodTable"></div></div></section><section class="admin-panel" data-panel="orders" hidden><div class="panel-box"><div class="panel-box__head"><h2>Orders</h2><select class="input" id="orderFilter" style="max-width:190px"><option value="">All statuses</option><option value="pending">Pending</option><option value="paid">Paid</option><option value="processing">Processing</option><option value="shipped">Shipped</option><option value="delivered">Delivered</option><option value="cancelled">Cancelled</option></select></div><div class="table-wrap" id="orderTable"></div></div></section><section class="admin-panel" data-panel="customers" hidden><div class="panel-box"><div class="panel-box__head"><h2>Customers</h2></div><div class="table-wrap" id="custTable"></div></div></section></div></div></main><div id="siteFooter"></div><div class="modal" id="prodModal"><div class="modal__scrim" data-close-modal></div><div class="modal__panel" style="max-width:760px"><button class="modal__close" data-close-modal>x</button><div id="prodFormBody"></div></div></div><script src="js/api.js"></script><script src="js/ui.js"></script><script src="js/chrome.js"></script><script src="js/admin.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Admin - Star Gold Limited</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/app.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+
+<div class="admin-gate" id="adminGate">
+  <div class="gate-card">
+    <div class="gate-brand">STAR GOLD<span>Atelier Console</span></div>
+    <form id="adminLogin">
+      <label>Email<input name="email" type="email" autocomplete="username" required placeholder="admin@stargold.com"></label>
+      <label>Password<input name="password" type="password" autocomplete="current-password" required placeholder="Enter password"></label>
+      <p class="gate-error" id="gateError" hidden></p>
+      <button class="btn btn-gold btn-block" type="submit">Enter Console</button>
+    </form>
+    <a class="gate-back" href="/">Return to storefront</a>
+  </div>
+</div>
+
+<div class="admin-shell" id="adminShell" hidden>
+  <aside class="admin-side" id="adminSide">
+    <div class="side-brand">STAR GOLD<span>Console</span></div>
+    <nav class="side-nav" id="sideNav">
+      <button data-tab="overview">Overview</button>
+      <button data-tab="products">Products</button>
+      <button data-tab="categories">Categories</button>
+      <button data-tab="orders">Orders</button>
+      <button data-tab="customers">Customers</button>
+      <button data-tab="media">Media</button>
+      <button data-tab="promos">Promo codes</button>
+      <button data-tab="messages">Messages</button>
+      <button data-tab="subscribers">Subscribers</button>
+      <button data-tab="settings">Settings</button>
+    </nav>
+    <div class="side-foot">
+      <a href="/" target="_blank" rel="noopener">View store</a>
+      <button id="logoutBtn">Sign out</button>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <header class="admin-top">
+      <button class="admin-burger" id="burgerBtn" aria-label="Menu"><span></span><span></span><span></span></button>
+      <div class="top-title">
+        <h1 id="tabTitle">Overview</h1>
+        <p id="tabSub">Store performance at a glance</p>
+      </div>
+      <div class="top-actions">
+        <button class="btn btn-ghost btn-sm" id="refreshBtn">Refresh</button>
+        <button class="btn btn-gold btn-sm" data-open="product">New product</button>
+      </div>
+    </header>
+
+    <div class="admin-scroll" id="adminScroll">
+
+      <section class="panel" data-panel="overview">
+        <div class="stat-grid" id="statGrid"></div>
+        <div class="split">
+          <div class="card">
+            <div class="card-head"><h2>Last 7 days</h2><span class="muted" id="seriesNote"></span></div>
+            <div class="chart" id="revenueChart"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>Low stock</h2><span class="muted">5 units or fewer</span></div>
+            <div class="stack" id="lowStockList"></div>
+          </div>
+        </div>
+        <div class="split">
+          <div class="card">
+            <div class="card-head"><h2>Recent orders</h2><button class="link" data-goto="orders">All orders</button></div>
+            <div class="table-wrap"><table id="recentOrders"></table></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>Best sellers</h2><span class="muted">By units sold</span></div>
+            <div class="stack" id="bestList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="products" hidden>
+        <div class="card">
+          <div class="toolbar">
+            <input id="prodSearch" type="search" placeholder="Search products by name, SKU or category">
+            <select id="prodCatFilter"><option value="">All categories</option></select>
+            <select id="prodStateFilter">
+              <option value="">All statuses</option>
+              <option value="live">Live</option>
+              <option value="hidden">Hidden</option>
+              <option value="low">Low stock</option>
+              <option value="out">Out of stock</option>
+            </select>
+            <button class="btn btn-gold btn-sm" data-open="product">Add product</button>
+          </div>
+          <div class="table-wrap"><table id="productTable"></table></div>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="categories" hidden>
+        <div class="split cat-split">
+          <div class="card">
+            <div class="card-head"><h2>Categories</h2><button class="btn btn-gold btn-sm" data-open="category">Add category</button></div>
+            <p class="muted small">Drag a row by its handle or use the arrows to set storefront order. Hidden categories disappear from the shop filters.</p>
+            <div class="table-wrap"><table id="categoryTable"></table></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>Category editor</h2></div>
+            <form id="categoryForm" class="form">
+              <input type="hidden" name="original">
+              <label>Name<input name="label" required placeholder="Evening gowns"></label>
+              <label>Slug<input name="slug" placeholder="evening-gowns" pattern="[a-z0-9-]*"></label>
+              <label>Short line<input name="blurb" placeholder="Hand finished silks and satin"></label>
+              <label>Cover image URL<input name="image" placeholder="https://res.cloudinary.com/..."></label>
+              <div class="row2">
+                <label>Position<input name="sortOrder" type="number" min="0" step="1"></label>
+                <label class="check"><input name="active" type="checkbox" checked> Visible</label>
+              </div>
+              <div class="form-actions">
+                <button class="btn btn-gold" type="submit">Save category</button>
+                <button class="btn btn-ghost" type="button" id="catReset">Clear</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="orders" hidden>
+        <div class="card">
+          <div class="toolbar">
+            <input id="orderSearch" type="search" placeholder="Search order number, name or phone">
+            <select id="orderStatusFilter">
+              <option value="">All orders</option>
+              <option value="pending">Awaiting payment</option>
+              <option value="paid">Paid</option>
+              <option value="processing">Processing</option>
+              <option value="shipped">Shipped</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+          <div class="table-wrap"><table id="orderTable"></table></div>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="customers" hidden>
+        <div class="card">
+          <div class="toolbar"><input id="custSearch" type="search" placeholder="Search customers"></div>
+          <div class="table-wrap"><table id="customerTable"></table></div>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="media" hidden>
+        <div class="card">
+          <div class="card-head"><h2>Media library</h2><span class="muted">Images and videos</span></div>
+          <div class="dropzone" id="mediaDrop">
+            <input type="file" id="mediaInput" accept="image/*,video/*" multiple hidden>
+            <p><strong>Drop files here</strong> or <button type="button" class="link" id="mediaBrowse">browse your device</button></p>
+            <p class="muted small">JPG, PNG, WEBP, MP4, WEBM. Videos up to 60MB.</p>
+          </div>
+          <div class="media-grid" id="mediaGrid"></div>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="promos" hidden>
+        <div class="split">
+          <div class="card">
+            <div class="card-head"><h2>Promo codes</h2><span class="muted">Applied at checkout</span></div>
+            <div class="table-wrap"><table id="promoTable"></table></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>Promo editor</h2></div>
+            <form id="promoForm" class="form">
+              <input type="hidden" name="original">
+              <label>Code<input name="code" required placeholder="GOLD20" style="text-transform:uppercase"></label>
+              <div class="row2">
+                <label>Type<select name="type"><option value="percent">Percent off</option><option value="fixed">Fixed amount off</option><option value="shipping">Free delivery</option></select></label>
+                <label>Value<input name="value" type="number" min="0" step="1" value="10"></label>
+              </div>
+              <div class="row2">
+                <label>Minimum spend<input name="minSpend" type="number" min="0" step="500" value="0"></label>
+                <label>Expires<input name="expiresAt" type="date"></label>
+              </div>
+              <label>Label<input name="label" placeholder="20% off everything"></label>
+              <label class="check"><input name="active" type="checkbox" checked> Active</label>
+              <div class="form-actions">
+                <button class="btn btn-gold" type="submit">Save code</button>
+                <button class="btn btn-ghost" type="button" id="promoReset">Clear</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="messages" hidden>
+        <div class="card">
+          <div class="card-head"><h2>Contact messages</h2><span class="muted">From the contact page</span></div>
+          <div class="table-wrap"><table id="messageTable"></table></div>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="subscribers" hidden>
+        <div class="card">
+          <div class="card-head"><h2>Newsletter</h2><button class="link" id="exportSubs">Export CSV</button></div>
+          <div class="table-wrap"><table id="subTable"></table></div>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="settings" hidden>
+        <form id="settingsForm" class="form card">
+          <div class="card-head"><h2>Store settings</h2><span class="muted">Shown across the storefront</span></div>
+          <div class="grid2">
+            <label>Brand name<input name="brand"></label>
+            <label>Tagline<input name="tagline"></label>
+            <label>WhatsApp number<input name="whatsapp" placeholder="2348063494273"></label>
+            <label>Support email<input name="supportEmail" type="email"></label>
+            <label>Store phone<input name="phone"></label>
+            <label>Instagram handle<input name="instagram" placeholder="@stargoldlimited"></label>
+            <label class="span2">Store address<input name="address"></label>
+            <label>Shipping fee (NGN)<input name="shippingFee" type="number" min="0" step="50"></label>
+            <label>Free shipping from (NGN)<input name="freeShippingThreshold" type="number" min="0" step="1000"></label>
+            <label class="span2">Announcement bar<input name="announcement"></label>
+            <label>Hero kicker<input name="heroKicker"></label>
+            <label>Hero title<input name="heroTitle"></label>
+            <label class="span2">Hero text<textarea name="heroText" rows="3"></textarea></label>
+          </div>
+          <div class="form-actions"><button class="btn btn-gold" type="submit">Save settings</button></div>
+        </form>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<div class="drawer" id="productDrawer" hidden>
+  <div class="drawer-back" data-close="product"></div>
+  <div class="drawer-body">
+    <header class="drawer-head">
+      <div><h2 id="drawerTitle">New product</h2><p class="muted small" id="drawerSub">Publish to the storefront</p></div>
+      <button class="icon-btn" data-close="product" aria-label="Close">&times;</button>
+    </header>
+    <form id="productForm" class="form drawer-form">
+      <input type="hidden" name="id">
+      <fieldset>
+        <legend>Details</legend>
+        <label>Product name<input name="name" required placeholder="Silk Column Gown"></label>
+        <div class="row2">
+          <label>Category<select name="category" id="productCat"></select></label>
+          <label>Badge<input name="badge" placeholder="New in, Sale"></label>
+        </div>
+        <div class="row2">
+          <label>Price (NGN)<input name="price" type="number" min="0" step="500" required></label>
+          <label>Compare at (NGN)<input name="compareAt" type="number" min="0" step="500"></label>
+        </div>
+        <label>Description<textarea name="description" rows="3"></textarea></label>
+        <label>Details (one per line)<textarea name="details" rows="3" placeholder="100% mulberry silk&#10;Hand finished seams"></textarea></label>
+        <div class="row2">
+          <label>Material<input name="material"></label>
+          <label>Origin<input name="origin"></label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Media</legend>
+        <div class="uploader" data-kind="images">
+          <input type="file" accept="image/*" multiple hidden>
+          <p>Drop images or click to upload</p>
+        </div>
+        <div class="thumb-row" id="imageThumbs"></div>
+        <input name="images" type="hidden"><input name="video" type="hidden">
+        <div class="uploader uploader-video" data-kind="video">
+          <input type="file" accept="video/*" hidden>
+          <p>Drop a product video or click to upload</p>
+        </div>
+        <div class="video-row" id="videoPreview"></div>
+        <label>Or paste an image or video URL<input name="mediaUrl" placeholder="https://..."></label>
+      </fieldset>
+      <fieldset>
+        <legend>Variants and stock</legend>
+        <div class="variant-table" id="variantRows"></div>
+        <div class="row-inline">
+          <button class="btn btn-ghost btn-sm" type="button" id="addVariant">Add variant</button>
+          <span class="muted small">Leave empty for a single stock figure.</span>
+        </div>
+        <label>Stock (used when no variants)<input name="stock" type="number" min="0" step="1" value="0"></label>
+      </fieldset>
+      <fieldset>
+        <legend>Visibility</legend>
+        <div class="row2">
+          <label class="check"><input name="active" type="checkbox" checked> Live on storefront</label>
+          <label class="check"><input name="featured" type="checkbox"> Feature on homepage</label>
+        </div>
+        <div class="row2">
+          <label>Position<input name="sortOrder" type="number" min="0" step="1"></label>
+          <label>Rating<input name="rating" type="number" min="0" max="5" step="0.1" value="4.8"></label>
+        </div>
+      </fieldset>
+      <div class="drawer-actions">
+        <button class="btn btn-ghost" type="button" data-close="product">Cancel</button>
+        <button class="btn btn-gold" type="submit" id="saveProduct">Save product</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="drawer" id="orderDrawer" hidden>
+  <div class="drawer-back" data-close="order"></div>
+  <div class="drawer-body">
+    <header class="drawer-head">
+      <div><h2 id="orderTitle">Order</h2><p class="muted small" id="orderSub"></p></div>
+      <button class="icon-btn" data-close="order" aria-label="Close">&times;</button>
+    </header>
+    <div class="drawer-form" id="orderDetail"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="/js/api.js"></script>
+<script src="/js/ui.js"></script><script src="/js/admin.js"></script>
+</body>
+</html>

@@ -51,16 +51,22 @@ function resolveItems(products, items) {
   return { resolved, problems };
 }
 
-function totals(lines, promoCode) {
+function totals(lines, promoCode, promoMap, config) {
+  const store = config || {};
+  const freeAt = Number(store.freeShippingThreshold !== undefined ? store.freeShippingThreshold : FREE_SHIPPING_THRESHOLD);
+  const fee = Number(store.shippingFee !== undefined ? store.shippingFee : SHIPPING_FEE);
+  const source = promoMap && Object.keys(promoMap).length ? promoMap : PROMOS;
   const subtotal = lines.reduce((sum, line) => sum + line.lineTotal, 0);
   const code = String(promoCode || "").trim().toUpperCase();
-  const promo = code && PROMOS[code] ? Object.assign({ code }, PROMOS[code]) : null;
+  let promo = code && source[code] ? Object.assign({ code }, source[code]) : null;
+  if (promo && Number(promo.minSpend || 0) > subtotal) promo = null;
   let discount = 0;
-  let shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;
+  let shipping = subtotal >= freeAt ? 0 : fee;
   if (promo && promo.type === "percent") discount = Math.round(subtotal * (promo.value / 100));
+  if (promo && promo.type === "fixed") discount = Math.min(subtotal, Number(promo.value || 0));
   if (promo && promo.type === "shipping") shipping = 0;
   const total = Math.max(0, subtotal - discount + shipping);
-  return { subtotal, discount, shipping, total, promo: promo ? promo.code : "" };
+  return { subtotal, discount, shipping, total, promo: promo ? promo.code : "", promoLabel: promo ? (promo.label || "") : "" };
 }
 
 function orderNumber() {
@@ -74,10 +80,10 @@ function orderNumber() {
 
 function whatsappMessage(order) {
   const lines = [];
-  lines.push("Hello Star Gold Limited, I have a new order.");
+  lines.push("Hello Star Gold Limited, I just placed an order!");
   lines.push("");
-  lines.push(`Order: ${order.orderNumber}`);
-  lines.push(`Total: ${money(order.total)}`);
+  lines.push(`Order ID: #${order.orderNumber}`);
+  lines.push(`Total Paid: ${money(order.total)}`);
   lines.push("");
   (order.items || []).forEach((line) => {
     lines.push(`- ${line.quantity} x ${line.name} (${line.size} / ${line.color}) ${money(line.lineTotal)}`);
@@ -86,8 +92,9 @@ function whatsappMessage(order) {
   lines.push(`Name: ${order.customer.name}`);
   lines.push(`Phone: ${order.customer.phone}`);
   lines.push(`Address: ${order.customer.address}, ${order.customer.city}, ${order.customer.state}`);
+  lines.push(`Reference: ${(order.payment||{}).reference||"-"}`);
   lines.push(`Payment: ${order.payment && order.payment.status === "paid" ? "Paid" : "Pending"}`);
-  return lines.join("\n");
+  lines.push("");lines.push("Please confirm delivery timeline!");return lines.join("\n");
 }
 
 module.exports = {

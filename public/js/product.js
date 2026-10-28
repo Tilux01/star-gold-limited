@@ -28,6 +28,11 @@
     }).catch(() => { $('#pdpInfo').innerHTML = '<div class="empty-state">This piece is no longer available. <a class="link-gold" href="/shop.html">Browse the collection</a></div>'; });
   }
   function renderGallery() {
+  if (p.video) {
+    const v = document.createElement("video");
+    v.src = p.video; v.controls = true; v.playsInline = true; v.className = "pdp-video";
+    document.querySelector(".gallery__main").prepend(v);
+  }
     const p = state.p;
     $('#galleryMain').src = p.images[0];
     $('#galleryMain').alt = p.name;

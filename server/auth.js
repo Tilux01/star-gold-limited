@@ -31,7 +31,21 @@ async function optionalAuth(req, res, next) {
 async function requireAuth(req, res, next) {
   const payload = readToken(req);
   if (!payload) return res.status(401).json({ error: "Please sign in to continue." });
-  const user = await db.get("users", payload.sub);
+  let user = null;
+  let offline = false;
+  try {
+    user = await db.get("users", payload.sub);
+  } catch (err) {
+    offline = true;
+  }
+  if (!user && offline) {
+    user = {
+      id: payload.sub,
+      email: payload.email,
+      role: payload.role || "customer",
+      name: payload.name || String(payload.email || "").split("@")[0]
+    };
+  }
   if (!user) return res.status(401).json({ error: "Your session has expired. Sign in again." });
   req.user = user;
   next();

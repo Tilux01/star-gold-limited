@@ -3,6 +3,7 @@
   const api = SG.api;
 
   const CATS = [["jeans", "Jeans"], ["gowns", "Gowns"], ["shirts", "Shirts"], ["up-and-down", "Up & Down"], ["trousers", "Trousers"], ["caps", "Caps"], ["shoes", "Shoes"], ["bags", "Bags"]];
+  function cats(){ return (SG.CATS && SG.CATS.length) ? SG.CATS : CATS; }
   const ORIGINS = ["Turkey", "China"];
   const SIZES = ["XS", "S", "M", "L", "XL", "XXL", "40", "41", "42", "43", "44", "45", "One Size"];
 
@@ -36,7 +37,7 @@
   }
 
   function renderFilters() {
-    $("#filterCategories").innerHTML = CATS.map(([slug, label]) =>
+    $("#filterCategories").innerHTML = cats().map(([slug, label]) =>
       `<label class="check"><input type="checkbox" value="${slug}" data-cat ${state.category.includes(slug) ? "checked" : ""}><span>${label}</span></label>`
     ).join("");
     $("#filterOrigins").innerHTML = ORIGINS.map((o) =>
@@ -50,7 +51,7 @@
     if (state.q) $("#shopTitle").textContent = '"' + state.q + '"';
     else if (state.feature === "new") $("#shopTitle").textContent = "New in";
     else if (state.category.length === 1) {
-      const found = CATS.find((c) => c[0] === state.category[0]);
+      const found = cats().find((c) => c[0] === state.category[0]);
       if (found) $("#shopTitle").textContent = found[1];
     }
     $("#sortSelect").value = state.sort;
@@ -88,7 +89,7 @@
 
   function renderActive() {
     const chips = [];
-    state.category.forEach((c) => chips.push({ key: "category", value: c, label: (CATS.find((x) => x[0] === c) || [c, c])[1] }));
+    state.category.forEach((c) => chips.push({ key: "category", value: c, label: (cats().find((x) => x[0] === c) || [c, c])[1] }));
     state.origin.forEach((o) => chips.push({ key: "origin", value: o, label: o }));
     if (state.size) chips.push({ key: "size", value: state.size, label: "Size " + state.size });
     if (state.min || state.max) chips.push({ key: "price", value: "", label: "Price filter" });

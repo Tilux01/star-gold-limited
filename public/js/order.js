@@ -26,7 +26,7 @@
       + '<div class="line-item__mid"><p class="line-item__name">' + it.name + '</p>'
       + '<p class="line-item__meta">' + (it.size || 'One size') + ' / ' + (it.color || 'Default') + ' / Qty ' + it.quantity + '</p></div>'
       + '<div class="line-item__right"><span class="line-item__price">' + SG.money(it.lineTotal) + '</span></div></div>').join('');
-    const wa = 'https://wa.me/' + SGChrome.WA + '?text=' + encodeURIComponent(data.whatsapp || '');
+    const wa = SGChrome.WA + '?text=' + encodeURIComponent(data.whatsapp || '');
     const address = [cust.address, cust.city, cust.state].filter(Boolean).join(', ');
     el('orderTitle').textContent = 'Thank you, ' + (cust.name || 'friend').split(' ')[0];
     el('orderSub').textContent = 'Order ' + o.orderNumber + ' - ' + (statusText[o.status] || o.status) + '.';

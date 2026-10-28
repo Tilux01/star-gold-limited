@@ -2,6 +2,8 @@ const express = require("express");
 const db = require("../db");
 const { optionalAuth, requireAuth } = require("../auth");
 const { resolveItems, totals, orderNumber, whatsappMessage } = require("../catalog");
+const promos = require("../promos");
+const settings = require("../settings");
 
 const router = express.Router();
 
@@ -28,7 +30,7 @@ router.post("/", optionalAuth, async (req, res, next) => {
     const products = await db.all("products");
     const { resolved, problems } = resolveItems(products, items);
     if (problems.length) return res.status(409).json({ error: problems[0], problems });
-    const sums = totals(resolved, body.promo);
+    const sums = totals(resolved, body.promo, await promos.map(), await settings.read());
 
     const order = {
       orderNumber: orderNumber(),

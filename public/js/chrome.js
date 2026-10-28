@@ -1,14 +1,28 @@
 (function(){
   const U = SG.UI;
+  const BIZ = SG.BIZ;
+  const CATS = [['jeans','Jeans'],['gowns','Gowns'],['shirts','Shirts'],['up-and-down','Up and Down'],['trousers','Trousers'],['caps','Caps'],['shoes','Shoes'],['bags','Bags']];
+  function cats(){ return (window.SG && SG.CATS && SG.CATS.length) ? SG.CATS : CATS; }
   const NAV = [
     ['/shop.html?feature=new','New In','new'],
     ['/shop.html','Shop All','shop'],
-    ['/shop.html?category=jeans','Denim','jeans'],
-    ['/shop.html?category=gowns','Gowns','gowns'],
-    ['/shop.html?category=up-and-down','Up & Down','updown'],
     ['/index.html#lookbook','Lookbook','lookbook'],
     ['/contact.html','Contact','contact']
   ];
+  function catMenuHtml(){
+    return '<div class="nav__drop" data-cat-drop>'
+      + '<button class="nav__dropbtn" type="button" data-cat-toggle aria-expanded="false" aria-haspopup="true">Categories '+U.icon('chevron-down',13)+'</button>'
+      + '<div class="nav__menu" role="menu">'
+      + '<div class="nav__menu-col"><span class="nav__menu-label">Shop by category</span>'
+      + cats().map(function(c){ return '<a role="menuitem" href="/shop.html?category='+c[0]+'">'+c[1]+'</a>'; }).join('')
+      + '</div>'
+      + '<div class="nav__menu-col"><span class="nav__menu-label">Shop by origin</span>'
+      + '<a role="menuitem" href="/shop.html?origin=Turkey">Turkey Wears</a>'
+      + '<a role="menuitem" href="/shop.html?origin=China">Chinese Wears</a>'
+      + '<a role="menuitem" href="/shop.html?feature=best">Best Sellers</a>'
+      + '<a role="menuitem" href="/shop.html?feature=new">New Arrivals</a>'
+      + '</div></div></div>';
+  }
   const ANNOUNCE = [
     ['truck','Complimentary delivery on orders above \u20A6150,000'],
     ['package','Sourced in Turkey and China, delivered nationwide'],
@@ -21,15 +35,16 @@
       + '</div></div>';
   }
   function headerHtml(page){
-    const links = NAV.map(function(n){
+    const link = function(n){
       const key = n[2];
       return '<a href="'+n[0]+'"'+(page===key?' aria-current="page"':'')+'>'+n[1]+'</a>';
-    }).join('');
+    };
+    const navHtml = link(NAV[0]) + link(NAV[1]) + catMenuHtml() + NAV.slice(2).map(link).join('');
     return announceHtml()
       + '<header class="site-header" id="siteHeader"><div class="container header__inner">'
       + '<button class="icon-btn burger" type="button" data-mobile-open aria-label="Open menu">'+U.icon('menu',20)+'</button>'
       + '<a class="brand" href="/" aria-label="Star Gold Limited home">'+U.brandMark()+'</a>'
-      + '<nav class="nav" aria-label="Primary">'+links+'</nav>'
+      + '<nav class="nav" aria-label="Primary">'+navHtml+'</nav>'
       + '<div class="header__actions">'
       + '<button class="header__search" type="button" data-search-open>'+U.icon('search',16)+'<span>Search pieces</span></button>'
       + '<a class="icon-btn header__account" href="/account.html" aria-label="Your account">'+U.icon('user',19)+'</a>'
@@ -42,34 +57,46 @@
     return '<div class="mobile-nav" id="mobileNav" aria-hidden="true"><div class="container">'
       + '<div class="mobile-nav__top"><a class="brand" href="/">'+U.brandMark()+'</a><button class="icon-btn" type="button" data-mobile-close aria-label="Close menu">'+U.icon('x',20)+'</button></div>'
       + '<nav class="mobile-nav__links">'+links+'</nav>'
+      + '<div class="mobile-nav__group"><span class="mobile-nav__label">Shop by category</span>'
+      + '<div class="mobile-nav__chips">'+cats().map(function(c){ return '<a class="chip" href="/shop.html?category='+c[0]+'">'+c[1]+'</a>'; }).join('')
+      + '<a class="chip" href="/shop.html?origin=Turkey">Turkey Wears</a><a class="chip" href="/shop.html?origin=China">Chinese Wears</a></div></div>'
       + '<div class="mobile-nav__foot">'
       + '<a class="btn btn--dark btn--block" href="/account.html">'+U.icon('user',16)+' My account</a>'
-      + '<a class="btn btn--outline btn--block" href="https://wa.me/2348063494273" target="_blank" rel="noopener">'+U.icon('whatsapp',16)+' Chat with us</a>'
+      + '<a class="btn btn--outline btn--block" href="https://wa.me/'+BIZ.whatsapp+'" target="_blank" rel="noopener">'+U.icon('whatsapp',16)+' Chat with us</a>'
       + '</div></div></div>';
   }
+  document.addEventListener('click', function(e){
+    const toggle = e.target.closest('[data-cat-toggle]');
+    const drop = e.target.closest('[data-cat-drop]');
+    document.querySelectorAll('[data-cat-drop].is-open').forEach(function(d){ if(d!==drop){ d.classList.remove('is-open'); const b=d.querySelector('[data-cat-toggle]'); if(b) b.setAttribute('aria-expanded','false'); } });
+    if(toggle){ const d=toggle.closest('[data-cat-drop]'); const open=d.classList.toggle('is-open'); toggle.setAttribute('aria-expanded', open?'true':'false'); }
+  });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ document.querySelectorAll('[data-cat-drop].is-open').forEach(function(d){ d.classList.remove('is-open'); }); } });
   window.SGChrome = { headerHtml: headerHtml, mobileNavHtml: mobileNavHtml };
 })();
 
 (function(){
   const U = SG.UI;
-  const WA = 'https://wa.me/2348063494273';
-  const CATS = [['jeans','Denim'],['gowns','Gowns'],['shirts','Shirts'],['up-and-down','Up and Down'],['trousers','Trousers'],['caps','Caps'],['shoes','Shoes'],['bags','Bags']];
+  const BIZ = SG.BIZ;
+  const WA = 'https://wa.me/' + SG.BIZ.whatsapp;
+  const CATS = [['jeans','Jeans'],['gowns','Gowns'],['shirts','Shirts'],['up-and-down','Up and Down'],['trousers','Trousers'],['caps','Caps'],['shoes','Shoes'],['bags','Bags']];
   function footerHtml(){
-    const catLinks = CATS.map(function(c){ return '<li><a href="/shop.html?category='+c[0]+'">'+c[1]+'</a></li>'; }).join('');
+    const catLinks = cats().map(function(c){ return '<li><a href="/shop.html?category='+c[0]+'">'+c[1]+'</a></li>'; }).join('');
     return '<footer class="site-footer"><div class="container"><div class="footer__grid">'
       + '<div class="footer__brand"><a class="brand" href="/">'+U.brandMark()+'</a>'
-      + '<p>Luxury essentials curated in Lagos, sourced directly from Turkey and China. Clean lines, honest fabrics, delivered nationwide.</p>'
+      + '<p class="footer__slogan">'+BIZ.slogan+'</p>'
+      + '<p>Trusted dealers in luxury wears, shoes and bags at Balogun, Lagos Island. Genuine pieces sourced from Turkey and China, delivered nationwide.</p>'
       + '<div class="footer__social">'
-      + '<a href="https://wa.me/2348063494273" target="_blank" rel="noopener" aria-label="WhatsApp">'+U.icon('whatsapp',16)+'</a>'
-      + '<a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">'+U.icon('instagram',16)+'</a>'
-      + '<a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook">'+U.icon('facebook',16)+'</a>'
-      + '<a href="https://tiktok.com" target="_blank" rel="noopener" aria-label="TikTok">'+U.icon('tiktok',16)+'</a>'
+      + '<a href="https://wa.me/'+BIZ.whatsapp+'" target="_blank" rel="noopener" aria-label="WhatsApp">'+U.icon('whatsapp',16)+'</a>'
+      + '<a href="'+BIZ.instagram+'" target="_blank" rel="noopener" aria-label="Instagram">'+U.icon('instagram',16)+'</a>'
+      + '<a href="tel:+2348033876440" aria-label="Call our second line">'+U.icon('phone',16)+'</a>'
       + '</div>'
       + '<div class="footer__contact">'
-      + '<a href="tel:+2348063494273">'+U.icon('phone',14)+' +234 806 349 4273</a>'
-      + '<a href="mailto:hello@stargoldlimited.com">'+U.icon('mail',14)+' hello@stargoldlimited.com</a>'
-      + '<span>'+U.icon('map-pin',14)+' 14 Adeola Odeku Street, Victoria Island, Lagos</span>'
-      + '<span>'+U.icon('clock',14)+' Mon to Sat, 9:00 to 18:00 WAT</span>'
+      + '<a href="tel:+2348063494273">'+U.icon('phone',14)+' '+BIZ.phonePretty+' (sales)</a>'
+      + '<a href="tel:+2348033876440">'+U.icon('phone',14)+' '+BIZ.phone2Pretty+' (store)</a>'
+      + '<a href="mailto:'+BIZ.email+'">'+U.icon('mail',14)+' '+BIZ.email+'</a>'
+      + '<a href="https://maps.google.com/?q=11+Breadfruit+Street+Ajao+Plaza+Balogun+Lagos+Island" target="_blank" rel="noopener">'+U.icon('map-pin',14)+' '+BIZ.shop+', '+BIZ.addressLine+'</a>'
+      + '<span>'+U.icon('clock',14)+' '+BIZ.hours+'</span>'
       + '</div></div>'
       + '<div class="footer__col"><h4>Shop</h4><ul>'+catLinks+'</ul></div>'
       + '<div class="footer__col"><h4>Company</h4><ul><li><a href="/index.html#story">Our story</a></li><li><a href="/index.html#lookbook">Lookbook</a></li><li><a href="/index.html#reviews">Reviews</a></li><li><a href="/contact.html">Contact</a></li><li><a href="/admin.html">Staff portal</a></li></ul></div>'

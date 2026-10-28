@@ -41,12 +41,17 @@
     clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
     filter: '<path d="M4 6h16M7 12h10M10 18h4"/>',
     zoom: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M8.5 11h5M11 8.5v5"/>',
+    up: '<path d="m6 15 6-6 6 6"/>',
+    down: '<path d="m6 9 6 6 6-6"/>',
     image: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="m4 18 5-5 4 4 3-3 4 4"/>'
   };
   const F = {
     whatsapp: '<path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2zm5.3 14c-.2.6-1.2 1.2-1.7 1.2-.5.1-1 .1-1.6-.1a11 11 0 0 1-4.4-2.9 10 10 0 0 1-2-3.2c-.2-.7 0-1.3.3-1.7l.6-.7c.2-.2.4-.2.6-.2h.4c.2 0 .3 0 .5.4l.7 1.7c.1.2 0 .4-.1.5l-.3.4-.3.3c-.1.1-.1.3 0 .4.4.7 1 1.4 1.6 1.9.6.4 1.1.7 1.4.8.2.1.3 0 .4-.1l.5-.6c.1-.2.3-.2.4-.1l1.6.8c.2.1.3.2.3.3 0 .2 0 .7-.3 1.2z"/>',
     instagram: '<path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm5 5.5A4.5 4.5 0 1 0 16.5 12 4.5 4.5 0 0 0 12 7.5zm0 7.3A2.8 2.8 0 1 1 14.8 12 2.8 2.8 0 0 1 12 14.8zM17.8 5a1.2 1.2 0 1 0 1.2 1.2A1.2 1.2 0 0 0 17.8 5z"/>',
     facebook: '<path d="M14 9h3V5.5h-3A4.5 4.5 0 0 0 9.5 10v2H7v3.5h2.5V22H13v-6.5h3l.5-3.5H13v-1.6c0-.6.4-.9 1-.9z"/>',
+    copy: '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/>',
+    pause: '<rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/>',
+    play: '<path d="M7 4l12 8-12 8z"/>',
     tiktok: '<path d="M16.5 3h-3v11.2a2.6 2.6 0 1 1-2.2-2.6V8.5a6 6 0 1 0 5.2 5.9V9.1a6.6 6.6 0 0 0 3.5 1V7a3.6 3.6 0 0 1-3.5-4z"/>'
   };
   U.icon = function(name, size, cls){
@@ -112,6 +117,7 @@
   U.brandMark = function(){
     return '<span class="brand__mark">SG</span><span class="brand__text"><span class="brand__name">Star Gold</span><span class="brand__sub">Limited</span></span>';
   };
+  U.status = function(s){ return ({ pending: 'Awaiting payment', paid: 'Paid', processing: 'Processing', shipped: 'Dispatched', delivered: 'Delivered', cancelled: 'Cancelled' })[s] || String(s || ''); };
   window.SG = window.SG || {};
   SG.UI = U;
 })();

@@ -1,28 +1,73 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Your account | Star Gold Limited</title><meta name="description" content="Sign in to track orders, manage your delivery addresses and save your favourite pieces from Star Gold Limited.">
-<link rel="stylesheet" href="css/app.css"><link rel="stylesheet" href="css/pages.css"><link rel="icon" href="assets/mark.svg">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Inter+Tight:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css?v=6"><link rel="stylesheet" href="css/pages.css?v=6">
+<link rel="stylesheet" href="css/theme.css?v=2"><link rel="icon" href="assets/mark.svg">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Inter+Tight:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" onload="this.rel='stylesheet'">
 </head><body data-page="account">
 <div id="siteHeader"></div>
 <main class="container">
 <div class="breadcrumb"><a href="/">Home</a> / <span>Account</span></div>
-<div class="auth-wrap" id="authWrap" hidden>
+<div class="auth-wrap" id="authWrap">
+<div class="auth-shell">
+<aside class="auth-story">
+<div class="auth-story__media"><img src="assets/editorial/look-3.jpg" alt="Star Gold Limited studio look"></div>
+<div class="auth-story__top">
+<a class="auth-story__brand" href="/">Star Gold <em>Limited</em></a>
+<p class="auth-story__tag">Lagos atelier &middot; Nationwide delivery</p>
+</div>
+<div class="auth-story__bottom">
+<p class="auth-story__quote">&ldquo;Elegance is not bought. It is chosen, quietly, every single morning.&rdquo;</p>
+<ul class="auth-story__perks">
+<li><span class="auth-story__ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z"/></svg></span><span>Private client pricing on selected pieces</span></li>
+<li><span class="auth-story__ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg></span><span>Saved addresses and a faster checkout</span></li>
+<li><span class="auth-story__ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.4"/><path d="M5.6 5.6l3.9 3.9M14.5 14.5l3.9 3.9M18.4 5.6l-3.9 3.9M9.5 14.5l-3.9 3.9"/></svg></span><span>Order tracking, receipts and lifetime support</span></li>
+</ul>
+<p class="auth-story__foot">Concierge desk, Monday to Saturday, 9am to 7pm</p>
+</div>
+</aside>
 <div class="auth-card">
-<div class="auth-tabs" id="authTabs"><button class="is-active" data-auth-tab="login">Sign in</button><button data-auth-tab="register">Create account</button></div>
-<form class="auth-form" id="authForm">
-<div class="field" id="nameField" hidden><label class="field__label">Full name</label><input class="input" name="name" autocomplete="name" placeholder="Your name"></div>
-<div class="field"><label class="field__label">Email address</label><input class="input" name="email" type="email" autocomplete="email" placeholder="you@email.com" required></div>
-<div class="field"><label class="field__label">Password</label><input class="input" name="password" type="password" autocomplete="current-password" placeholder="At least 6 characters" required></div>
-<div class="field" id="phoneField" hidden><label class="field__label">Phone number</label><input class="input" name="phone" autocomplete="tel" placeholder="0806 349 4273"></div>
-<button class="btn btn--block" type="submit" id="authSubmit">Sign in</button>
-<p class="auth-alt" id="authMsg"></p>
+<div class="auth-card__head">
+<p class="auth-eyebrow" id="authEyebrow">Client access</p>
+<h1 class="auth-title" id="authTitle">Welcome back</h1>
+<p class="auth-sub" id="authSub">Sign in to follow your orders and keep your delivery details ready for the next piece.</p>
+</div>
+<div class="auth-tabs" id="authTabs" data-tab="login">
+<span class="auth-tabs__thumb" aria-hidden="true"></span>
+<button type="button" class="is-active" data-auth-tab="login">Sign in</button>
+<button type="button" data-auth-tab="register">Create account</button>
+</div>
+<form class="auth-form" id="authForm" novalidate>
+<div class="field" id="nameField" hidden>
+<label class="field__label" for="authName">Full name</label>
+<div class="auth-control"><span class="auth-control__ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.8 20a7.2 7.2 0 0114.4 0"/></svg></span><input class="input" id="authName" name="name" autocomplete="name" placeholder="Your full name"></div>
+</div>
+<div class="field">
+<label class="field__label" for="authEmail">Email address</label>
+<div class="auth-control"><span class="auth-control__ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M4 7l8 6 8-6"/></svg></span><input class="input" id="authEmail" name="email" type="email" autocomplete="email" placeholder="you@email.com" required></div>
+</div>
+<div class="field">
+<div class="auth-field-head"><label class="field__label" for="authPassword">Password</label><span class="auth-hint">Minimum 6 characters</span></div>
+<div class="auth-control auth-control--pass"><span class="auth-control__ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="9.5" rx="2.5"/><path d="M8 10.5V8a4 4 0 018 0v2.5"/></svg></span><input class="input" id="authPassword" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required><button type="button" class="auth-reveal" id="authReveal" aria-label="Show password" aria-pressed="false"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 5.8 12 5.8S21.5 12 21.5 12S18 18.2 12 18.2S2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3.1"/></svg></button></div>
+</div>
+<div class="field" id="phoneField" hidden>
+<label class="field__label" for="authPhone">Phone number</label>
+<div class="auth-control"><span class="auth-control__ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h3l1.6 4-2 1.4a11 11 0 006.5 6.5l1.4-2 4 1.6v3A2.5 2.5 0 0117.9 20A14.4 14.4 0 014 6.1A2.5 2.5 0 016 3.5z"/></svg></span><input class="input" id="authPhone" name="phone" autocomplete="tel" placeholder="0806 349 4273"></div>
+</div>
+<button class="btn btn--dark auth-submit" type="submit" id="authSubmit"><span id="authSubmitLabel">Sign in</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+<p class="auth-alt" id="authMsg" role="status"></p>
 </form>
-</div></div>
+<div class="auth-foot">
+<p>Need a hand? <a href="https://wa.me/2348063494273" target="_blank" rel="noopener">Message the concierge</a></p>
+<a class="auth-back" href="/">Continue browsing</a>
+</div>
+</div>
+</div>
+</div>
 <div class="account-layout" id="dashWrap" hidden>
 <aside class="account-nav" id="accountNav"></aside>
 <div class="account-panel" id="accountPanel"></div>
 </div>
 </main>
 <div id="siteFooter"></div>
-<script src="js/api.js"></script><script src="js/ui.js"></script><script src="js/chrome.js"></script><script src="js/account.js"></script>
+<script src="js/api.js"></script><script src="js/ui.js"></script><script src="js/chrome.js"></script><script src="js/account.js?v=2"></script>
 </body></html>

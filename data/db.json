@@ -1,0 +1,2180 @@
+{
+  "users": [
+    {
+      "name": "Star Gold Admin",
+      "email": "admin@stargoldlimited.com",
+      "phone": "2348063494273",
+      "role": "admin",
+      "addresses": [],
+      "createdAt": "2026-10-24T10:59:21.451Z",
+      "id": "da5ed07c29f73a2c9a"
+    }
+  ],
+  "products": [
+    {
+      "id": "heritage-selvedge-straight-jeans",
+      "name": "Heritage Selvedge Straight Jeans",
+      "category": "jeans",
+      "origin": "Turkey",
+      "price": 68500,
+      "compareAt": 84000,
+      "badge": "Sale",
+      "rating": 4.8,
+      "reviews": 46,
+      "features": [
+        "New In",
+        "Best Seller"
+      ],
+      "description": "A straight-leg selvedge denim woven on shuttle looms in Turkey. Mid rise, clean hem, and a deep indigo that takes on character with every wear.",
+      "details": [
+        "14oz Turkish selvedge denim",
+        "Mid rise with a straight leg",
+        "Button fly with copper hardware",
+        "Machine wash cold, hang dry"
+      ],
+      "images": [
+        "/assets/products/jeans-1.jpg",
+        "/assets/products/jeans-2.jpg",
+        "/assets/products/jeans-3.jpg"
+      ],
+      "material": "100% cotton selvedge denim",
+      "variants": [
+        {
+          "id": "v-0-0",
+          "size": "30",
+          "color": "Indigo",
+          "stock": 4
+        },
+        {
+          "id": "v-0-1",
+          "size": "30",
+          "color": "Washed Black",
+          "stock": 9
+        },
+        {
+          "id": "v-1-0",
+          "size": "32",
+          "color": "Indigo",
+          "stock": 7
+        },
+        {
+          "id": "v-1-1",
+          "size": "32",
+          "color": "Washed Black",
+          "stock": 12
+        },
+        {
+          "id": "v-2-0",
+          "size": "34",
+          "color": "Indigo",
+          "stock": 10
+        },
+        {
+          "id": "v-2-1",
+          "size": "34",
+          "color": "Washed Black",
+          "stock": 6
+        },
+        {
+          "id": "v-3-0",
+          "size": "36",
+          "color": "Indigo",
+          "stock": 4
+        },
+        {
+          "id": "v-3-1",
+          "size": "36",
+          "color": "Washed Black",
+          "stock": 9
+        },
+        {
+          "id": "v-4-0",
+          "size": "38",
+          "color": "Indigo",
+          "stock": 7
+        },
+        {
+          "id": "v-4-1",
+          "size": "38",
+          "color": "Washed Black",
+          "stock": 12
+        }
+      ],
+      "categoryLabel": "Jeans",
+      "createdAt": "2026-10-24T10:59:21.066Z",
+      "active": true,
+      "tags": [
+        "New In",
+        "Best Seller"
+      ]
+    },
+    {
+      "id": "midnight-slim-denim",
+      "name": "Midnight Slim Denim",
+      "category": "jeans",
+      "origin": "China",
+      "price": 54000,
+      "compareAt": 0,
+      "badge": "New",
+      "rating": 4.6,
+      "reviews": 21,
+      "features": [
+        "New In"
+      ],
+      "description": "A stretch-finished slim jean in a true midnight wash. Sharp enough for the office, comfortable enough for a long evening.",
+      "details": [
+        "Comfort stretch cotton blend",
+        "Slim tapered leg",
+        "Five pocket construction",
+        "Machine wash cold inside out"
+      ],
+      "images": [
+        "/assets/products/jeans-2.jpg",
+        "/assets/products/jeans-1.jpg",
+        "/assets/products/jeans-3.jpg"
+      ],
+      "material": "98% cotton, 2% elastane",
+      "variants": [
+        {
+          "id": "v-0-0",
+          "size": "30",
+          "color": "Midnight",
+          "stock": 3
+        },
+        {
+          "id": "v-0-1",
+          "size": "30",
+          "color": "Charcoal",
+          "stock": 8
+        },
+        {
+          "id": "v-1-0",
+          "size": "32",
+          "color": "Midnight",
+          "stock": 6
+        },
+        {
+          "id": "v-1-1",
+          "size": "32",
+          "color": "Charcoal",
+          "stock": 11
+        },
+        {
+          "id": "v-2-0",
+          "size": "34",
+          "color": "Midnight",
+          "stock": 9
+        },
+        {
+          "id": "v-2-1",
+          "size": "34",
+          "color": "Charcoal",
+          "stock": 5
+        },
+        {
+          "id": "v-3-0",
+          "size": "36",
+          "color": "Midnight",
+          "stock": 3
+        },
+        {
+          "id": "v-3-1",
+          "size": "36",
+          "color": "Charcoal",
+          "stock": 8
+        }
+      ],
+      "categoryLabel": "Jeans",
+      "createdAt": "2026-10-23T10:59:21.168Z",
+      "active": true,
+      "tags": [
+        "New In"
+      ]
+    },
+    {
+      "id": "atlas-wide-leg-denim",
+      "name": "Atlas Wide-Leg Denim",
+      "category": "jeans",
+      "origin": "Turkey",
+      "price": 62500,
+      "compareAt": 0,
+      "badge": "",
+      "rating": 4.7,
+      "reviews": 18,
+      "features": [
+        "New In"
+      ],
+      "description": "Relaxed wide-leg denim with a fluid drape. Cut long on purpose so it breaks softly over the shoe.",
+      "details": [
+        "Rigid organic cotton denim",
+        "High rise, wide leg",
+        "Contrast stitching",
+        "Wash inside out with similar colours"
+      ],
+      "images": [
+        "/assets/products/jeans-3.jpg",
+        "/assets/products/jeans-1.jpg",
+        "/assets/products/jeans-2.jpg"
+      ],
+      "material": "100% organic cotton",
+      "variants": [
+        {
+          "id": "v-0-0",
+          "size": "28",
+          "color": "Ecru",
+          "stock": 2
+        },
+        {
+          "id": "v-0-1",
+          "size": "28",
+          "color": "Indigo",
+          "stock": 7
+        },
+        {
+          "id": "v-1-0",
+          "size": "30",
+          "color": "Ecru",
+          "stock": 5
+        },
+        {
+          "id": "v-1-1",
+          "size": "30",
+          "color": "Indigo",
+          "stock": 10
+        },
+        {
+          "id": "v-2-0",
+          "size": "32",
+          "color": "Ecru",
+          "stock": 8
+        },
+        {
+          "id": "v-2-1",
+          "size": "32",
+          "color": "Indigo",
+          "stock": 4
+        },
+        {
+          "id": "v-3-0",
+          "size": "34",
+          "color": "Ecru",
+          "stock": 2
+        },
+        {
+          "id": "v-3-1",
+          "size": "34",
+          "color": "Indigo",
+          "stock": 7
+        }
+      ],
+      "categoryLabel": "Jeans",
+      "createdAt": "2026-10-22T10:59:21.168Z",
+      "active": true,
+      "tags": [
+        "New In"
+      ]
+    },
+    {
+      "id": "aurelia-silk-evening-gown",
+      "name": "Aurelia Silk Evening Gown",
+      "category": "gowns",
+      "origin": "Turkey",
+      "price": 185000,
+      "compareAt": 210000,
+      "badge": "Sale",
+      "rating": 4.9,
+      "reviews": 64,
+      "features": [
+        "Best Seller"
+      ],
+      "description": "A floor-sweeping silk blend gown with a sculpted bodice and a quiet sheen that reads beautifully under evening light.",
+      "details": [
+        "Silk blend satin with a matte lining",
+        "Structured bodice, liquid drape skirt",
+        "Concealed side zip",
+        "Dry clean only"
+      ],
+      "images": [
+        "/assets/products/gown-1.jpg",
+        "/assets/products/gown-2.jpg",
+        "/assets/products/gown-3.jpg"
+      ],
+      "material": "70% silk, 30% triacetate",
+      "variants": [
+        {
+          "id": "v-0-0",
+          "size": "XS",
+          "color": "Champagne",
+          "stock": 1
+        },
+        {
+          "id": "v-0-1",
+          "size": "XS",
+          "color": "Midnight",
+          "stock": 6
+        },
+        {
+          "id": "v-0-2",
+          "size": "XS",
+          "color": "Ink Rose",
+          "stock": 2
+        },
+        {
+          "id": "v-1-0",
+          "size": "S",
+          "color": "Champagne",
+          "stock": 4
+        },
+        {
+          "id": "v-1-1",
+          "size": "S",
+          "color": "Midnight",
+          "stock": 9
+        },
+        {
+          "id": "v-1-2",
+          "size": "S",
+          "color": "Ink Rose",
+          "stock": 5
+        },
+        {
+          "id": "v-2-0",
+          "size": "M",
+          "color": "Champagne",
+          "stock": 7
+        },
+        {
+          "id": "v-2-1",
+          "size": "M",
+          "color": "Midnight",
+          "stock": 3
+        },
+        {
+          "id": "v-2-2",
+          "size": "M",
+          "color": "Ink Rose",
+          "stock": 8
+        },
+        {
+          "id": "v-3-0",
+          "size": "L",
+          "color": "Champagne",
+          "stock": 1
+        },
+        {
+          "id": "v-3-1",
+          "size": "L",
+          "color": "Midnight",
+          "stock": 6
+        },
+        {
+          "id": "v-3-2",
+          "size": "L",
+          "color": "Ink Rose",
+          "stock": 2
+        },
+        {
+          "id": "v-4-0",
+          "size": "XL",
+          "color": "Champagne",
+          "stock": 4
+        },
+        {
+          "id": "v-4-1",
+          "size": "XL",
+          "color": "Midnight",
+          "stock": 9
+        },
+        {
+          "id": "v-4-2",
+          "size": "XL",
+          "color": "Ink Rose",
+          "stock": 5
+        }
+      ],
+      "categoryLabel": "Gowns",
+      "createdAt": "2026-10-21T10:59:21.168Z",
+      "active": true,
+      "tags": [
+        "Best Seller"
+      ]
+    },
+    {
+      "id": "nocturne-satin-column-gown",
+      "name": "Nocturne Satin Column Gown",
+      "category": "gowns",
+      "origin": "China",
+      "price": 148000,
+      "compareAt": 0,
+      "badge": "New",
+      "rating": 4.7,
+      "reviews": 29,
+      "features": [
+        "New In"
+      ],
+      "description": "A clean column silhouette in heavyweight satin. No fuss, no noise, just a long uninterrupted line from shoulder to hem.",
+      "details": [
+        "Heavyweight satin with stretch",
+        "Column cut with a back vent",
+        "Hidden back zip",
+        "Dry clean recommended"
+      ],
+      "images": [
+        "/assets/products/gown-2.jpg",
+        "/assets/products/gown-1.jpg",
+        "/assets/products/gown-3.jpg"
+      ],
+      "material": "95% polyester, 5% elastane",
+      "variants": [
+        {
+          "id": "v-0-0",
+          "size": "XS",
+          "color": "Black",
+          "stock": 2
+        },
+        {
+          "id": "v-0-1",
+          "size": "XS",
+          "color": "Ivory",
+          "stock": 7
+        },
+        {
+          "id": "v-1-0",
+          "size": "S",
+          "color": "Black",
+          "stock": 5
+        },
+        {
+          "id": "v-1-1",
+          "size": "S",
+          "color": "Ivory",
+          "stock": 10
+        },
+        {
+          "id": "v-2-0",
+          "size": "M",
+          "color": "Black",
+          "stock": 8
+        },
+        {
+          "id": "v-2-1",
+          "size": "M",
+          "color": "Ivory",
+          "stock": 4
+        },
+        {
+          "id": "v-3-0",
+          "size": "L",
+          "color": "Black",
+          "stock": 2
+        },
+        {
+          "id": "v-3-1",
+          "size": "L",
+          "color": "Ivory",
+          "stock": 7
+        }
+      ],
+      "categoryLabel": "Gowns",
+      "createdAt": "2026-10-20T10:59:21.168Z",
+      "active": true,
+      "tags": [
+        "New In"
+      ]
+    },
+    {
+      "id": "ivory-muse-bridal-gown",
+      "name": "Ivory Muse Bridal Gown",
+      "category": "gowns",
+      "origin": "Turkey",
+      "price": 320000,
+      "compareAt": 0,
+      "badge": "Atelier",
+      "rating": 5,
+      "reviews": 12,
+      "features": [
+        "Best Seller"
+      ],
+      "description": "Our atelier bridal piece. Hand finished lace applique across a soft tulle skirt with a covered button back.",
+      "details": [
+        "Hand applied lace applique",
+        "Tulle overlay with satin underlayer",
+        "Covered button back closure",
+        "Specialist dry clean only"
+      ],
+      "images": [
+        "/assets/products/gown-3.jpg",
+        "/assets/products/gown-1.jpg",
+        "/assets/products/gown-2.jpg"
+      ],
+      "material": "Tulle, lace, satin lining",
+      "variants": [
+        {
+          "id": "v-0-0",
+          "size": "XS",
+          "color": "Ivory",
+          "stock": 0
+        },
+        {
+          "id": "v-1-0",
+          "size": "S",
+          "color": "Ivory",
+          "stock": 3
+        },
+        {
+          "id": "v-2-0",
+          "size": "M",
+          "color": "Ivory",
+          "stock": 6
+        },
+        {
+          "id": "v-3-0",
+          "size": "L",
+          "color": "Ivory",
+          "stock": 0
+        }
+      ],
+      "categoryLabel": "Gowns",
+      "createdAt": "2026-10-19T10:59:21.168Z",
+      "active": true,
+      "tags": [
+        "Best Seller"
+      ]
+    },
+    {
+      "id": "elan-cotton-poplin-shirt",
+      "name": "Elan Cotton Poplin Shirt",
+      "category": "shirts",
+      "origin": "Turkey",
+      "price": 38500,
+      "compareAt": 0,
+      "badge": "",
+      "rating": 4.8,
+      "reviews": 88,
+      "features": [
+        "Best Seller"
+      ],
+      "description": "The shirt you will reach for without thinking. Long staple Turkish poplin, a soft collar, and a relaxed but tidy cut.",
+      "details": [
+        "Long staple cotton poplin",
+        "Mother of pearl buttons",
+        "Single chest pocket",
+        "Machine wash at 30 degrees"
+      ],
+      "images": [
+        "/assets/products/shirt-1.jpg",
+        "/assets/products/shirt-2.jpg",
+        "/assets/products/shirt-3.jpg"
+      ],
+      "material": "100% long staple cotton",
+      "variants": [
+        {
+          "id": "v-0-0",
+          "size": "S",
+          "color": "White",
+          "stock": 5
+        },
+        {
+          "id": "v-0-1",
+          "size": "S",
+          "color": "Sky",
+          "stock": 10
+        },
+        {
+          "id": "v-0-2",
+          "size": "S",
+          "color": "Sand",
+          "stock": 6
+        },
+        {
+          "id": "v-1-0",
+          "size": "M",
+          "color": "White",
+          "stock": 8
+        },
+        {
+          "id": "v-1-1",
+          "size": "M",
+          "color": "Sky",
+          "stock": 13
+        },
+        {
+          "id": "v-1-2",
+          "size": "M",
+          "color": "Sand",
+          "stock": 9
+        },
+        {
+          "id": "v-2-0",
+          "size": "L",
+          "color": "White",
+          "stock": 11
+        },
+        {
+          "id": "v-2-1",
+          "size": "L",
+          "color": "Sky",
+          "stock": 7
+        },
+        {
+          "id": "v-2-2",
+          "size": "L",
+          "color": "Sand",
+          "stock": 12
+        },
+        {
+          "id": "v-3-0",
+          "size": "XL",
+          "color": "White",
+          "stock": 5
+        },
+        {
+          "id": "v-3-1",
+          "size": "XL",
+          "color": "Sky",
+          "stock": 10
+        },
+        {
+          "id": "v-3-2",
+          "size": "XL",
+          "color": "Sand",
+          "stock": 6
+        },
+        {
+          "id": "v-4-0",
+          "size": "XXL",
+          "color": "White",
+          "stock": 8
+        },
+        {
+          "id": "v-4-1",
+          "size": "XXL",
+          "color": "Sky",
+          "stock": 13
+        },
+        {
+          "id": "v-4-2",
+          "size": "XXL",
+          "color": "Sand",
+          "stock": 9
+        }
+      ],
+      "categoryLabel": "Shirts",
+      "createdAt": "2026-10-18T10:59:21.168Z",
+      "active": true,
+      "tags": [
+        "Best Seller"
+      ]
+    },
+    {
+      "id": "regent-oxford-shirt",
+      "name": "Regent Oxford Shirt",
+      "category": "shirts",
+      "origin": "China",
+      "price": 42000,
+      "compareAt": 0,
+      "badge": "New",
+      "rating": 4.6,
+      "reviews": 34,
+      "features": [
+        "New In"
+      ],
+      "description": "A button-down oxford with a slightly fuller body. Dresses up with a blazer, settles down with denim.",
+      "details": [
+        "Brushed oxford cotton",
+        "Button-down collar",
+        "Split back yoke",
+        "Machine wash cold"
+      ],
+      "images": [
+        "/assets/products/shirt-2.jpg",
+        "/assets/products/shirt-3.jpg",
+        "/assets/products/shirt-1.jpg"
+      ],
+      "material": "100% brushed cotton",
+      "variants": [
+        {
+          "id": "v-0-0",
+          "size": "S",
+          "color": "White",
+          "stock": 4
+        },
+        {
+          "id": "v-0-1",
+          "size": "S",
+          "color": "Navy",
+          "stock": 9
+        },
+        {
+          "id": "v-0-2",
+          "size": "S",
+          "color": "Olive",
+          "stock": 5
+        },
+        {
+          "id": "v-1-0",
+          "size": "M",
+          "color": "White",
+          "stock": 7
+        },
+        {
+          "id": "v-1-1",
+          "size": "M",
+          "color": "Navy",
+          "stock": 12
+        },
+        {
+          "id": "v-1-2",
+          "size": "M",
+          "color": "Olive",
+          "stock": 8
+        },
+        {
+          "id": "v-2-0",
+          "size": "L",
+          "color": "White",
+          "stock": 10
+        },
+        {
+          "id": "v-2-1",
+          "size": "L",
+          "color": "Navy",
+          "stock": 6
+        },
+        {
+          "id": "v-2-2",
+          "size": "L",
+          "color": "Olive",
+          "stock": 11
+        },
+        {
+          "id": "v-3-0",
+          "size": "XL",
+          "color": "White",
+          "stock": 4
+        },
+        {
+          "id": "v-3-1",
+          "size": "XL",
+          "color": "Navy",
+          "stock": 9
+        },
+        {
+          "id": "v-3-2",
+          "size": "XL",
+          "color": "Olive",
+          "stock": 5
+        }
+      ],
+      "categoryLabel": "Shirts",
+      "createdAt": "2026-10-17T10:59:21.168Z",
+      "active": true,
+      "tags": [
+        "New In"
+      ]
+    },
+    {
+      "id": "linen-coast-shirt",
+      "name": "Linen Coast Shirt",
+      "category": "shirts",
+      "origin": "Turkey",
+      "price": 45000,
+      "compareAt": 0,
+      "badge": "",
+      "rating": 4.7,
+      "reviews": 41,
+      "features": [],
+      "description": "Washed linen with an easy camp collar. Built for heat, holidays, and long lunches that run into the evening.",
+      "details": [
+        "Garment washed European linen",
+        "Camp collar with a straight hem",
+        "Coconut shell buttons",
+        "Machine wash cold, line dry"
+      ],
+      "images": [
+        "/assets/products/shirt-3.jpg",
+        "/assets/products/shirt-1.jpg",
+        "/assets/products/shirt-2.jpg"
+      ],
+      "material": "100% washed linen",
+      "variants": [
+        {
+          "id": "v-0-0",
+          "size": "S",
+          "color": "Ecru",
+          "stock": 3
+        },
+        {
+          "id": "v-0-1",
+          "size": "S",
+          "color": "Slate",
+          "stock": 8
+        },
+        {
+          "id": "v-0-2",
+          "size": "S",
+          "color": "Clay",
+          "stock": 4
+        },
+        {
+          "id": "v-1-0",
+          "size": "M",
+          "color": "Ecru",
+          "stock": 6
+        },
+        {
+          "id": "v-1-1",
+          "size": "M",
+          "color": "Slate",
+          "stock": 11
+        },
+        {
+          "id": "v-1-2",
+          "size": "M",
+          "color": "Clay",
+          "stock": 7
+        },
+        {
+          "id": "v-2-0",
+          "size": "L",
+          "color": "Ecru",
+          "stock": 9
+        },
+        {
+          "id": "v-2-1",
+          "size": "L",
+          "color": "Slate",
+          "stock": 5
+        },
+        {
+          "id": "v-2-2",
+          "size": "L",
+          "color": "Clay",
+          "stock": 10
+        },
+        {
+          "id": "v-3-0",
+          "size": "XL",
+          "color": "Ecru",
+          "stock": 3
+        },
+        {
+          "id": "v-3-1",
+          "size": "XL",
+          "color": "Slate",
+          "stock": 8
+        },
+        {
+          "id": "v-3-2",
+          "size": "XL",
+          "color": "Clay",
+          "stock": 4
+        }
+      ],
+      "categoryLabel": "Shirts",
+      "createdAt": "2026-10-16T10:59:21.168Z",
+      "active": true,
+      "tags": []
+    },
+    {
+      "id": "ankara-royal-two-piece",
+      "name": "Ankara Royal Two-Piece",
+      "category": "up-and-down",
+      "origin": "Turkey",
+      "price": 95000,
+      "compareAt": 118000,
+      "badge": "Sale",
+      "rating": 4.9,
+      "reviews": 73,
+      "features": [
+        "Best Seller",
+        "New In"
+      ],
+      "description": "A sharp two-piece set in a bold wax print. Structured shoulders, tapered trousers, and a finish that photographs beautifully.",
+      "details": [
+        "Wax print cotton with a soft hand",
+        "Structured longline jacket",
+        "Tapered matching trousers",
+        "Dry clean to preserve colour"
+      ],
+      "images": [
+        "/assets/products/updown-1.jpg",
+        "/assets/products/updown-2.jpg",
+        "/assets/products/updown-3.jpg"
+      ],
+      "material": "100% wax print cotton",
+      "variants": [
+        {
+          "id": "v-0-0",
+          "size": "S",
+          "color": "Royal Blue",
+          "stock": 2
+        },
+        {
+          "id": "v-0-1",
+          "size": "S",
+          "color": "Terracotta",
+          "stock": 7
+        },
+        {
+          "id": "v-1-0",
+          "size": "M",
+          "color": "Royal Blue",
+          "stock": 5
+        },
+        {
+          "id": "v-1-1",
+          "size": "M",
+          "color": "Terracotta",
+          "stock": 10
+        },
+        {
+          "id": "v-2-0",
+          "size": "L",
+          "color": "Royal Blue",
+          "stock": 8
+        },
+        {
+          "id": "v-2-1",
+          "size": "L",
+          "color": "Terracotta",
+          "stock": 4
+        },
+        {
+          "id": "v-3-0",
+          "size": "XL",
+          "color": "Royal Blue",
+          "stock": 2
+        },
+        {
+          "id": "v-3-1",
+          "size": "XL",
+          "color": "Terracotta",
+          "stock": 7
+        },
+        {
+          "id": "v-4-0",
+          "size": "XXL",
+          "color": "Royal Blue",
+          "stock": 5
+        },
+        {
+          "id": "v-4-1",
+          "size": "XXL",
+          "color": "Terracotta",
+          "stock": 10
+        }
+      ],
+      "categoryLabel": "Up and Down",
+      "createdAt": "2026-10-15T10:59:21.168Z",
+      "active": true,
+      "tags": [
+        "Best Seller",
+        "New In"
+      ]
+    },
+    {
+      "id": "kaftan-grand-set",
+      "name": "Kaftan Grand Set",
+      "category": "up-and-down",
+      "origin": "Turkey",
+      "price": 125000,
+      "compareAt": 0,
+      "badge": "Atelier",
+      "rating": 4.8,
+      "reviews": 26,
+      "features": [
+        "Best Seller"
+      ],
+      "description": "A floor length kaftan with hand finished gold thread at the neckline. Made for ceremonies, worn like a second skin.",
+      "details": [
+        "Embroidered crepe with gold thread",
+        "Floor length with side slits",
+        "Matching inner slip included",
+        "Dry clean only"
+      ],
+      "images": [
+        "/assets/products/updown-2.jpg",
+        "/assets/products/updown-3.jpg",
+        "/assets/products/updown-1.jpg"
+      ],
+      "material": "Crepe with metallic embroidery",
+      "variants": [
+        {
+          "id": "v-0-0",
+          "size": "S",
+          "color": "Ivory Gold",
+          "stock": 1
+        },
+        {
+          "id": "v-0-1",
+          "size": "S",
+          "color": "Onyx Gold",
+          "stock": 6
+        },
+        {
+          "id": "v-1-0",
+          "size": "M",
+          "color": "Ivory Gold",
+          "stock": 4
+        },
+        {
+          "id": "v-1-1",
+          "size": "M",
+          "color": "Onyx Gold",
+          "stock": 9
+        },
+        {
+          "id": "v-2-0",
+          "size": "L",
+          "color": "Ivory Gold",
+          "stock": 7
+        },
+        {
+          "id": "v-2-1",
+          "size": "L",
+          "color": "Onyx Gold",
+          "stock": 3
+        },
+        {
+          "id": "v-3-0",
+          "size": "XL",
+          "color": "Ivory Gold",
+          "stock": 1
+        },
+        {
+          "id": "v-3-1",
+          "size": "XL",
+          "color": "Onyx Gold",
+          "stock": 6
+        }
+      ],
+      "categoryLabel": "Up and Down",
+      "createdAt": "2026-10-14T10:59:21.168Z",
+      "active": true,
+      "tags": [
+        "Best Seller"
+      ]
+    },
+    {
+      "id": "marble-print-lounge-set",
+      "name": "Marble Print Lounge Set",
+      "category": "up-and-down",
+      "origin": "China",
+      "price": 78000,
+      "compareAt": 92000,
+      "badge": "Sale",
+      "rating": 4.5,
+      "reviews": 19,
+      "features": [],
+      "description": "A relaxed shirt and wide trouser set in a muted marble print. Travels well and never looks slept in.",
+      "details": [
+        "Fluid viscose blend",
+        "Relaxed shirt with wide trousers",
+        "Elasticated drawstring waist",
+        "Hand wash cold"
+      ],
+      "images": [
+        "/assets/products/updown-3.jpg",
+        "/assets/products/updown-1.jpg",
+        "/assets/products/updown-2.jpg"
+      ],
+      "material": "80% viscose, 20% linen",
+      "variants": [
+        {
+          "id": "v-0-0",
+          "size": "S",
+          "color": "Stone",
+          "stock": 3
+        },
+        {
+          "id": "v-0-1",
+          "size": "S",
+          "color": "Charcoal",
+          "stock": 8
+        },
+        {
+          "id": "v-1-0",
+          "size": "M",
+          "color": "Stone",
+          "stock": 6
+        },
+        {
+          "id": "v-1-1",
+          "size": "M",
+          "color": "Charcoal",
+          "stock": 11
+        },
+        {
+          "id": "v-2-0",
+          "size": "L",
+          "color": "Stone",
+          "stock": 9
+        },
+        {
+          "id": "v-2-1",
+          "size": "L",
+          "color": "Charcoal",
+          "stock": 5
+        },
+        {
+          "id": "v-3-0",
+          "size": "XL",
+          "color": "Stone",
+          "stock": 3
+        },
+        {
+          "id": "v-3-1",
+          "size": "XL",
+          "color": "Charcoal",
+          "stock": 8
+        }
+      ],
+      "categoryLabel": "Up and Down",
+      "createdAt": "2026-10-13T10:59:21.168Z",
+      "active": true,
+      "tags": []
+    },
+    {
+      "id": "tailored-wool-trousers",
+      "name": "Tailored Wool Trousers",
+      "category": "trousers",
+      "origin": "Turkey",
+      "price": 72000,
+      "compareAt": 0,
+      "badge": "",
+      "rating": 4.7,
+      "reviews": 52,
+      "features": [
+        "Best Seller"
+      ],
+      "description": "A pleated wool trouser with a clean front and a taper that holds its line all day. Boardroom or dinner, it behaves.",
+      "details": [
+        "Italian wool blend suiting",
+        "Single pleat with side adjusters",
+        "Half lined to the knee",
+        "Dry clean only"
+      ],
+      "images": [
+        "/assets/products/trousers-1.jpg",
+        "/assets/products/trousers-2.jpg",
+        "/assets/products/trousers-3.jpg"
+      ],
+      "material": "Wool blend suiting",
+      "variants": [
+        {
+          "id": "v-0-0",
+          "size": "30",
+          "color": "Charcoal",
+          "stock": 3
+        },
+        {
+          "id": "v-0-1",
+          "size": "30",
+          "color": "Navy",
+          "stock": 8
+        },
+        {
+          "id": "v-0-2",
+          "size": "30",
+          "color": "Stone",
+          "stock": 4
+        },
+        {
+          "id": "v-1-0",
+          "size": "32",
+          "color": "Charcoal",
+          "stock": 6
+        },
+        {
+          "id": "v-1-1",
+          "size": "32",
+          "color": "Navy",
+          "stock": 11
+        },
+        {
+          "id": "v-1-2",
+          "size": "32",
+          "color": "Stone",
+          "stock": 7
+        },
+        {
+          "id": "v-2-0",
+          "size": "34",
+          "color": "Charcoal",
+          "stock": 9
+        },
+        {
+          "id": "v-2-1",
+          "size": "34",
+          "color": "Navy",
+          "stock": 5
+        },
+        {
+          "id": "v-2-2",
+          "size": "34",
+          "color": "Stone",
+          "stock": 10
+        },
+        {
+          "id": "v-3-0",
+          "size": "36",
+          "color": "Charcoal",
+          "stock": 3
+        },
+        {
+          "id": "v-3-1",
+          "size": "36",
+          "color": "Navy",
+          "stock": 8
+        },
+        {
+          "id": "v-3-2",
+          "size": "36",
+          "color": "Stone",
+          "stock": 4
+        },
+        {
+          "id": "v-4-0",
+          "size": "38",
+          "color": "Charcoal",
+          "stock": 6
+        },
+        {
+          "id": "v-4-1",
+          "size": "38",
+          "color": "Navy",
+          "stock": 11
+        },
+        {
+          "id": "v-4-2",
+          "size": "38",
+          "color": "Stone",
+          "stock": 7
+        }
+      ],
+      "categoryLabel": "Trousers",
+      "createdAt": "2026-10-12T10:59:21.168Z",
+      "active": true,
+      "tags": [
+        "Best Seller"
+      ]
+    },
+    {
+      "id": "pleated-wide-trousers",
+      "name": "Pleated Wide Trousers",
+      "category": "trousers",
+      "origin": "China",
+      "price": 58000,
+      "compareAt": 0,
+      "badge": "New",
+      "rating": 4.6,
+      "reviews": 23,
+      "features": [
+        "New In"
+      ],
+      "description": "High waisted, deep pleats, and a generous leg. The quiet partner to a fitted shirt or a cropped knit.",
+      "details": [
+        "Structured cotton twill",
+        "Double pleat front",
+        "High rise with belt loops",
+        "Machine wash cold"
+      ],
+      "images": [
+        "/assets/products/trousers-2.jpg",
+        "/assets/products/trousers-3.jpg",
+        "/assets/products/trousers-1.jpg"
+      ],
+      "material": "Cotton twill",
+      "variants": [
+        {
+          "id": "v-0-0",
+          "size": "XS",
+          "color": "Black",
+          "stock": 4
+        },
+        {
+          "id": "v-0-1",
+          "size": "XS",
+          "color": "Camel",
+          "stock": 9
+        },
+        {
+          "id": "v-1-0",
+          "size": "S",
+          "color": "Black",
+          "stock": 7
+        },
+        {
+          "id": "v-1-1",
+          "size": "S",
+          "color": "Camel",
+          "stock": 12
+        },
+        {
+          "id": "v-2-0",
+          "size": "M",
+          "color": "Black",
+          "stock": 10
+        },
+        {
+          "id": "v-2-1",
+          "size": "M",
+          "color": "Camel",
+          "stock": 6
+        },
+        {
+          "id": "v-3-0",
+          "size": "L",
+          "color": "Black",
+          "stock": 4
+        },
+        {
+          "id": "v-3-1",
+          "size": "L",
+          "color": "Camel",
+          "stock": 9
+        },
+        {
+          "id": "v-4-0",
+          "size": "XL",
+          "color": "Black",
+          "stock": 7
+        },
+        {
+          "id": "v-4-1",
+          "size": "XL",
+          "color": "Camel",
+          "stock": 12
+        }
+      ],
+      "categoryLabel": "Trousers",
+      "createdAt": "2026-10-11T10:59:21.168Z",
+      "active": true,
+      "tags": [
+        "New In"
+      ]
+    },
+    {
+      "id": "noir-slim-trousers",
+      "name": "Noir Slim Trousers",
+      "category": "trousers",
+      "origin": "Turkey",
+      "price": 49500,
+      "compareAt": 0,
+      "badge": "",
+      "rating": 4.5,
+      "reviews": 38,
+      "features": [],
+      "description": "A sharp slim trouser with just enough stretch. Sits clean under a jacket without pulling at the pocket.",
+      "details": [
+        "Stretch cotton blend",
+        "Slim leg with pressed crease",
+        "Zip fly with hidden hook",
+        "Machine wash at 30 degrees"
+      ],
+      "images": [
+        "/assets/products/trousers-3.jpg",
+        "/assets/products/trousers-1.jpg",
+        "/assets/products/trousers-2.jpg"
+      ],
+      "material": "97% cotton, 3% elastane",
+      "variants": [
+        {
+          "id": "v-0-0",
+          "size": "30",
+          "color": "Black",
+          "stock": 5
+        },
+        {
+          "id": "v-0-1",
+          "size": "30",
+          "color": "Graphite",
+          "stock": 10
+        },
+        {
+          "id": "v-1-0",
+          "size": "32",
+          "color": "Black",
+          "stock": 8
+        },
+        {
+          "id": "v-1-1",
+          "size": "32",
+          "color": "Graphite",
+          "stock": 13
+        },
+        {
+          "id": "v-2-0",
+          "size": "34",
+          "color": "Black",
+          "stock": 11
+        },
+        {
+          "id": "v-2-1",
+          "size": "34",
+          "color": "Graphite",
+          "stock": 7
+        },
+        {
+          "id": "v-3-0",
+          "size": "36",
+          "color": "Black",
+          "stock": 5
+        },
+        {
+          "id": "v-3-1",
+          "size": "36",
+          "color": "Graphite",
+          "stock": 10
+        }
+      ],
+      "categoryLabel": "Trousers",
+      "createdAt": "2026-10-10T10:59:21.168Z",
+      "active": true,
+      "tags": []
+    },
+    {
+      "id": "signature-canvas-cap",
+      "name": "Signature Canvas Cap",
+      "category": "caps",
+      "origin": "China",
+      "price": 22000,
+      "compareAt": 0,
+      "badge": "",
+      "rating": 4.4,
+      "reviews": 57,
+      "features": [
+        "Best Seller"
+      ],
+      "description": "A six panel canvas cap with a low profile crown and an adjustable brass strap. The everyday finish.",
+      "details": [
+        "Washed cotton canvas",
+        "Six panel low profile crown",
+        "Adjustable brass buckle strap",
+        "Spot clean only"
+      ],
+      "images": [
+        "/assets/products/cap-1.jpg",
+        "/assets/products/cap-2.jpg",
+        "/assets/products/cap-3.jpg"
+      ],
+      "material": "100% cotton canvas",
+      "variants": [
+        {
+          "id": "v-0-0",
+          "size": "One Size",
+          "color": "Black",
+          "stock": 12
+        },
+        {
+          "id": "v-0-1",
+          "size": "One Size",
+          "color": "Sand",
+          "stock": 14
+        },
+        {
+          "id": "v-0-2",
+          "size": "One Size",
+          "color": "Navy",
+          "stock": 16
+        }
+      ],
+      "categoryLabel": "Caps",
+      "createdAt": "2026-10-09T10:59:21.168Z",
+      "active": true,
+      "tags": [
+        "Best Seller"
+      ]
+    },
+    {
+      "id": "gold-monogram-cap",
+      "name": "Gold Monogram Cap",
+      "category": "caps",
+      "origin": "Turkey",
+      "price": 28500,
+      "compareAt": 34000,
+      "badge": "Sale",
+      "rating": 4.7,
+      "reviews": 31,
+      "features": [
+        "New In"
+      ],
+      "description": "Structured cotton twill with a raised gold monogram at the front. Small detail, strong signal.",
+      "details": [
+        "Structured cotton twill",
+        "Raised gold embroidery",
+        "Moisture wicking sweatband",
+        "Spot clean only"
+      ],
+      "images": [
+        "/assets/products/cap-2.jpg",
+        "/assets/products/cap-3.jpg",
+        "/assets/products/cap-1.jpg"
+      ],
+      "material": "Cotton twill",
+      "variants": [
+        {
+          "id": "v-0-0",
+          "size": "One Size",
+          "color": "Black",
+          "stock": 9
+        },
+        {
+          "id": "v-0-1",
+          "size": "One Size",
+          "color": "Ivory",
+          "stock": 11
+        }
+      ],
+      "categoryLabel": "Caps",
+      "createdAt": "2026-10-08T10:59:21.168Z",
+      "active": true,
+      "tags": [
+        "New In"
+      ]
+    },
+    {
+      "id": "structured-trucker-cap",
+      "name": "Structured Trucker Cap",
+      "category": "caps",
+      "origin": "China",
+      "price": 24000,
+      "compareAt": 0,
+      "badge": "",
+      "rating": 4.3,
+      "reviews": 14,
+      "features": [],
+      "description": "Mesh back, firm front, curved brim. The one you keep in the car and wear on repeat.",
+      "details": [
+        "Cotton front with mesh back",
+        "Pre-curved brim",
+        "Snapback closure",
+        "Hand wash cold"
+      ],
+      "images": [
+        "/assets/products/cap-3.jpg",
+        "/assets/products/cap-1.jpg",
+        "/assets/products/cap-2.jpg"
+      ],
+      "material": "Cotton and polyester mesh",
+      "variants": [
+        {
+          "id": "v-0-0",
+          "size": "One Size",
+          "color": "Black",
+          "stock": 10
+        },
+        {
+          "id": "v-0-1",
+          "size": "One Size",
+          "color": "White",
+          "stock": 12
+        },
+        {
+          "id": "v-0-2",
+          "size": "One Size",
+          "color": "Forest",
+          "stock": 14
+        }
+      ],
+      "categoryLabel": "Caps",
+      "createdAt": "2026-10-07T10:59:21.168Z",
+      "active": true,
+      "tags": []
+    },
+    {
+      "id": "leather-derby-shoes",
+      "name": "Leather Derby Shoes",
+      "category": "shoes",
+      "origin": "Turkey",
+      "price": 155000,
+      "compareAt": 0,
+      "badge": "",
+      "rating": 4.9,
+      "reviews": 44,
+      "features": [
+        "Best Seller"
+      ],
+      "description": "Full grain leather derbies with a hand finished sole. Break them in for a week and they are yours for a decade.",
+      "details": [
+        "Full grain calf leather upper",
+        "Leather lined with a cushioned insole",
+        "Blake stitched leather sole",
+        "Use shoe trees after wear"
+      ],
+      "images": [
+        "/assets/products/shoes-1.jpg",
+        "/assets/products/shoes-2.jpg",
+        "/assets/products/shoes-3.jpg"
+      ],
+      "material": "Full grain calf leather",
+      "variants": [
+        {
+          "id": "v-0-0",
+          "size": "40",
+          "color": "Black",
+          "stock": 1
+        },
+        {
+          "id": "v-0-1",
+          "size": "40",
+          "color": "Tan",
+          "stock": 6
+        },
+        {
+          "id": "v-1-0",
+          "size": "41",
+          "color": "Black",
+          "stock": 4
+        },
+        {
+          "id": "v-1-1",
+          "size": "41",
+          "color": "Tan",
+          "stock": 9
+        },
+        {
+          "id": "v-2-0",
+          "size": "42",
+          "color": "Black",
+          "stock": 7
+        },
+        {
+          "id": "v-2-1",
+          "size": "42",
+          "color": "Tan",
+          "stock": 3
+        },
+        {
+          "id": "v-3-0",
+          "size": "43",
+          "color": "Black",
+          "stock": 1
+        },
+        {
+          "id": "v-3-1",
+          "size": "43",
+          "color": "Tan",
+          "stock": 6
+        },
+        {
+          "id": "v-4-0",
+          "size": "44",
+          "color": "Black",
+          "stock": 4
+        },
+        {
+          "id": "v-4-1",
+          "size": "44",
+          "color": "Tan",
+          "stock": 9
+        },
+        {
+          "id": "v-5-0",
+          "size": "45",
+          "color": "Black",
+          "stock": 7
+        },
+        {
+          "id": "v-5-1",
+          "size": "45",
+          "color": "Tan",
+          "stock": 3
+        }
+      ],
+      "categoryLabel": "Shoes",
+      "createdAt": "2026-10-06T10:59:21.168Z",
+      "active": true,
+      "tags": [
+        "Best Seller"
+      ]
+    },
+    {
+      "id": "suede-chelsea-boots",
+      "name": "Suede Chelsea Boots",
+      "category": "shoes",
+      "origin": "Turkey",
+      "price": 168000,
+      "compareAt": 195000,
+      "badge": "Sale",
+      "rating": 4.8,
+      "reviews": 37,
+      "features": [
+        "New In"
+      ],
+      "description": "Italian suede Chelsea boots with elastic gussets and a stacked heel. Sharp with tailoring, easy with denim.",
+      "details": [
+        "Italian suede upper",
+        "Elastic side gussets",
+        "Stacked leather heel",
+        "Protect with suede spray before first wear"
+      ],
+      "images": [
+        "/assets/products/shoes-2.jpg",
+        "/assets/products/shoes-3.jpg",
+        "/assets/products/shoes-1.jpg"
+      ],
+      "material": "Italian suede",
+      "variants": [
+        {
+          "id": "v-0-0",
+          "size": "40",
+          "color": "Tobacco",
+          "stock": 2
+        },
+        {
+          "id": "v-0-1",
+          "size": "40",
+          "color": "Charcoal",
+          "stock": 7
+        },
+        {
+          "id": "v-1-0",
+          "size": "41",
+          "color": "Tobacco",
+          "stock": 5
+        },
+        {
+          "id": "v-1-1",
+          "size": "41",
+          "color": "Charcoal",
+          "stock": 10
+        },
+        {
+          "id": "v-2-0",
+          "size": "42",
+          "color": "Tobacco",
+          "stock": 8
+        },
+        {
+          "id": "v-2-1",
+          "size": "42",
+          "color": "Charcoal",
+          "stock": 4
+        },
+        {
+          "id": "v-3-0",
+          "size": "43",
+          "color": "Tobacco",
+          "stock": 2
+        },
+        {
+          "id": "v-3-1",
+          "size": "43",
+          "color": "Charcoal",
+          "stock": 7
+        },
+        {
+          "id": "v-4-0",
+          "size": "44",
+          "color": "Tobacco",
+          "stock": 5
+        },
+        {
+          "id": "v-4-1",
+          "size": "44",
+          "color": "Charcoal",
+          "stock": 10
+        }
+      ],
+      "categoryLabel": "Shoes",
+      "createdAt": "2026-10-05T10:59:21.168Z",
+      "active": true,
+      "tags": [
+        "New In"
+      ]
+    },
+    {
+      "id": "court-leather-sneakers",
+      "name": "Court Leather Sneakers",
+      "category": "shoes",
+      "origin": "China",
+      "price": 98000,
+      "compareAt": 0,
+      "badge": "New",
+      "rating": 4.6,
+      "reviews": 62,
+      "features": [
+        "New In",
+        "Best Seller"
+      ],
+      "description": "A clean court sneaker in soft nappa leather with a cupsole and a subtle gold foil logo at the heel.",
+      "details": [
+        "Soft nappa leather upper",
+        "Cushioned cupsole",
+        "Gold foil heel detail",
+        "Wipe clean with a damp cloth"
+      ],
+      "images": [
+        "/assets/products/shoes-3.jpg",
+        "/assets/products/shoes-1.jpg",
+        "/assets/products/shoes-2.jpg"
+      ],
+      "material": "Nappa leather",
+      "variants": [
+        {
+          "id": "v-0-0",
+          "size": "40",
+          "color": "White",
+          "stock": 4
+        },
+        {
+          "id": "v-0-1",
+          "size": "40",
+          "color": "Black",
+          "stock": 9
+        },
+        {
+          "id": "v-1-0",
+          "size": "41",
+          "color": "White",
+          "stock": 7
+        },
+        {
+          "id": "v-1-1",
+          "size": "41",
+          "color": "Black",
+          "stock": 12
+        },
+        {
+          "id": "v-2-0",
+          "size": "42",
+          "color": "White",
+          "stock": 10
+        },
+        {
+          "id": "v-2-1",
+          "size": "42",
+          "color": "Black",
+          "stock": 6
+        },
+        {
+          "id": "v-3-0",
+          "size": "43",
+          "color": "White",
+          "stock": 4
+        },
+        {
+          "id": "v-3-1",
+          "size": "43",
+          "color": "Black",
+          "stock": 9
+        },
+        {
+          "id": "v-4-0",
+          "size": "44",
+          "color": "White",
+          "stock": 7
+        },
+        {
+          "id": "v-4-1",
+          "size": "44",
+          "color": "Black",
+          "stock": 12
+        },
+        {
+          "id": "v-5-0",
+          "size": "45",
+          "color": "White",
+          "stock": 10
+        },
+        {
+          "id": "v-5-1",
+          "size": "45",
+          "color": "Black",
+          "stock": 6
+        }
+      ],
+      "categoryLabel": "Shoes",
+      "createdAt": "2026-10-04T10:59:21.168Z",
+      "active": true,
+      "tags": [
+        "New In",
+        "Best Seller"
+      ]
+    },
+    {
+      "id": "milano-leather-tote",
+      "name": "Milano Leather Tote",
+      "category": "bags",
+      "origin": "Turkey",
+      "price": 210000,
+      "compareAt": 0,
+      "badge": "Best Seller",
+      "rating": 4.9,
+      "reviews": 58,
+      "features": [
+        "Best Seller"
+      ],
+      "description": "A structured tote with a suede lined interior and a laptop sleeve. Holds a fourteen inch machine without losing its shape.",
+      "details": [
+        "Vegetable tanned leather",
+        "Suede lined interior",
+        "Fits a 14 inch laptop",
+        "Detachable shoulder strap included"
+      ],
+      "images": [
+        "/assets/products/bag-1.jpg",
+        "/assets/products/bag-2.jpg",
+        "/assets/products/bag-3.jpg"
+      ],
+      "material": "Vegetable tanned leather",
+      "variants": [
+        {
+          "id": "v-0-0",
+          "size": "One Size",
+          "color": "Black",
+          "stock": 5
+        },
+        {
+          "id": "v-0-1",
+          "size": "One Size",
+          "color": "Tan",
+          "stock": 7
+        }
+      ],
+      "categoryLabel": "Bags",
+      "createdAt": "2026-10-03T10:59:21.168Z",
+      "active": true,
+      "tags": [
+        "Best Seller"
+      ]
+    },
+    {
+      "id": "structured-mini-bag",
+      "name": "Structured Mini Bag",
+      "category": "bags",
+      "origin": "China",
+      "price": 145000,
+      "compareAt": 0,
+      "badge": "New",
+      "rating": 4.7,
+      "reviews": 27,
+      "features": [
+        "New In"
+      ],
+      "description": "Small but architectural. A rigid body, gold clasp, and an optional chain strap for evening.",
+      "details": [
+        "Rigid leather body",
+        "Gold tone clasp closure",
+        "Optional chain strap",
+        "Store in the dust bag provided"
+      ],
+      "images": [
+        "/assets/products/bag-2.jpg",
+        "/assets/products/bag-3.jpg",
+        "/assets/products/bag-1.jpg"
+      ],
+      "material": "Smooth calf leather",
+      "variants": [
+        {
+          "id": "v-0-0",
+          "size": "One Size",
+          "color": "Black",
+          "stock": 4
+        },
+        {
+          "id": "v-0-1",
+          "size": "One Size",
+          "color": "Ivory",
+          "stock": 6
+        },
+        {
+          "id": "v-0-2",
+          "size": "One Size",
+          "color": "Burgundy",
+          "stock": 8
+        }
+      ],
+      "categoryLabel": "Bags",
+      "createdAt": "2026-10-02T10:59:21.168Z",
+      "active": true,
+      "tags": [
+        "New In"
+      ]
+    },
+    {
+      "id": "weekender-leather-holdall",
+      "name": "Weekender Leather Holdall",
+      "category": "bags",
+      "origin": "Turkey",
+      "price": 265000,
+      "compareAt": 295000,
+      "badge": "Sale",
+      "rating": 4.8,
+      "reviews": 22,
+      "features": [
+        "Best Seller"
+      ],
+      "description": "A weekend bag built to outlive the trip. Thick leather, solid brass hardware, and a canvas shoulder strap that softens with use.",
+      "details": [
+        "Thick vegetable tanned leather",
+        "Solid brass hardware",
+        "Detachable canvas shoulder strap",
+        "Cabin friendly dimensions"
+      ],
+      "images": [
+        "/assets/products/bag-3.jpg",
+        "/assets/products/bag-1.jpg",
+        "/assets/products/bag-2.jpg"
+      ],
+      "material": "Vegetable tanned leather",
+      "variants": [
+        {
+          "id": "v-0-0",
+          "size": "One Size",
+          "color": "Cognac",
+          "stock": 3
+        },
+        {
+          "id": "v-0-1",
+          "size": "One Size",
+          "color": "Black",
+          "stock": 5
+        }
+      ],
+      "categoryLabel": "Bags",
+      "createdAt": "2026-10-01T10:59:21.168Z",
+      "active": true,
+      "tags": [
+        "Best Seller"
+      ]
+    }
+  ],
+  "orders": [],
+  "subscribers": [],
+  "messages": [],
+  "categories": [
+    {
+      "id": "jeans",
+      "slug": "jeans",
+      "label": "Jeans",
+      "blurb": "Denim cut with intent",
+      "image": "jeans-1.jpg",
+      "sortOrder": 1,
+      "active": true
+    },
+    {
+      "id": "gowns",
+      "slug": "gowns",
+      "label": "Gowns",
+      "blurb": "Evening statements",
+      "image": "gown-1.jpg",
+      "sortOrder": 2,
+      "active": true
+    },
+    {
+      "id": "shirts",
+      "slug": "shirts",
+      "label": "Shirts",
+      "blurb": "Poplin, linen, oxford",
+      "image": "shirt-1.jpg",
+      "sortOrder": 3,
+      "active": true
+    },
+    {
+      "id": "up-and-down",
+      "slug": "up-and-down",
+      "label": "Up and Down",
+      "blurb": "Heritage two pieces",
+      "image": "updown-1.jpg",
+      "sortOrder": 4,
+      "active": true
+    },
+    {
+      "id": "trousers",
+      "slug": "trousers",
+      "label": "Trousers",
+      "blurb": "Tailored drape",
+      "image": "trousers-1.jpg",
+      "sortOrder": 5,
+      "active": true
+    },
+    {
+      "id": "caps",
+      "slug": "caps",
+      "label": "Caps",
+      "blurb": "Finished headwear",
+      "image": "cap-1.jpg",
+      "sortOrder": 6,
+      "active": true
+    },
+    {
+      "id": "shoes",
+      "slug": "shoes",
+      "label": "Shoes",
+      "blurb": "Leather, built to last",
+      "image": "shoes-1.jpg",
+      "sortOrder": 7,
+      "active": true
+    },
+    {
+      "id": "bags",
+      "slug": "bags",
+      "label": "Bags",
+      "blurb": "Carry with confidence",
+      "image": "bag-1.jpg",
+      "sortOrder": 8,
+      "active": true
+    }
+  ],
+  "settings": [
+    {
+      "id": "store",
+      "brand": "Star Gold Limited",
+      "tagline": "Luxury fashion, tailored in Lagos",
+      "whatsapp": "2348063494273",
+      "supportEmail": "hello@stargoldlimited.com",
+      "phone": "+234 806 349 4273",
+      "address": "Lekki Phase 1, Lagos, Nigeria",
+      "hours": "Mon to Sat, 9am to 7pm",
+      "instagram": "stargoldlimited",
+      "currency": "NGN",
+      "shippingFee": 4500,
+      "freeShippingThreshold": 150000,
+      "shippingNote": "Lagos same day, nationwide in 2 to 4 days",
+      "announcement": "Complimentary delivery on orders above NGN 150,000",
+      "paystackPublicKey": "",
+      "bankName": "Guaranty Trust Bank",
+      "bankAccount": "0123456789",
+      "bankAccountName": "Star Gold Limited"
+    }
+  ],
+  "promos": [
+    {
+      "code": "GOLD10",
+      "active": true,
+      "minSpend": 0,
+      "usage": 0,
+      "sortOrder": 1,
+      "label": "10% off",
+      "type": "percent",
+      "value": 10,
+      "id": "GOLD10"
+    },
+    {
+      "code": "WELCOME5",
+      "active": true,
+      "minSpend": 0,
+      "usage": 0,
+      "sortOrder": 2,
+      "label": "5% off",
+      "type": "percent",
+      "value": 5,
+      "id": "WELCOME5"
+    },
+    {
+      "code": "FREESHIP",
+      "active": true,
+      "minSpend": 0,
+      "usage": 0,
+      "sortOrder": 3,
+      "label": "Free delivery",
+      "type": "shipping",
+      "value": 0,
+      "id": "FREESHIP"
+    }
+  ],
+  "media": []
+}

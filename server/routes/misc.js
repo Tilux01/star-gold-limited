@@ -1,23 +1,38 @@
 const express = require("express");
 const db = require("../db");
-const { FREE_SHIPPING_THRESHOLD, SHIPPING_FEE } = require("../catalog");
+const settings = require("../settings");
+const categories = require("../categories");
+const promos = require("../promos");
 
 const router = express.Router();
 
-router.get("/config", (req, res) => {
-  res.json({
-    brand: "Star Gold Limited",
-    currency: "NGN",
-    whatsapp: process.env.WHATSAPP_NUMBER || "2348063494273",
-    freeShippingThreshold: FREE_SHIPPING_THRESHOLD,
-    shippingFee: SHIPPING_FEE,
-    paymentMode: process.env.PAYSTACK_SECRET_KEY ? "paystack" : "test",
-    database: db.driver,
-    supportEmail: process.env.SUPPORT_EMAIL || "orders@stargoldlimited.com",
-    address: process.env.STORE_ADDRESS || "14 Adeola Odeku Street, Victoria Island, Lagos",
-    hours: "Mon - Sat, 9:00am to 7:00pm",
-    phone: process.env.STORE_PHONE || "+234 806 349 4273"
-  });
+
+router.get("/config", async (req, res, next) => {
+  try {
+    const store = await settings.read();
+    const cats = await categories.live();
+    const codes = await promos.map();
+    res.json({
+      brand: store.brand,
+      currency: "NGN",
+      whatsapp: store.whatsapp,
+      freeShippingThreshold: store.freeShippingThreshold,
+      shippingFee: store.shippingFee,
+      bank: store.bank,
+      paymentMode: process.env.PAYSTACK_SECRET_KEY ? "paystack" : "test",
+      database: db.driver,
+      supportEmail: store.supportEmail,
+      address: store.address,
+      hours: store.hours,
+      phone: store.phone,
+      instagram: store.instagram,
+      announcement: store.announcement,
+      categories: cats.map((cat) => ({ slug: cat.slug, label: cat.label, image: cat.image || "", blurb: cat.blurb || "" })),
+      promos: Object.keys(codes).map((code) => ({ code, label: codes[code].label }))
+    });
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.post("/newsletter", async (req, res, next) => {
@@ -60,3 +75,9 @@ router.post("/contact", async (req, res, next) => {
 });
 
 module.exports = router;
+router.get("/health", async (req, res) => {
+  const out = { driver: db.driver };
+  try { await db.all("products"); } catch (e) { out.error = e.message; out.code = e.code; }
+  try { await require("../firebase").check(); } catch (e) { out.fb = e.message; }
+  res.json(out);
+});

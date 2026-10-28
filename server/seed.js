@@ -1,6 +1,6 @@
 require("dotenv").config();
-const bcrypt = require("bcryptjs");
 const db = require("./db");
+const firebase = require("./firebase");
 
 const CATEGORIES = [
   { slug: "jeans", label: "Jeans", blurb: "Denim cut with intent", image: "jeans-1.jpg" },
@@ -303,24 +303,48 @@ async function seedProducts() {
 async function seedAdmin() {
   const email = (process.env.ADMIN_EMAIL || "admin@stargoldlimited.com").toLowerCase();
   const password = process.env.ADMIN_PASSWORD || "StarGold2024!";
+  let uid = null;
+
+  if (db.driver === "firebase") {
+    try {
+      const account = await firebase.ensureAccount(email, password, "Star Gold Admin");
+      uid = account.localId;
+    } catch (err) {
+      console.warn(`Administrator sign-in failed: ${err.code || err.message}`);
+    }
+  }
+
   const existing = await db.find("users", (row) => row.email === email);
-  if (existing.length) {
+  const current = existing[0] || null;
+
+  if (current && (!uid || current.id === uid)) {
+    if (current.role !== "admin") {
+      await db.update("users", current.id, { role: "admin" });
+      console.log(`Administrator role restored for ${email}.`);
+      return;
+    }
     console.log("Administrator account already present.");
     return;
   }
-  await db.create("users", {
-    name: "Star Gold Admin",
+
+  const record = {
+    name: (current && current.name) || "Star Gold Admin",
     email,
-    phone: process.env.WHATSAPP_NUMBER || "2348063494273",
-    passwordHash: bcrypt.hashSync(password, 10),
+    phone: (current && current.phone) || process.env.WHATSAPP_NUMBER || "2348063494273",
     role: "admin",
-    addresses: [],
-    createdAt: new Date().toISOString()
-  });
+    addresses: Array.isArray(current && current.addresses) ? current.addresses : [],
+    createdAt: (current && current.createdAt) || new Date().toISOString()
+  };
+
+  if (current) await db.remove("users", current.id);
+  if (uid) record.id = uid;
+  await db.create("users", record);
+  if (current && current.id !== record.id) await db.remove("users", current.id);
   console.log(`Administrator created for ${email}.`);
 }
 
 async function run() {
+  await db.ready();
   await seedProducts();
   await seedAdmin();
   console.log(`Storage driver: ${db.driver}`);
@@ -333,4 +357,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { CATEGORIES, run };
+module.exports = { run, seedProducts, seedAdmin, CATEGORIES };

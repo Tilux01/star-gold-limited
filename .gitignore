@@ -4,3 +4,5 @@ node_modules
 serviceAccountKey.json
 public/uploads
 .DS_Store
+.vercel
+.env*

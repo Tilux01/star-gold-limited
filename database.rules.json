@@ -1,0 +1,8 @@
+{
+  "rules": {
+    "star-gold": {
+      ".read": "auth != null && auth.uid === 'HYtSiQiS1fWg2sOD9MyVrEDUxlh2'",
+      ".write": "auth != null && auth.uid === 'HYtSiQiS1fWg2sOD9MyVrEDUxlh2'"
+    }
+  }
+}

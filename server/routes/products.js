@@ -1,6 +1,8 @@
 const express = require("express");
 const db = require("../db");
-const { CATEGORIES } = require("../seed");
+const settings = require("../settings");
+const promos = require("../promos");
+const catRepo = require("../categories");
 const catalog = require("../catalog");
 
 const router = express.Router();
@@ -33,6 +35,10 @@ async function liveProducts() {
 router.get("/", async (req, res, next) => {
   try {
     const rows = await liveProducts();
+    const cats = await catRepo.all();
+    const labels = {};
+    cats.forEach((cat) => { labels[cat.slug] = cat.label; });
+    rows.forEach((row) => { row.categoryLabel = labels[row.category] || row.categoryLabel || row.category || ""; });
     const categories = parseList(req.query.category);
     const origins = parseList(req.query.origin);
     const sizes = parseList(req.query.size);
@@ -78,7 +84,7 @@ router.get("/", async (req, res, next) => {
       page,
       pages,
       facets: {
-        categories: CATEGORIES.map((cat) => ({
+        categories: cats.map((cat) => ({
           slug: cat.slug,
           label: cat.label,
           count: rows.filter((row) => row.category === cat.slug).length
@@ -135,7 +141,9 @@ router.post("/quote", async (req, res, next) => {
     const products = await db.all("products");
     const raw = Array.isArray(req.body.items) ? req.body.items : [];
     const { resolved, problems } = catalog.resolveItems(products, raw);
-    const totals = catalog.totals(resolved, req.body.promo);
+    const store = await settings.read();
+    const codes = await promos.map();
+    const totals = catalog.totals(resolved, req.body.promo, codes, store);
     res.json({ items: resolved, totals, problems });
   } catch (err) {
     next(err);
