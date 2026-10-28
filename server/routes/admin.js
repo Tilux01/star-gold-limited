@@ -121,7 +121,8 @@ router.post("/upload", upload.array("files", 10), async (req, res, next) => {
     res.json({
       urls: saved.filter((row) => row.kind === "image").map((row) => row.url),
       videos: saved.filter((row) => row.kind === "video").map((row) => row.url),
-      files: saved
+      files: saved,
+      assets: saved
     });
   } catch (err) {
     next(err);
@@ -134,7 +135,7 @@ router.post("/upload/:kind", upload.array("files", 10), async (req, res, next) =
     if (!files.length) return res.status(400).json({ error: "No file received." });
     const saved = [];
     for (const file of files) saved.push(await storeFile(file));
-    res.json({ urls: saved.filter((row) => row.kind === "image").map((row) => row.url), videos: saved.filter((row) => row.kind === "video").map((row) => row.url), files: saved });
+    res.json({ urls: saved.filter((row) => row.kind === "image").map((row) => row.url), videos: saved.filter((row) => row.kind === "video").map((row) => row.url), files: saved, assets: saved });
   } catch (err) {
     next(err);
   }

@@ -1,6 +1,13 @@
 const db = require("./db");
 const { CATEGORIES } = require("./seed");
 
+function imgPath(value) {
+  const src = String(value || "").trim();
+  if (!src) return "";
+  if (/^(https?:)?\/\//.test(src) || src.startsWith("/") || src.startsWith("data:")) return src;
+  return "/assets/products/" + src.replace(/^\.?\//, "");
+}
+
 function defaults() {
   return CATEGORIES.map((row, index) => ({
     id: row.slug,
@@ -29,6 +36,7 @@ async function all() {
       sortOrder: 99,
       active: true
     }, row, { slug: row.slug || row.id }))
+    .map((row) => Object.assign(row, { image: imgPath(row.image) }))
     .sort((a, b) => Number(a.sortOrder || 99) - Number(b.sortOrder || 99));
 }
 

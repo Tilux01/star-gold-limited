@@ -1,13 +1,22 @@
 {
   "users": [
     {
-      "name": "Star Gold Admin",
+      "id": "wWWR4DEbTAQdoSMw9UcfrTsghcE2",
       "email": "admin@stargoldlimited.com",
+      "name": "Star Gold Admin",
       "phone": "2348063494273",
       "role": "admin",
       "addresses": [],
-      "createdAt": "2026-10-24T10:59:21.451Z",
-      "id": "da5ed07c29f73a2c9a"
+      "createdAt": "2026-10-24T10:59:21.451Z"
+    },
+    {
+      "id": "jMX22J6UgAc8bOWt1pWFAsfTDER2",
+      "email": "israeladekola8@gmail.com",
+      "name": "Israel Adekola",
+      "phone": "07030916180",
+      "role": "customer",
+      "addresses": [],
+      "createdAt": "2026-10-28T05:33:42.711Z"
     }
   ],
   "products": [
@@ -2176,5 +2185,46 @@
       "id": "FREESHIP"
     }
   ],
-  "media": []
+  "media": [
+    {
+      "id": "1793167232824-fca7b4",
+      "url": "https://files.catbox.moe/4ge0bl.png",
+      "publicId": "",
+      "kind": "image",
+      "bytes": 70,
+      "format": "png",
+      "name": "px.png",
+      "createdAt": "2026-10-28T06:00:32.829Z"
+    },
+    {
+      "id": "1793167264769-67ab72",
+      "url": "https://files.catbox.moe/4ge0bl.png",
+      "publicId": "",
+      "kind": "image",
+      "bytes": 70,
+      "format": "png",
+      "name": "px.png",
+      "createdAt": "2026-10-28T06:01:04.769Z"
+    },
+    {
+      "id": "1793167287727-18e192",
+      "url": "https://files.catbox.moe/4ge0bl.png",
+      "publicId": "",
+      "kind": "image",
+      "bytes": 70,
+      "format": "png",
+      "name": "px.png",
+      "createdAt": "2026-10-28T06:01:27.727Z"
+    },
+    {
+      "id": "1793167349610-d536b6",
+      "url": "https://files.catbox.moe/4ge0bl.png",
+      "publicId": "",
+      "kind": "image",
+      "bytes": 70,
+      "format": "png",
+      "name": "px.png",
+      "createdAt": "2026-10-28T06:02:29.610Z"
+    }
+  ]
 }

@@ -7,7 +7,7 @@
 .hero__scrim{position:absolute;inset:0;background:linear-gradient(100deg,rgba(12,10,7,.88) 0%,rgba(12,10,7,.6) 42%,rgba(12,10,7,.12) 72%),linear-gradient(to top,rgba(12,10,7,.55),transparent 45%)}
 .hero__content{position:relative;z-index:2;min-height:620px;display:flex;flex-direction:column;justify-content:flex-end;padding:56px;max-width:720px;color:#F6F1E7}
 .hero__content .eyebrow{color:var(--gold-bright);margin-bottom:20px}
-.hero__content .eyebrow::before{background:var(--gold-bright)}
+
 .hero__title{font-size:clamp(38px,5.2vw,68px);line-height:.98;letter-spacing:-.035em;font-weight:500;margin-bottom:20px}
 .hero__title em{font-style:normal;color:var(--gold-bright)}
 .hero__text{color:rgba(246,241,231,.8);font-size:16px;max-width:44ch;margin-bottom:32px}
@@ -645,7 +645,7 @@ table.data td.actions{white-space:nowrap;text-align:right}
 .field--full{grid-column:1/-1}
 .sum-row--total{border-top:1px solid var(--line);margin-top:12px;padding-top:14px;font-size:16px}
 .status--processing{background:rgba(201,162,39,.14);color:#8A6A12}
-.status--shipped{background:rgba(58,90,134,.12);color:#3A5A86}
+.status--shipped{background:rgba(169,128,60,.12);color:#8A6B2E}
 .status--delivered{background:rgba(47,107,79,.12);color:#2F6B4F}
 .notice{display:flex;gap:10px;align-items:flex-start;background:rgba(201,162,39,.08);border:1px solid rgba(201,162,39,.3);border-radius:8px;padding:12px 14px;font-size:12.5px;line-height:1.6;color:#6B5416}
 .contact-tile--map{padding:0;overflow:hidden}

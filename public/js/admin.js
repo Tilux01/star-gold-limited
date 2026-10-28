@@ -29,8 +29,8 @@
     try { return await fn(); } catch (err) { fail(err); return null; }
   }
   function openDrawer(name) { const el = $("[id='" + name.replace(/^#/, "") + "Drawer']"); if (el) el.hidden = false; }
-  function closeDrawers() { $$(".drawer").forEach((d) => { d.hidden = true; }); }
-  function drawerFor(el) { return el.closest(".drawer"); }
+  function closeDrawers() { $$(".adm-drawer").forEach((d) => { d.hidden = true; }); }
+  function drawerFor(el) { return el.closest(".adm-drawer"); }
   function isAdmin(user) { return !!user && (user.role === "admin" || user.isAdmin === true); }
   function showGate(message) {
     $("#adminGate").hidden = false;
@@ -40,8 +40,10 @@
   function showShell() {
     $("#adminGate").hidden = true;
     $("#adminShell").hidden = false;
+    if (!S.cats.length) loadCats();
+    setTab(S.tab || "overview");
   }
-  const LOADERS = {};
+  const LOADERS = {overview:()=>loadSummary(),products:()=>{if(!S.cats.length)loadCats();loadProducts()},categories:()=>loadCats(),orders:()=>loadOrders(),customers:()=>loadCustomers(),media:()=>loadMedia(),promos:()=>loadPromos(),messages:()=>loadMessages(),subscribers:()=>loadSubs(),settings:()=>loadSettings()};
   function setTab(name) {
     S.tab = name;
     $$("[data-tab]").forEach((a) => a.classList.toggle("is-active", a.dataset.tab === name));
@@ -82,7 +84,7 @@
       '<tr><td><strong>' + esc(row.number || row.id) + '</strong></td><td>' + esc((row.customer && row.customer.name) || "Guest") + '</td><td><span class="pill ' + esc(row.status) + '">' + esc(stLabel(row.status)) + '</span></td><td>' + money(row.total || 0) + '</td></tr>'
     )).join("") : '<tr><td colspan="4"><div class="empty">No orders yet.</div></td></tr>') + '</tbody>';
     const topRows = d.top || [];
-    $("#topList").innerHTML = topRows.length ? topRows.map((row) => (
+    $("#bestList").innerHTML = topRows.length ? topRows.map((row) => (
       '<div class="list-row"><span class="grow"><strong>' + esc(row.name) + '</strong><small>' + esc(row.units) + ' sold</small></span><b>' + money(row.revenue || 0) + '</b></div>'
     )).join("") : '<div class="empty">Sales will appear here.</div>';
   }
@@ -151,6 +153,7 @@
     form.elements.rating.value = row ? row.rating || 4.8 : 4.8;
     form.elements.featured.checked = row ? !!row.featured : false;
     form.elements.active.checked = row ? row.active !== false : true;
+    if (!S.cats.length) loadCats().then(() => { form.elements.category.value = row ? row.category || "" : (S.cats[0] ? S.cats[0].slug : ""); });
     renderImgs();
     renderVars();
     renderVid();
@@ -298,17 +301,20 @@
   }
 
   function renderCats() {
-    const box = $("#catList");
-    if (!S.cats.length) { box.innerHTML = '<p class="muted">No categories yet.</p>'; return; }
-    box.innerHTML = S.cats.map((c, i) => '<div class="cat-row">'
-      + '<div class="cat-row__top"><span class="cat-cover">' + (c.image ? '<img src="' + esc(c.image) + '" alt="">' : '') + '</span>'
-      + '<span><strong>' + esc(c.label) + '</strong><small>/' + esc(c.slug) + ' - ' + (c.count || 0) + ' products</small></span>'
-      + '<span class="spacer"></span>'
-      + '<button class="icon-btn" data-act="catUp" data-id="' + esc(c.id) + '">' + icon("up") + '</button>'
-      + '<button class="icon-btn" data-act="catDown" data-id="' + esc(c.id) + '">' + icon("down") + '</button>'
-      + '<button class="icon-btn" data-act="catEdit" data-id="' + esc(c.id) + '">' + icon("edit") + '</button>'
-      + '<button class="icon-btn bad" data-act="catDel" data-id="' + esc(c.id) + '">' + icon("trash") + '</button>'
-      + '</div></div>').join("");
+    const table = $("#categoryTable");
+    if (!table) return;
+    if (!S.cats.length) {
+      table.innerHTML = '<tbody><tr><td class="muted">No categories yet. Add your first one on the left.</td></tr></tbody>';
+      return;
+    }
+    table.innerHTML = '<thead><tr><th>Order</th><th>Category</th><th>Products</th><th>Status</th><th></th></tr></thead><tbody>'
+      + S.cats.map((c) => '<tr>'
+      + '<td><div class="row-actions"><button class="icon-btn" data-act="catUp" data-id="' + esc(c.id) + '">' + icon("up") + '</button><button class="icon-btn" data-act="catDown" data-id="' + esc(c.id) + '">' + icon("down") + '</button></div></td>'
+      + '<td><div class="cell-prod"><span class="thumb">' + (c.image ? '<img src="' + esc(c.image) + '" alt="">' : '') + '</span><span><strong>' + esc(c.label) + '</strong><small>/' + esc(c.slug) + '</small></span></div></td>'
+      + '<td>' + Number(c.count || 0) + '</td>'
+      + '<td><span class="pill' + (c.active === false ? '' : ' pill-live') + '">' + (c.active === false ? 'Hidden' : 'Live') + '</span></td>'
+      + '<td class="row-actions"><button class="icon-btn" data-act="catEdit" data-id="' + esc(c.id) + '">' + icon("edit") + '</button><button class="icon-btn bad" data-act="catDel" data-id="' + esc(c.id) + '">' + icon("trash") + '</button></td>'
+      + '</tr>').join("") + '</tbody>';
   }
 
   function editCat(id) {
@@ -538,7 +544,7 @@
     $("#burgerBtn").addEventListener("click", () => $("#adminShell").classList.toggle("nav-open"));
     $("#sideNav").addEventListener("click", (event) => {
       const link = event.target.closest("[data-tab]");
-      if (link) setTab(link.dataset.tab);
+      if (link) { setTab(link.dataset.tab); $("#adminShell").classList.remove("nav-open"); }
     });
     $$("[data-open]").forEach((btn) => btn.addEventListener("click", () => {
       const kind = btn.dataset.open;
@@ -549,10 +555,11 @@
     $$("[data-close]").forEach((btn) => btn.addEventListener("click", closeDrawers));
     document.addEventListener("click", delegate);
     document.addEventListener("submit", (event) => {
-      if (event.target.id === "productForm") saveProduct(event);
-      if (event.target.id === "categoryForm") saveCat(event);
-      if (event.target.id === "promoForm") savePromo(event);
-      if (event.target.id === "settingsForm") saveSettings(event);
+      const formId = event.target.getAttribute("id");
+      if (formId === "productForm") saveProduct(event);
+      if (formId === "categoryForm") saveCat(event);
+      if (formId === "promoForm") savePromo(event);
+      if (formId === "settingsForm") saveSettings(event);
     });
     document.addEventListener("change", changeHandler);
     document.addEventListener("input", inputHandler);
@@ -562,6 +569,25 @@
     if ($("#promoReset")) $("#promoReset").addEventListener("click", () => { $("#promoForm").reset(); $("#promoForm").elements.original.value = ""; });
     if ($("#exportSubs")) $("#exportSubs").addEventListener("click", exportSubs);
     bindMedia();
+    $$("#productDrawer .uploader").forEach((box) => {
+      const input = box.querySelector('input[type="file"]');
+      if (!input) return;
+      const kind = box.dataset.kind === "video" ? "video" : "images";
+      box.addEventListener("click", (event) => { if (event.target === input) return; input.click(); });
+      ["dragenter", "dragover"].forEach((t) => box.addEventListener(t, (event) => { event.preventDefault(); box.classList.add("is-over"); }));
+      ["dragleave", "drop"].forEach((t) => box.addEventListener(t, (event) => { event.preventDefault(); box.classList.remove("is-over"); }));
+      box.addEventListener("drop", (event) => {
+        const files = Array.from(event.dataTransfer.files || []);
+        if (!files.length) return;
+        if (kind === "video") pickVideo(files); else pickImages(files);
+      });
+      input.addEventListener("change", () => {
+        if (!input.files.length) return;
+        const files = Array.from(input.files);
+        input.value = "";
+        if (kind === "video") pickVideo(files); else pickImages(files);
+      });
+    });
     if (isAdmin()) showShell(); else showGate();
   }
 

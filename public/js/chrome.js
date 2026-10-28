@@ -80,6 +80,7 @@
   const BIZ = SG.BIZ;
   const WA = 'https://wa.me/' + SG.BIZ.whatsapp;
   const CATS = [['jeans','Jeans'],['gowns','Gowns'],['shirts','Shirts'],['up-and-down','Up and Down'],['trousers','Trousers'],['caps','Caps'],['shoes','Shoes'],['bags','Bags']];
+  function cats(){ return (window.SG && SG.CATS && SG.CATS.length) ? SG.CATS : CATS; }
   function footerHtml(){
     const catLinks = cats().map(function(c){ return '<li><a href="/shop.html?category='+c[0]+'">'+c[1]+'</a></li>'; }).join('');
     return '<footer class="site-footer"><div class="container"><div class="footer__grid">'
@@ -167,6 +168,7 @@
       el.setAttribute('aria-hidden','true');
     });
     document.body.classList.remove('is-locked');
+    document.documentElement.classList.remove('is-locked');
   }
   function renderCart(){
     const items = SG.cart.all();
@@ -204,6 +206,7 @@
   Chr.toast = toast;
   Chr.badges = badges;
   Chr.openCart = openCart;
+  Chr.openMenu = function(){ const mn = $('#mobileNav'); if(!mn) return; mn.classList.add('is-open'); mn.setAttribute('aria-hidden','false'); document.body.classList.add('is-locked'); document.documentElement.classList.add('is-locked'); };
   Chr.closeAll = closeAll;
   Chr.renderCart = renderCart;
   Chr.$ = $;
@@ -315,6 +318,7 @@
     const footer = $('#siteFooter');
     if(header) header.innerHTML = C.headerHtml();
     if(footer) footer.innerHTML = C.footerHtml();
+    if(!$('#mobileNav')) document.body.insertAdjacentHTML('beforeend', C.mobileNavHtml(opt.page));
     if(!$('#cartDrawer')) document.body.insertAdjacentHTML('beforeend', C.overlaysHtml());
     if(mounted) return;
     mounted = true;
@@ -344,7 +348,9 @@
       const rmBtn = e.target.closest('[data-remove]');
       if(openCartBtn){ e.preventDefault(); C.openCart(); return; }
       if(openSearchBtn){ e.preventDefault(); C.openSearch(); return; }
-      if(openMobile){ e.preventDefault(); $('#mobileNav').classList.add('is-open'); document.body.classList.add('is-locked'); return; }
+      if(openMobile){ e.preventDefault(); C.openMenu(); return; }
+      if(e.target.closest('[data-mobile-close]')){ e.preventDefault(); C.closeAll(); return; }
+      if(e.target.closest('.mobile-nav a')){ C.closeAll(); return; }
       if(closer){ e.preventDefault(); C.closeAll(); return; }
       if(quickBtn){ e.preventDefault(); C.quickView(quickBtn.getAttribute('data-quick')); return; }
       if(wishBtn){
@@ -386,6 +392,7 @@
         e.preventDefault();
         const q = $('#searchInput').value.trim();
         window.location.href = '/shop.html' + (q ? '?q=' + encodeURIComponent(q) : '');
+    window.addEventListener('resize', function(){ if(window.innerWidth > 1080) C.closeAll(); });
       });
     }
     document.addEventListener('keydown', function(e){

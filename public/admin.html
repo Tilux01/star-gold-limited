@@ -6,8 +6,9 @@
 <title>Admin - Star Gold Limited</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/app.css">
+<link rel="stylesheet" href="/css/theme.css">
 <link rel="stylesheet" href="/css/admin.css">
 </head>
 <body class="admin-body">
@@ -238,14 +239,14 @@
   </main>
 </div>
 
-<div class="drawer" id="productDrawer" hidden>
-  <div class="drawer-back" data-close="product"></div>
-  <div class="drawer-body">
-    <header class="drawer-head">
+<div class="adm-drawer" id="productDrawer" hidden>
+  <div class="adm-back" data-close="product"></div>
+  <div class="adm-panel">
+    <header class="adm-head">
       <div><h2 id="drawerTitle">New product</h2><p class="muted small" id="drawerSub">Publish to the storefront</p></div>
       <button class="icon-btn" data-close="product" aria-label="Close">&times;</button>
     </header>
-    <form id="productForm" class="form drawer-form">
+    <form id="productForm" class="form adm-body">
       <input type="hidden" name="id">
       <fieldset>
         <legend>Details</legend>
@@ -300,7 +301,7 @@
           <label>Rating<input name="rating" type="number" min="0" max="5" step="0.1" value="4.8"></label>
         </div>
       </fieldset>
-      <div class="drawer-actions">
+      <div class="adm-actions">
         <button class="btn btn-ghost" type="button" data-close="product">Cancel</button>
         <button class="btn btn-gold" type="submit" id="saveProduct">Save product</button>
       </div>
@@ -308,14 +309,14 @@
   </div>
 </div>
 
-<div class="drawer" id="orderDrawer" hidden>
-  <div class="drawer-back" data-close="order"></div>
-  <div class="drawer-body">
-    <header class="drawer-head">
+<div class="adm-drawer" id="orderDrawer" hidden>
+  <div class="adm-back" data-close="order"></div>
+  <div class="adm-panel">
+    <header class="adm-head">
       <div><h2 id="orderTitle">Order</h2><p class="muted small" id="orderSub"></p></div>
       <button class="icon-btn" data-close="order" aria-label="Close">&times;</button>
     </header>
-    <div class="drawer-form" id="orderDetail"></div>
+    <div class="adm-body" id="orderDetail"></div>
   </div>
 </div>
 
