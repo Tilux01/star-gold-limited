@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" width="100%" height="100%">
+  <rect width="400" height="500" fill="#F4F4F6"/>
+  <g transform="translate(160, 210)" stroke="#B8BCC8" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M40 10 C35 0, 45 -10, 40 -16 C35 -22, 26 -16, 28 -8 C29 -3, 34 2, 40 10 Z" fill="none"/>
+    <path d="M40 10 L8 36 C5 38, 5 44, 9 44 L71 44 C75 44, 75 38, 72 36 Z"/>
+    <line x1="20" y1="44" x2="20" y2="60"/>
+    <line x1="60" y1="44" x2="60" y2="60"/>
+    <path d="M12 60 L68 60"/>
+  </g>
+  <text x="200" y="300" text-anchor="middle" fill="#8E95A5" font-family="'Inter', -apple-system, sans-serif" font-size="12" font-weight="600" letter-spacing="2">STAR GOLD</text>
+</svg>

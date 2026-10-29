@@ -185,7 +185,7 @@
     }
     body.innerHTML = items.map(function(it){
       return '<div class="line-item">'
-        + '<a class="line-item__media" href="/product.html?p='+it.slug+'"><img src="'+it.image+'" alt="'+it.name+'"></a>'
+        + '<a class="line-item__media" href="/product.html?p='+it.slug+'"><img src="'+it.image+'" alt="'+it.name+'" loading="lazy" decoding="async"></a>'
         + '<div class="line-item__mid"><p class="line-item__name">'+it.name+'</p>'
         + '<p class="line-item__meta">'+[it.size,it.color].filter(Boolean).join(' / ')+'</p>'
         + '<div class="qty" data-line="'+it.variantId+'"><button type="button" data-qty="-1" aria-label="Decrease">'+U.icon('minus',13)+'</button><span>'+it.qty+'</span><button type="button" data-qty="1" aria-label="Increase">'+U.icon('plus',13)+'</button></div></div>'
@@ -236,7 +236,7 @@
       if(!list.length){ box.innerHTML = '<p class="search-empty">No pieces matched that search. Try denim, gowns or bags.</p>'; return; }
       box.innerHTML = list.map(function(p){
         return '<a class="search-hit" href="/product.html?p='+p.slug+'">'
-          + '<span class="search-hit__img"><img src="'+p.images[0]+'" alt="'+p.name+'"></span>'
+          + '<span class="search-hit__img"><img src="'+p.images[0]+'" alt="'+p.name+'" loading="lazy" decoding="async"></span>'
           + '<span class="search-hit__body"><span class="search-hit__name">'+p.name+'</span><span class="search-hit__meta">'+p.categoryLabel+' / '+p.origin+'</span></span>'
           + '<span class="search-hit__price">'+U.money(p.price)+'</span></a>';
       }).join('');
@@ -249,55 +249,163 @@
     modal.classList.add('is-open');
     modal.setAttribute('aria-hidden','false');
     document.body.classList.add('is-locked');
-    body.innerHTML = '<p class="sum-note">Loading piece</p>';
-    SG.api.get('/products/' + encodeURIComponent(slug)).then(function(data){
+    body.innerHTML = '<div style="padding:60px 24px;text-align:center"><div class="skeleton" style="width:52px;height:52px;border-radius:50%;margin:0 auto 16px"></div><p class="sum-note" style="margin:0;font-size:14px">Loading piece details...</p></div>';
+    
+    const cleanSlug = decodeURIComponent(String(slug || '')).trim();
+    SG.api.get('/products/' + encodeURIComponent(cleanSlug)).then(function(data){
       const p = data.product;
-      if(!p){ body.innerHTML = '<p class="sum-note">That piece is unavailable.</p>'; return; }
-      const sizes = [];
-      p.variants.forEach(function(v){ if(sizes.indexOf(v.size) < 0) sizes.push(v.size); });
-      const colors = [];
-      p.variants.forEach(function(v){ if(colors.indexOf(v.color) < 0) colors.push(v.color); });
-      let size = sizes[0], color = colors[0];
-      function variant(){
-        return p.variants.find(function(v){ return v.size === size && v.color === color; }) || p.variants.find(function(v){ return v.size === size; }) || p.variants[0];
+      if(!p){
+        body.innerHTML = '<div class="empty-state"><p>That piece is currently unavailable.</p><a class="btn btn--outline" href="/shop.html">Browse Collection</a></div>';
+        return;
       }
+      const variants = Array.isArray(p.variants) && p.variants.length > 0
+        ? p.variants
+        : [{ id: 'v-default', size: 'Standard', color: 'Standard', stock: (p.stock !== undefined ? p.stock : 10) }];
+      
+      const sizes = [];
+      variants.forEach(function(v){ if(v.size && sizes.indexOf(v.size) < 0) sizes.push(v.size); });
+      const colors = [];
+      variants.forEach(function(v){ if(v.color && colors.indexOf(v.color) < 0) colors.push(v.color); });
+      let size = sizes[0] || 'Standard';
+      let color = colors[0] || 'Standard';
+
+      function variant(){
+        return variants.find(function(v){ return v.size === size && v.color === color; })
+          || variants.find(function(v){ return v.size === size; })
+          || variants[0];
+      }
+
       function paint(){
         const v = variant();
-        const stock = v ? v.stock : 0;
-        $('#qvStock').textContent = stock > 4 ? 'In stock, ready to ship' : stock > 0 ? 'Only ' + stock + ' left in this option' : 'Currently sold out in this option';
-        $('#qvAdd').disabled = !stock;
-        $('#qvAdd').textContent = stock ? 'Add to bag' : 'Sold out';
+        const stock = v ? (v.stock !== undefined ? v.stock : 1) : 0;
+        const stockEl = body.querySelector('#qvStock') || $('#qvStock');
+        if(stockEl){
+          stockEl.textContent = stock > 4 ? 'In stock, ready to ship' : stock > 0 ? 'Only ' + stock + ' left in this option' : 'Currently sold out in this option';
+        }
+        const addBtn = body.querySelector('#qvAdd') || $('#qvAdd');
+        if(addBtn){
+          addBtn.disabled = !stock;
+          addBtn.textContent = stock ? 'Add to bag' : 'Sold out';
+        }
         body.querySelectorAll('[data-size]').forEach(function(b){ b.classList.toggle('is-active', b.getAttribute('data-size') === size); });
         body.querySelectorAll('[data-color]').forEach(function(b){ b.classList.toggle('is-active', b.getAttribute('data-color') === color); });
       }
+
+      const images = (Array.isArray(p.images) && p.images.length > 0) ? p.images : ['/assets/placeholder.svg'];
+      const catLabel = p.categoryLabel || p.category || 'Collection';
+      const desc = p.description || 'Exclusive Star Gold design crafted with signature tailoring and fine materials.';
+      const showSizes = sizes.length > 0 && !(sizes.length === 1 && sizes[0] === 'Standard');
+      const showColors = colors.length > 0 && !(colors.length === 1 && colors[0] === 'Standard');
+
+      const sizeHtml = showSizes
+        ? '<div class="field"><span class="field__label">Size</span><div class="size-row">' + sizes.map(function(s){ return '<button type="button" class="size-chip" data-size="'+s+'">'+s+'</button>'; }).join('') + '</div></div>'
+        : '';
+      const colorHtml = showColors
+        ? '<div class="field"><span class="field__label">Colour</span><div class="swatch-row">' + colors.map(function(c){ return '<button type="button" class="swatch" data-color="'+c+'" title="'+c+'" style="--sw:'+U.colorHex(c)+'"></button>'; }).join('') + '</div></div>'
+        : '';
+      const thumbsHtml = images.length > 1
+        ? '<div class="qv__thumbs">' + images.map(function(src, idx){
+            return '<button type="button" class="qv__thumb'+(idx===0?' is-active':'')+'" data-qv-thumb="'+idx+'" aria-label="View photo '+(idx+1)+'"><img src="'+src+'" alt="" loading="lazy" decoding="async"></button>';
+          }).join('') + '</div>'
+        : '';
+
       body.innerHTML = '<div class="quickview">'
-        + '<div class="qv__media"><img src="'+p.images[0]+'" alt="'+p.name+'">'+(p.images[1]?'<img src="'+p.images[1]+'" alt="'+p.name+'">':'')+'</div>'
-        + '<div class="qv__body"><p class="eyebrow">'+p.categoryLabel+'</p><h2>'+p.name+'</h2>'
-        + '<p class="qv__price">'+U.money(p.price)+(p.compareAt?' <s>'+U.money(p.compareAt)+'</s>':'')+'</p>'
-        + '<p class="qv__desc">'+p.description+'</p>'
-        + '<div class="field"><span class="field__label">Size</span><div class="size-row">'+sizes.map(function(s){ return '<button type="button" class="size-chip" data-size="'+s+'">'+s+'</button>'; }).join('')+'</div></div>'
-        + '<div class="field"><span class="field__label">Colour</span><div class="swatch-row">'+colors.map(function(c){ return '<button type="button" class="swatch" data-color="'+c+'" title="'+c+'" style="--sw:'+U.colorHex(c)+'"></button>'; }).join('')+'</div></div>'
+        + '<div class="qv__media">'
+        + '<div class="qv__main-wrap"><img id="qvMainImg" src="'+images[0]+'" alt="'+p.name+'" loading="lazy" decoding="async"></div>'
+        + thumbsHtml
+        + '</div>'
+        + '<div class="qv__body">'
+        + '<p class="eyebrow">'+catLabel+'</p>'
+        + '<h2>'+p.name+'</h2>'
+        + '<p class="qv__price">'+U.money(p.price)+(p.compareAt && p.compareAt > p.price ?' <s>'+U.money(p.compareAt)+'</s>':'')+'</p>'
+        + '<p class="qv__desc">'+desc+'</p>'
+        + sizeHtml
+        + colorHtml
         + '<p class="stock-note" id="qvStock"></p>'
-        + '<div class="qv__actions"><button class="btn btn--dark" id="qvAdd" type="button">Add to bag</button><a class="btn btn--outline" href="/product.html?p='+p.slug+'">Full details</a></div>'
-        + '<p class="secure-note">'+U.icon('truck',14)+' Delivery in 1 to 4 working days</p>'
+        + '<div class="qv__actions">'
+        + '<button class="btn btn--gold" id="qvAdd" type="button">Add to bag</button>'
+        + '<a class="btn btn--outline" href="/product.html?p='+encodeURIComponent(p.slug || p.id)+'">Full details</a>'
+        + '</div>'
+        + '<p class="secure-note">'+U.icon('truck',14)+' Delivery in 1 to 4 working days across Nigeria</p>'
         + '</div></div>';
-      body.querySelectorAll('[data-size]').forEach(function(b){ b.addEventListener('click', function(){ size = b.getAttribute('data-size'); paint(); }); });
-      body.querySelectorAll('[data-color]').forEach(function(b){ b.addEventListener('click', function(){ color = b.getAttribute('data-color'); paint(); }); });
+
+      body.querySelectorAll('[data-size]').forEach(function(b){
+        b.addEventListener('click', function(){ size = b.getAttribute('data-size'); paint(); });
+      });
+      body.querySelectorAll('[data-color]').forEach(function(b){
+        b.addEventListener('click', function(){ color = b.getAttribute('data-color'); paint(); });
+      });
+      body.querySelectorAll('[data-qv-thumb]').forEach(function(tb){
+        tb.addEventListener('click', function(){
+          const idx = parseInt(tb.getAttribute('data-qv-thumb'), 10);
+          const mainImg = body.querySelector('#qvMainImg');
+          if(mainImg && images[idx]) mainImg.src = images[idx];
+          body.querySelectorAll('[data-qv-thumb]').forEach(function(t){ t.classList.toggle('is-active', t === tb); });
+        });
+      });
+
       paint();
-      $('#qvAdd').addEventListener('click', function(){
-        const v = variant();
-        if(!v || !v.stock) return;
-        SG.cart.add(p, v, 1);
-        C.toast('Added to your bag');
+
+      const qvAdd = body.querySelector('#qvAdd') || $('#qvAdd');
+      if(qvAdd && typeof qvAdd.addEventListener === 'function'){
+        qvAdd.addEventListener('click', function(){
+          const v = variant();
+          if(!v || (v.stock !== undefined && v.stock <= 0)) return;
+          SG.cart.add(p, v, 1);
+          C.toast('Added ' + p.name + ' to your bag');
+          C.badges();
+          C.renderCart();
+          C.closeAll();
+          C.openCart();
+        });
+      }
+    }).catch(function(err){
+      console.error('Quick view error:', err);
+      body.innerHTML = '<div class="empty-state"><p>We could not load that piece right now.</p><button type="button" class="btn btn--sm btn--outline" data-close-all>Close</button></div>';
+    });
+  }
+
+  function handleCardAddToCart(pid, btn){
+    if(!pid) return;
+    const cleanId = decodeURIComponent(String(pid)).trim();
+    if(btn) {
+      btn.disabled = true;
+      btn.classList.add('is-loading');
+    }
+    SG.api.get('/products/' + encodeURIComponent(cleanId)).then(function(data){
+      const prod = data.product;
+      if(!prod){
+        C.toast('This piece is unavailable', 'error');
+        if(btn) { btn.disabled = false; btn.classList.remove('is-loading'); }
+        return;
+      }
+      const variants = Array.isArray(prod.variants) && prod.variants.length > 0
+        ? prod.variants
+        : [{ id: 'v-default', size: 'Standard', color: 'Standard', stock: (prod.stock !== undefined ? prod.stock : 10) }];
+      
+      const inStock = variants.find(function(v){ return (v.stock || 0) > 0; }) || variants[0];
+      if(inStock && (inStock.stock === undefined || inStock.stock > 0)){
+        SG.cart.add(prod, inStock, 1);
+        C.toast('Added ' + prod.name + ' to your bag');
         C.badges();
         C.renderCart();
         C.openCart();
-      });
-    }).catch(function(){ body.innerHTML = '<p class="sum-note">We could not load that piece.</p>'; });
+      } else {
+        C.toast(prod.name + ' is currently sold out', 'error');
+        C.quickView(cleanId);
+      }
+      if(btn) { btn.disabled = false; btn.classList.remove('is-loading'); }
+    }).catch(function(err){
+      console.error('Quick add error:', err);
+      if(btn) { btn.disabled = false; btn.classList.remove('is-loading'); }
+      C.quickView(cleanId);
+    });
   }
+
   C.openSearch = openSearch;
   C.runSearch = runSearch;
   C.quickView = quickView;
+  C.handleCardAddToCart = handleCardAddToCart;
 })();
 
 (function(){
@@ -344,6 +452,7 @@
       const closer = e.target.closest('[data-close-all]');
       const wishBtn = e.target.closest('[data-wish]');
       const quickBtn = e.target.closest('[data-quick]');
+      const addCartBtn = e.target.closest('[data-add-cart]');
       const qtyBtn = e.target.closest('[data-qty]');
       const rmBtn = e.target.closest('[data-remove]');
       if(openCartBtn){ e.preventDefault(); C.openCart(); return; }
@@ -352,7 +461,18 @@
       if(e.target.closest('[data-mobile-close]')){ e.preventDefault(); C.closeAll(); return; }
       if(e.target.closest('.mobile-nav a')){ C.closeAll(); return; }
       if(closer){ e.preventDefault(); C.closeAll(); return; }
-      if(quickBtn){ e.preventDefault(); C.quickView(quickBtn.getAttribute('data-quick')); return; }
+      if(quickBtn){
+        e.preventDefault();
+        e.stopPropagation();
+        C.quickView(quickBtn.getAttribute('data-quick'));
+        return;
+      }
+      if(addCartBtn){
+        e.preventDefault();
+        e.stopPropagation();
+        C.handleCardAddToCart(addCartBtn.getAttribute('data-add-cart'), addCartBtn);
+        return;
+      }
       if(wishBtn){
         e.preventDefault();
         const id = wishBtn.getAttribute('data-wish');
@@ -409,4 +529,5 @@
   SG.UI.toast = C.toast;
   SG.UI.openCart = C.openCart;
   SG.UI.refreshWish = refreshWish;
+  window.alert = function(msg) { C.toast(String(msg || ''), 'info'); };
 })();

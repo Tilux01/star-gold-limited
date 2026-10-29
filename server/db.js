@@ -154,7 +154,7 @@ async function update(collection, id, patch) {
     return merged;
   }
   const list = memory[collection] || [];
-  const index = list.findIndex((row) => row.id === id);
+  const index = list.findIndex((row) => row.id === id || (row.slug && row.slug === id));
   if (index === -1) return null;
   list[index] = Object.assign({}, list[index], patch);
   persist();
@@ -168,7 +168,7 @@ async function remove(collection, id) {
     return true;
   }
   const before = (memory[collection] || []).length;
-  memory[collection] = (memory[collection] || []).filter((row) => row.id !== id);
+  memory[collection] = (memory[collection] || []).filter((row) => row.id !== id && (!row.slug || row.slug !== id));
   persist();
   return memory[collection].length < before;
 }

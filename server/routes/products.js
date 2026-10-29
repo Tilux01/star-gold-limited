@@ -123,8 +123,16 @@ function sampleReviews(product) {
 
 router.get("/:id", async (req, res, next) => {
   try {
-    const product = await db.get("products", req.params.id);
+    let product = await db.get("products", req.params.id);
+    if (!product) {
+      const rows = await liveProducts();
+      product = rows.find((row) => row.id === req.params.id || row.slug === req.params.id) || null;
+    }
     if (!product || product.active === false) return res.status(404).json({ error: "Product not found." });
+    const cats = await catRepo.all();
+    const catMap = {};
+    cats.forEach((cat) => { catMap[cat.slug] = cat.label; });
+    if (!product.categoryLabel) product.categoryLabel = catMap[product.category] || product.category || "";
     const rows = await liveProducts();
     const related = rows
       .filter((row) => row.id !== product.id && row.category === product.category)

@@ -81,9 +81,15 @@
     $("#shopCount").textContent = data.total + (data.total === 1 ? " piece" : " pieces");
     $("#shopEmpty").hidden = data.total !== 0;
     grid.innerHTML = data.products.map(SG.UI.card).join("");
-    $("#pagination").innerHTML = data.pages > 1
-      ? Array.from({ length: data.pages }, (_, i) => `<button type="button" class="page-btn ${i + 1 === data.page ? "is-active" : ""}" data-page="${i + 1}">${i + 1}</button>`).join("")
-      : "";
+    let pagHtml = "";
+    if (data.pages > 1) {
+      if (data.page > 1) pagHtml += `<button type="button" class="page-btn" data-page="${data.page - 1}">&larr; Prev</button>`;
+      for (let i = 1; i <= data.pages; i++) {
+        pagHtml += `<button type="button" class="page-btn ${i === data.page ? "is-active" : ""}" data-page="${i}">${i}</button>`;
+      }
+      if (data.page < data.pages) pagHtml += `<button type="button" class="page-btn" data-page="${data.page + 1}">Next &rarr;</button>`;
+    }
+    $("#pagination").innerHTML = pagHtml;
     renderActive();
   }
 

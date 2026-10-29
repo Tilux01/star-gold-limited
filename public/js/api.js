@@ -48,8 +48,65 @@
     }
   };
 
+  const queryCache = new Map();
+  const productCache = new Map();
+  const CACHE_TTL = 3 * 60 * 1000; // 3 minutes
+
+  function clearCache(prefix) {
+    if (!prefix) {
+      queryCache.clear();
+      productCache.clear();
+      return;
+    }
+    for (const key of queryCache.keys()) {
+      if (key.startsWith(prefix)) queryCache.delete(key);
+    }
+  }
+
+  function saveProductToCache(p) {
+    if (!p) return;
+    if (p.id) {
+      productCache.set(p.id, p);
+      try { sessionStorage.setItem("sg.p." + p.id, JSON.stringify(p)); } catch (e) {}
+    }
+    if (p.slug) {
+      productCache.set(p.slug, p);
+      try { sessionStorage.setItem("sg.p." + p.slug, JSON.stringify(p)); } catch (e) {}
+    }
+  }
+
+  function indexProducts(data) {
+    if (!data) return;
+    if (Array.isArray(data.products)) {
+      data.products.forEach(saveProductToCache);
+    } else if (data.product) {
+      saveProductToCache(data.product);
+    }
+  }
+
   async function request(path, options) {
     const opts = options || {};
+    const method = (opts.method || "GET").toUpperCase();
+    const isGet = method === "GET";
+    const useCache = isGet && !opts.noCache && !path.startsWith("/admin/");
+
+    // Fast-path: single product lookup if already loaded in productCache
+    if (useCache && path.startsWith("/products/") && !path.includes("?") && !path.includes("/lookbook")) {
+      const pid = path.replace("/products/", "").trim();
+      if (productCache.has(pid)) {
+        return { product: productCache.get(pid) };
+      }
+    }
+
+    // Check query cache
+    if (useCache && queryCache.has(path)) {
+      const entry = queryCache.get(path);
+      if (Date.now() - entry.timestamp < CACHE_TTL) {
+        return entry.data;
+      }
+      queryCache.delete(path);
+    }
+
     const headers = Object.assign({}, opts.headers || {});
     if (opts.body && !(opts.body instanceof FormData)) headers["Content-Type"] = "application/json";
     const token = auth.token();
@@ -57,7 +114,7 @@
     let res;
     try {
       res = await fetch(API + path, {
-        method: opts.method || "GET",
+        method: method,
         headers: headers,
         body: opts.body && !(opts.body instanceof FormData) ? JSON.stringify(opts.body) : opts.body
       });
@@ -80,14 +137,42 @@
       if (res.status === 401 && auth.token()) auth.clear();
       throw err;
     }
+
+    // Cache response and index entities
+    if (useCache) {
+      queryCache.set(path, { timestamp: Date.now(), data: data });
+      indexProducts(data);
+    } else if (!isGet) {
+      // Invalidate cache on mutations (create, update, delete)
+      clearCache();
+    }
+
     return data;
   }
 
   const api = {
-    get: (p) => request(p),
-    post: (p, b) => request(p, { method: "POST", body: b }),
-    patch: (p, b) => request(p, { method: "PATCH", body: b }),
-    del: (p) => request(p, { method: "DELETE" })
+    get: (p, opts) => request(p, Object.assign({}, opts, { method: "GET" })),
+    post: (p, b, opts) => request(p, Object.assign({}, opts, { method: "POST", body: b })),
+    patch: (p, b, opts) => request(p, Object.assign({}, opts, { method: "PATCH", body: b })),
+    del: (p, opts) => request(p, Object.assign({}, opts, { method: "DELETE" })),
+    clearCache: clearCache,
+    getCachedProduct: (idOrSlug) => {
+      if (!idOrSlug) return null;
+      const key = String(idOrSlug).trim();
+      if (productCache.has(key)) return productCache.get(key);
+      try {
+        const raw = sessionStorage.getItem("sg.p." + key);
+        if (raw) {
+          const p = JSON.parse(raw);
+          if (p && (p.id || p.slug)) {
+            productCache.set(key, p);
+            return p;
+          }
+        }
+      } catch (e) {}
+      return null;
+    },
+    setCachedProduct: saveProductToCache
   };
 
   function money(value) {
@@ -226,6 +311,8 @@
     phone2: "08033876440",
     phonePretty: "0806 349 4273",
     phone2Pretty: "0803 387 6440",
+    phonePrimary: "0806 349 4273",
+    phoneSecondary: "0803 387 6440",
     whatsapp: "2348063494273",
     email: "igbokweify390@yahoo.com",
     instagram: "https://instagram.com/stargold_collection",

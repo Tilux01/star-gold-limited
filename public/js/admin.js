@@ -9,26 +9,149 @@
   const pa = (p, b) => SG.api.patch(p, b);
   const de = (p) => SG.api.del(p);
   const STATUS = [["pending", "Pending"], ["paid", "Paid"], ["processing", "Processing"], ["shipped", "Shipped"], ["completed", "Completed"], ["cancelled", "Cancelled"]];
-  const S = { tab: "overview", prod: [], cats: [], ord: [], cust: [], media: [], promos: [], subs: [], msgs: [], cfg: {}, sum: null, imgs: [], vid: "", vars: [], edit: null, cur: null, q: { p: "", cat: "", st: "", o: "", c: "" } };
+  const S = {
+    tab: "overview",
+    prod: [],
+    cats: [],
+    ord: [],
+    cust: [],
+    media: [],
+    promos: [],
+    subs: [],
+    msgs: [],
+    cfg: {},
+    sum: null,
+    imgs: [],
+    vid: "",
+    vars: [],
+    edit: null,
+    cur: null,
+    q: { p: "", cat: "", st: "", o: "", c: "" },
+    page: { p: 1, o: 1, c: 1, m: 1 },
+    pageSize: { p: 12, o: 12, c: 15, m: 18 }
+  };
   const stLabel = (k) => (STATUS.find((x) => x[0] === k) || [k, k])[1];
   const stSel = (v, act, id) => '<select class="mini" data-act="' + act + '" data-id="' + (id || "") + '">' + STATUS.map((o) => '<option value="' + o[0] + '"' + (o[0] === v ? " selected" : "") + ">" + o[1] + "</option>").join("") + "</select>";
   const img = (f) => (!f ? "" : /^(https?:|\/|data:)/.test(f) ? f : "/assets/catalog/" + f);
   const CTH = '<thead><tr><th>Customer</th><th>Phone</th><th>Orders</th><th>Spent</th><th>Last order</th></tr></thead><tbody>';
   const when = (v) => { if (!v) return "n/a"; try { return SG.formatDateTime(v); } catch (e) { return String(v).slice(0, 10); } };
   function toast(msg, bad) {
-    const t = $("#toast");
-    if (!t) return;
+    let t = $("#toast");
+    if (!t) {
+      t = document.createElement("div");
+      t.id = "toast";
+      t.className = "toast";
+      document.body.appendChild(t);
+    }
+    t.removeAttribute("hidden");
+    t.hidden = false;
     t.textContent = msg;
     t.classList.toggle("is-bad", !!bad);
     t.classList.add("is-on");
     clearTimeout(toast.t);
-    toast.t = setTimeout(() => t.classList.remove("is-on"), 2800);
+    toast.t = setTimeout(() => {
+      t.classList.remove("is-on");
+    }, 3500);
   }
-  function fail(err) { toast(err && err.message ? err.message : "Something went wrong", true); }
+  function fail(err) {
+    console.error("Admin error:", err);
+    const msg = (err && (err.message || (err.details && err.details.error))) || "Something went wrong. Please try again.";
+    toast(msg, true);
+  }
+
+  function confirmDialog(message, options) {
+    const opts = options || {};
+    return new Promise((resolve) => {
+      const modal = $("#confirmModal");
+      const msgEl = $("#confirmMessage");
+      const titleEl = $("#confirmTitle");
+      const okBtn = $("#confirmOkBtn");
+      const cancelBtn = $("#confirmCancelBtn");
+      const backEl = $("#confirmBack");
+
+      if (!modal || !okBtn || !cancelBtn) {
+        resolve(true);
+        return;
+      }
+
+      if (msgEl) msgEl.textContent = message || "Are you sure you want to proceed?";
+      if (titleEl) titleEl.textContent = opts.title || "Confirm action";
+      if (okBtn) {
+        okBtn.textContent = opts.confirmText || "Confirm";
+        okBtn.className = opts.danger !== false ? "btn btn-danger" : "btn btn-gold";
+      }
+
+      modal.hidden = false;
+
+      function done(val) {
+        modal.hidden = true;
+        okBtn.removeEventListener("click", onOk);
+        cancelBtn.removeEventListener("click", onCancel);
+        if (backEl) backEl.removeEventListener("click", onCancel);
+        resolve(val);
+      }
+      function onOk() { done(true); }
+      function onCancel() { done(false); }
+
+      okBtn.addEventListener("click", onOk);
+      cancelBtn.addEventListener("click", onCancel);
+      if (backEl) backEl.addEventListener("click", onCancel);
+    });
+  }
+
+  window.alert = (msg) => toast(String(msg || ""), true);
+  window.confirm = (msg) => { console.warn("Native confirm blocked; use confirmDialog:", msg); return false; };
+  function renderPaging(navId, countId, totalItems, pageSize, currentPage, onPage) {
+    const nav = $(navId);
+    const count = $(countId);
+    if (!nav) return;
+    const totalPages = Math.ceil(totalItems / pageSize) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+    const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+    const end = Math.min(currentPage * pageSize, totalItems);
+
+    if (count) {
+      count.textContent = totalItems > 0 ? 'Showing ' + start + '–' + end + ' of ' + totalItems : '0 items';
+    }
+
+    if (totalPages <= 1) {
+      nav.innerHTML = '';
+      return;
+    }
+
+    let html = '';
+    html += '<button type="button" class="page-btn"' + (currentPage === 1 ? ' disabled' : '') + ' data-pg="' + (currentPage - 1) + '">&larr; Prev</button>';
+    for (let i = 1; i <= totalPages; i++) {
+      if (totalPages <= 7 || i === 1 || i === totalPages || Math.abs(i - currentPage) <= 1) {
+        html += '<button type="button" class="page-btn' + (i === currentPage ? ' is-active' : '') + '" data-pg="' + i + '">' + i + '</button>';
+      } else if (i === currentPage - 2 || i === currentPage + 2) {
+        html += '<span class="muted" style="padding:0 4px">&hellip;</span>';
+      }
+    }
+    html += '<button type="button" class="page-btn"' + (currentPage === totalPages ? ' disabled' : '') + ' data-pg="' + (currentPage + 1) + '">Next &rarr;</button>';
+    nav.innerHTML = html;
+    nav.querySelectorAll('[data-pg]').forEach((b) => {
+      b.addEventListener('click', () => {
+        const next = Number(b.dataset.pg);
+        if (next >= 1 && next <= totalPages && next !== currentPage) {
+          onPage(next);
+        }
+      });
+    });
+  }
   async function run(fn) {
     try { return await fn(); } catch (err) { fail(err); return null; }
   }
-  function openDrawer(name) { const el = $("[id='" + name.replace(/^#/, "") + "Drawer']"); if (el) el.hidden = false; }
+  function openDrawer(name) {
+    const clean = String(name || "").replace(/^#/, "").replace(/Drawer$/, "");
+    const el = $("#" + clean + "Drawer");
+    if (el) el.hidden = false;
+  }
+  function closeDrawer(name) {
+    const clean = String(name || "").replace(/^#/, "").replace(/Drawer$/, "");
+    const el = $("#" + clean + "Drawer");
+    if (el) el.hidden = true;
+  }
   function closeDrawers() { $$(".adm-drawer").forEach((d) => { d.hidden = true; }); }
   function drawerFor(el) { return el.closest(".adm-drawer"); }
   function isAdmin(user) { return !!user && (user.role === "admin" || user.isAdmin === true); }
@@ -115,10 +238,19 @@
       if (state === "low" && Number(row.stock || 0) > 4) return false;
       return true;
     });
+    const page = S.page.p || 1;
+    const size = S.pageSize.p || 12;
+    const paged = rows.slice((page - 1) * size, page * size);
+
     $("#productTable").innerHTML = '<thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>State</th><th></th></tr></thead>'
-      + '<tbody>' + (rows.length ? rows.map((row) => {
-        return '<tr><td><div class="cell-prod"><span class="thumb">' + (row.images && row.images[0] ? '<img src="' + esc(row.images[0]) + '" alt="">' : '') + '</span><span><strong>' + esc(row.name) + '</strong><small>' + esc(row.id) + '</small></span></div></td><td>' + esc(row.category || "") + '</td><td>' + money(row.price) + '</td><td>' + Number(row.stock || 0) + '</td><td><button class="pill' + (row.active === false ? '' : ' pill-live') + '" data-act="toggle" data-id="' + esc(row.id) + '">' + (row.active === false ? 'Hidden' : 'Live') + '</button></td><td class="row-actions"><button class="icon-btn" data-act="edit" data-id="' + esc(row.id) + '">' + icon("edit") + '</button><button class="icon-btn" data-act="dup" data-id="' + esc(row.id) + '">' + icon("copy") + '</button><button class="icon-btn" data-act="del" data-id="' + esc(row.id) + '">' + icon("trash") + '</button></td></tr>';
+      + '<tbody>' + (paged.length ? paged.map((row) => {
+        return '<tr><td><div class="cell-prod"><span class="thumb">' + (row.images && row.images[0] ? '<img src="' + esc(row.images[0]) + '" alt="" loading="lazy" decoding="async">' : '') + '</span><span class="grow"><strong>' + esc(row.name) + '</strong><small>' + esc(row.id) + '</small></span></div></td><td>' + esc(row.category || "") + '</td><td><strong>' + money(row.price) + '</strong></td><td>' + Number(row.stock || 0) + '</td><td><button class="pill' + (row.active === false ? '' : ' pill-live') + '" data-act="toggle" data-id="' + esc(row.id) + '">' + (row.active === false ? 'Hidden' : 'Live') + '</button></td><td class="row-actions"><button class="icon-btn" data-act="edit" data-id="' + esc(row.id) + '">' + icon("edit") + '</button><button class="icon-btn" data-act="dup" data-id="' + esc(row.id) + '">' + icon("copy") + '</button><button class="icon-btn" data-act="del" data-id="' + esc(row.id) + '">' + icon("trash") + '</button></td></tr>';
       }).join("") : '<tr><td colspan="6"><div class="empty">No products match this filter.</div></td></tr>') + '</tbody>';
+
+    renderPaging("#prodPagination", "#prodCount", rows.length, size, page, (nextPage) => {
+      S.page.p = nextPage;
+      renderProducts();
+    });
   }
   function fillProdCats() {
     const sel = $("#prodCatFilter");
@@ -131,33 +263,43 @@
     return S.prod.find((row) => row.id === id) || null;
   }
 
-  function openProduct(row) {
+  function openProduct(rowOrId) {
+    const row = (typeof rowOrId === "object" && rowOrId !== null)
+      ? rowOrId
+      : prodById(rowOrId);
+    if (!row && rowOrId) {
+      toast("Product not found", true);
+      return;
+    }
     const form = $("#productForm");
     form.reset();
     S.edit = row ? row.id : null;
-    S.imgs = row && row.images ? row.images.slice() : [];
+    S.imgs = row && Array.isArray(row.images) ? row.images.slice() : [];
     S.vid = row && row.video ? row.video : "";
-    S.vars = row && row.variants ? row.variants.map((v) => ({ size: v.size || "One Size", color: v.color || "", stock: Number(v.stock || 0) })) : [];
+    S.vars = row && Array.isArray(row.variants) ? row.variants.map((v) => ({ size: v.size || "One Size", color: v.color || "", stock: Number(v.stock || 0) })) : [];
     $("#drawerTitle").textContent = row ? "Edit product" : "New product";
-    $("#drawerSub").textContent = row ? row.id : "Fill the details, upload media and publish";
+    $("#drawerSub").textContent = row ? (row.name || row.id) : "Fill the details, upload media and publish";
+    const btn = $("#saveProduct");
+    if (btn) btn.textContent = row ? "Update product" : "Save product";
     form.elements.name.value = row ? row.name || "" : "";
     form.elements.category.value = row ? row.category || "" : (S.cats[0] ? S.cats[0].slug : "");
     form.elements.price.value = row ? row.price || 0 : "";
-    form.elements.compareAt.value = row ? row.compareAt || "" : "";
+    form.elements.compareAt.value = row && row.compareAt ? row.compareAt : "";
     form.elements.stock.value = row ? row.stock || 0 : 0;
     form.elements.badge.value = row ? row.badge || "" : "";
     form.elements.description.value = row ? row.description || "" : "";
-    form.elements.details.value = row && row.details ? row.details.join("\n") : "";
+    form.elements.details.value = row && Array.isArray(row.details) ? row.details.join("\n") : (row && row.details ? String(row.details) : "");
     form.elements.material.value = row ? row.material || "" : "";
     form.elements.origin.value = row ? row.origin || "" : "";
     form.elements.rating.value = row ? row.rating || 4.8 : 4.8;
     form.elements.featured.checked = row ? !!row.featured : false;
     form.elements.active.checked = row ? row.active !== false : true;
+    if (form.elements.mediaUrl) form.elements.mediaUrl.value = "";
     if (!S.cats.length) loadCats().then(() => { form.elements.category.value = row ? row.category || "" : (S.cats[0] ? S.cats[0].slug : ""); });
     renderImgs();
     renderVars();
     renderVid();
-    openDrawer("#productDrawer");
+    openDrawer("product");
   }
   function renderImgs() {
     $("#imageThumbs").innerHTML = S.imgs.length ? S.imgs.map((src, i) => '<figure class="thumb-item"><img src="' + esc(src) + '" alt=""><button type="button" data-act="img-del" data-i="' + i + '">' + icon("x", 14) + '</button></figure>').join("") : '<p class="muted small">No images yet. Upload files or paste a URL below.</p>';
@@ -174,17 +316,7 @@
     if (!$("#productForm").elements.stock.value) $("#productForm").elements.stock.value = S.vars.reduce((n, v) => n + Number(v.stock || 0), 0);
   }
   function openNew() {
-    S.edit = null;
-    S.imgs = [];
-    S.vid = "";
-    S.vars = [];
-    $("#productForm").reset();
-    $("#drawerTitle").textContent = "New product";
-    $("#drawerSub").textContent = "Add a piece to the catalogue";
-    renderImgs();
-    renderVid();
-    renderVars();
-    openDrawer("product");
+    openProduct(null);
   }
   function addImgs(list) {
     list.forEach((src) => {
@@ -229,6 +361,30 @@
     if (event) event.preventDefault();
     const form = $("#productForm");
     const btn = $("#saveProduct");
+
+    // Read variants directly from live DOM inputs
+    const varRows = $$("#variantRows .var-row");
+    const domVars = Array.from(varRows).map((row) => {
+      const sizeInput = row.querySelector("[data-var='size']");
+      const colorInput = row.querySelector("[data-var='color']");
+      const stockInput = row.querySelector("[data-var='stock']");
+      return {
+        size: sizeInput ? sizeInput.value.trim() : "",
+        color: colorInput ? colorInput.value.trim() : "",
+        stock: stockInput ? Number(stockInput.value || 0) : 0
+      };
+    }).filter((v) => v.size || v.color);
+
+    // Check if user entered a media URL
+    const mediaUrl = form.elements.mediaUrl ? form.elements.mediaUrl.value.trim() : "";
+    if (mediaUrl) {
+      if (/\.(mp4|webm|mov)(\?|$)/i.test(mediaUrl)) {
+        if (!S.vid) S.vid = mediaUrl;
+      } else if (!S.imgs.includes(mediaUrl)) {
+        S.imgs.push(mediaUrl);
+      }
+    }
+
     const body = {
       name: form.elements.name.value.trim(),
       category: form.elements.category.value,
@@ -245,19 +401,33 @@
       active: form.elements.active.checked,
       images: S.imgs.slice(),
       video: S.vid,
-      variants: S.vars.filter((v) => v.size || v.color)
+      variants: domVars.length ? domVars : S.vars.filter((v) => v.size || v.color)
     };
     if (!body.name || !body.price) return toast("Name and price are required", true);
-    btn.disabled = true;
+    if (btn) {
+      btn.disabled = true;
+      btn.classList.add("is-loading");
+      btn.innerHTML = '<span class="btn-spinner"></span> Saving...';
+    }
     try {
-      if (S.edit) await pa("/admin/products/" + encodeURIComponent(S.edit), body);
-      else await po("/admin/products", body);
+      if (S.edit) {
+        await pa("/admin/products/" + encodeURIComponent(S.edit), body);
+        toast("Product updated successfully");
+      } else {
+        await po("/admin/products", body);
+        toast("Product created successfully");
+      }
       closeDrawers();
       await loadProducts();
       await loadSummary();
-      toast("Product saved");
     } catch (err) { fail(err); }
-    btn.disabled = false;
+    finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.classList.remove("is-loading");
+        btn.innerHTML = S.edit ? "Update product" : "Save product";
+      }
+    }
   }
   async function dupProduct(id) {
     try {
@@ -268,7 +438,7 @@
   }
 
   async function delProduct(id) {
-    if (!confirm("Delete this product permanently?")) return;
+    if (!(await confirmDialog("Delete this product permanently? This action cannot be undone.", { title: "Delete Product", confirmText: "Delete" }))) return;
     try {
       await de("/admin/products/" + encodeURIComponent(id));
       await loadProducts();
@@ -309,48 +479,211 @@
     }
     table.innerHTML = '<thead><tr><th>Order</th><th>Category</th><th>Products</th><th>Status</th><th></th></tr></thead><tbody>'
       + S.cats.map((c) => '<tr>'
-      + '<td><div class="row-actions"><button class="icon-btn" data-act="catUp" data-id="' + esc(c.id) + '">' + icon("up") + '</button><button class="icon-btn" data-act="catDown" data-id="' + esc(c.id) + '">' + icon("down") + '</button></div></td>'
-      + '<td><div class="cell-prod"><span class="thumb">' + (c.image ? '<img src="' + esc(c.image) + '" alt="">' : '') + '</span><span><strong>' + esc(c.label) + '</strong><small>/' + esc(c.slug) + '</small></span></div></td>'
+      + '<td><div class="row-actions"><button class="icon-btn" data-act="cat-up" data-id="' + esc(c.id) + '">' + icon("up") + '</button><button class="icon-btn" data-act="cat-down" data-id="' + esc(c.id) + '">' + icon("down") + '</button></div></td>'
+      + '<td><div class="cell-prod"><span class="thumb">' + (c.image ? '<img src="' + esc(c.image) + '" alt="" loading="lazy" decoding="async">' : '') + '</span><span><strong>' + esc(c.label) + '</strong><small>/' + esc(c.slug) + '</small></span></div></td>'
       + '<td>' + Number(c.count || 0) + '</td>'
       + '<td><span class="pill' + (c.active === false ? '' : ' pill-live') + '">' + (c.active === false ? 'Hidden' : 'Live') + '</span></td>'
-      + '<td class="row-actions"><button class="icon-btn" data-act="catEdit" data-id="' + esc(c.id) + '">' + icon("edit") + '</button><button class="icon-btn bad" data-act="catDel" data-id="' + esc(c.id) + '">' + icon("trash") + '</button></td>'
+      + '<td class="row-actions"><button class="icon-btn" data-act="cat-edit" data-id="' + esc(c.id) + '">' + icon("edit") + '</button><button class="icon-btn bad" data-act="cat-del" data-id="' + esc(c.id) + '">' + icon("trash") + '</button></td>'
       + '</tr>').join("") + '</tbody>';
   }
 
+  function setCatImage(url) {
+    const src = String(url || "").trim();
+    const hiddenInput = $("#catImageUrl");
+    const textInput = $("#catImageUrlInput");
+    const preview = $("#catImgPreview");
+    const thumb = $("#catImgThumb");
+    const uploader = $("#catUploader");
+    const prompt = $("#catUploadPrompt");
+    const progress = $("#catUploadProgress");
+
+    if (hiddenInput) hiddenInput.value = src;
+    if (textInput && textInput.value !== src) textInput.value = src;
+
+    if (src) {
+      if (thumb) thumb.src = src;
+      if (preview) preview.hidden = false;
+      if (uploader) uploader.hidden = true;
+    } else {
+      if (thumb) thumb.src = "";
+      if (preview) preview.hidden = true;
+      if (uploader) uploader.hidden = false;
+      if (progress) progress.hidden = true;
+      if (prompt) prompt.hidden = false;
+    }
+  }
+
+  function bindCatUploader() {
+    const uploader = $("#catUploader");
+    const fileInput = $("#catFileInput");
+    const changeBtn = $("#catChangeImgBtn");
+    const removeBtn = $("#catRemoveImgBtn");
+    const urlInput = $("#catImageUrlInput");
+    const prompt = $("#catUploadPrompt");
+    const progress = $("#catUploadProgress");
+
+    if (!uploader || !fileInput) return;
+
+    async function handleFile(file) {
+      if (!file) return;
+      if (prompt) prompt.hidden = true;
+      if (progress) progress.hidden = false;
+      const submitBtn = $("#catSubmitBtn");
+      if (submitBtn) submitBtn.disabled = true;
+      try {
+        const assets = await uploadFiles([file], "image");
+        if (assets.length && assets[0].url) {
+          setCatImage(assets[0].url);
+          toast("Cover image uploaded");
+        } else {
+          toast("Upload failed, please try again", true);
+          setCatImage("");
+        }
+      } catch (err) {
+        fail(err);
+        setCatImage("");
+      } finally {
+        if (progress) progress.hidden = true;
+        if (prompt) prompt.hidden = false;
+        if (submitBtn) submitBtn.disabled = false;
+        fileInput.value = "";
+      }
+    }
+
+    uploader.addEventListener("click", (e) => {
+      if (e.target === fileInput) return;
+      fileInput.click();
+    });
+
+    ["dragenter", "dragover"].forEach((t) => {
+      uploader.addEventListener(t, (e) => {
+        e.preventDefault();
+        uploader.classList.add("is-over");
+      });
+    });
+
+    ["dragleave", "drop"].forEach((t) => {
+      uploader.addEventListener(t, (e) => {
+        e.preventDefault();
+        uploader.classList.remove("is-over");
+      });
+    });
+
+    uploader.addEventListener("drop", (e) => {
+      const files = Array.from(e.dataTransfer.files || []);
+      if (files.length) handleFile(files[0]);
+    });
+
+    fileInput.addEventListener("change", () => {
+      if (fileInput.files && fileInput.files.length) {
+        handleFile(fileInput.files[0]);
+      }
+    });
+
+    if (changeBtn) {
+      changeBtn.addEventListener("click", () => fileInput.click());
+    }
+
+    if (removeBtn) {
+      removeBtn.addEventListener("click", () => setCatImage(""));
+    }
+
+    if (urlInput) {
+      urlInput.addEventListener("input", () => {
+        setCatImage(urlInput.value.trim());
+      });
+    }
+  }
+
   function editCat(id) {
-    const c = S.cats.find((x) => x.id === id) || null;
+    const c = S.cats.find((x) => x.id === id || x.slug === id) || null;
     const f = $("#categoryForm");
-    f.elements.original.value = c ? c.id : "";
+    if (!f) return;
+    f.elements.original.value = c ? (c.id || c.slug) : "";
+    const title = $("#catFormTitle");
+    if (title) title.textContent = c ? "Edit category" : "Category editor";
+    const mode = $("#catFormMode");
+    if (mode) mode.textContent = c ? "Editing: " + c.label : "New category";
     f.elements.label.value = c ? c.label : "";
     f.elements.slug.value = c ? c.slug : "";
     f.elements.blurb.value = c ? c.blurb || "" : "";
-    f.elements.image.value = c ? c.image || "" : "";
+    setCatImage(c && c.image ? c.image : "");
     f.elements.sortOrder.value = c ? c.sortOrder || 0 : S.cats.length + 1;
     f.elements.active.checked = c ? c.active !== false : true;
+    const btn = $("#catSubmitBtn");
+    if (btn) btn.innerHTML = "Update category";
     f.scrollIntoView({ behavior: "smooth", block: "center" });
+    f.elements.label.focus();
+  }
+
+  function openNewCat() {
+    const f = $("#categoryForm");
+    if (!f) return;
+    f.reset();
+    f.elements.original.value = "";
+    const title = $("#catFormTitle");
+    if (title) title.textContent = "Category editor";
+    const mode = $("#catFormMode");
+    if (mode) mode.textContent = "New category";
+    setCatImage("");
+    f.elements.active.checked = true;
+    f.elements.sortOrder.value = S.cats.length + 1;
+    const btn = $("#catSubmitBtn");
+    if (btn) btn.innerHTML = "Save category";
+    f.scrollIntoView({ behavior: "smooth", block: "center" });
+    f.elements.label.focus();
   }
 
   async function saveCat(event) {
-    event.preventDefault();
-    const f = event.currentTarget;
-    const original = f.elements.original.value;
+    if (event) event.preventDefault();
+    const f = $("#categoryForm");
+    if (!f) return;
+    const btn = $("#catSubmitBtn") || f.querySelector("button[type='submit']");
+    const original = f.elements.original.value.trim();
+    const label = f.elements.label.value.trim();
+    if (!label) return toast("Category name is required", true);
+
+    let slug = (f.elements.slug.value.trim() || label)
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 70);
+
+    const imgUrl = ($("#catImageUrl") ? $("#catImageUrl").value : f.elements.image.value) || "";
     const body = {
-      label: f.elements.label.value.trim(),
-      slug: f.elements.slug.value.trim(),
+      label: label,
+      slug: slug,
       blurb: f.elements.blurb.value.trim(),
-      image: f.elements.image.value.trim(),
+      image: imgUrl.trim(),
       sortOrder: Number(f.elements.sortOrder.value || 0),
       active: f.elements.active.checked
     };
-    if (!body.label) return toast("Category name is required", true);
+
+    if (btn) {
+      btn.disabled = true;
+      btn.classList.add("is-loading");
+      btn.innerHTML = '<span class="btn-spinner"></span> Saving...';
+    }
+
     try {
-      if (original) await pa("/admin/categories/" + encodeURIComponent(original), body);
-      else await po("/admin/categories", body);
-      toast("Category saved");
-      f.reset();
-      f.elements.original.value = "";
+      if (original) {
+        await pa("/admin/categories/" + encodeURIComponent(original), body);
+        toast("Category updated successfully");
+      } else {
+        await po("/admin/categories", body);
+        toast("Category added successfully");
+      }
+      openNewCat();
       await loadCats();
-    } catch (err) { fail(err); }
+    } catch (err) {
+      fail(err);
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.classList.remove("is-loading");
+        btn.innerHTML = original ? "Update category" : "Save category";
+      }
+    }
   }
 
   async function moveCat(id, dir) {
@@ -359,18 +692,23 @@
     const to = from + dir;
     if (from < 0 || to < 0 || to >= ids.length) return;
     ids.splice(to, 0, ids.splice(from, 1)[0]);
-    try { await po("/admin/categories/reorder", { ids: ids }); await loadCats(); }
-    catch (err) { fail(err); }
+    try {
+      await po("/admin/categories/reorder", { ids: ids });
+      await loadCats();
+    } catch (err) { fail(err); }
   }
 
   async function catAction(act, id) {
-    if (act === "catEdit") return editCat(id);
-    if (act === "catUp") return moveCat(id, -1);
-    if (act === "catDown") return moveCat(id, 1);
-    if (act === "catDel") {
-      if (!confirm("Delete this category? Products keep their tag.")) return;
-      try { await de("/admin/categories/" + encodeURIComponent(id)); toast("Category deleted"); await loadCats(); }
-      catch (err) { fail(err); }
+    if (act === "catEdit" || act === "cat-edit") return editCat(id);
+    if (act === "catUp" || act === "cat-up") return moveCat(id, -1);
+    if (act === "catDown" || act === "cat-down") return moveCat(id, 1);
+    if (act === "catDel" || act === "cat-del") {
+      if (!(await confirmDialog("Delete this category? Products will keep their tag.", { title: "Delete Category", confirmText: "Delete" }))) return;
+      try {
+        await de("/admin/categories/" + encodeURIComponent(id));
+        toast("Category deleted");
+        await loadCats();
+      } catch (err) { fail(err); }
     }
   }
 
@@ -382,11 +720,20 @@
   function renderOrders() {
     const q = S.q.o.toLowerCase(), st = S.q.st;
     const rows = S.ord.filter((r) => (!st || r.status === st) && (!q || [r.number, r.id, (r.customer || {}).name, (r.customer || {}).phone].join(" ").toLowerCase().includes(q)));
-    $("#orderTable").innerHTML = OHEAD + (rows.length ? rows.map((r) => '<tr><td><strong>' + esc(r.number || r.id) + '</strong><small>' + when(r.createdAt) + '</small></td>'
+    const page = S.page.o || 1;
+    const size = S.pageSize.o || 12;
+    const paged = rows.slice((page - 1) * size, page * size);
+
+    $("#orderTable").innerHTML = OHEAD + (paged.length ? paged.map((r) => '<tr><td><strong>' + esc(r.number || r.id) + '</strong><small>' + when(r.createdAt) + '</small></td>'
       + '<td>' + esc((r.customer || {}).name || "Guest") + '<small>' + esc((r.customer || {}).phone || "") + '</small></td>'
       + '<td>' + money(r.total || 0) + '</td><td>' + ((r.items || []).length) + '</td>'
       + '<td>' + stSel(r.status, "order-status", r.id) + '</td>'
       + '<td><button class="icon-btn" data-act="order-open" data-id="' + esc(r.id) + '">' + icon("eye") + '</button></td></tr>').join("") : '<tr><td colspan="6"><div class="empty">No orders yet.</div></td></tr>') + '</tbody>';
+
+    renderPaging("#orderPagination", "#orderCount", rows.length, size, page, (nextPage) => {
+      S.page.o = nextPage;
+      renderOrders();
+    });
   }
 
   async function loadCustomers() {
@@ -396,7 +743,16 @@
   function renderCustomers() {
     const q = S.q.c.toLowerCase();
     const rows = S.cust.filter((r) => (!q || ((r.name || "") + " " + (r.email || "") + " " + (r.phone || "")).toLowerCase().includes(q)));
-    $("#customerTable").innerHTML = CTH + (rows.length ? rows.map((r) => '<tr><td><strong>' + esc(r.name || "") + '</strong><small>' + esc(r.email || "") + '</small></td><td>' + esc(r.phone || "") + '</td><td>' + esc(r.orders || 0) + '</td><td>' + money(r.spent || 0) + '</td><td>' + when(r.lastOrderAt) + '</td></tr>').join("") : '<tr><td colspan="5"><div class="empty">No customers yet.</div></td></tr>') + '</tbody>';
+    const page = S.page.c || 1;
+    const size = S.pageSize.c || 15;
+    const paged = rows.slice((page - 1) * size, page * size);
+
+    $("#customerTable").innerHTML = CTH + (paged.length ? paged.map((r) => '<tr><td><strong>' + esc(r.name || "") + '</strong><small>' + esc(r.email || "") + '</small></td><td>' + esc(r.phone || "") + '</td><td>' + esc(r.orders || 0) + '</td><td>' + money(r.spent || 0) + '</td><td>' + when(r.lastOrderAt) + '</td></tr>').join("") : '<tr><td colspan="5"><div class="empty">No customers yet.</div></td></tr>') + '</tbody>';
+
+    renderPaging("#custPagination", "#custCount", rows.length, size, page, (nextPage) => {
+      S.page.c = nextPage;
+      renderCustomers();
+    });
   }
   const MHEAD = '<thead><tr><th>Media</th><th>Type</th><th>Size</th><th></th></tr></thead><tbody>';
 
@@ -406,7 +762,17 @@
   }
 
   function renderMedia() {
-    $("#mediaGrid").innerHTML = S.media.length ? S.media.map((m) => '<figure class="media-tile">' + (m.kind === "video" ? '<video src="' + esc(m.url) + '" muted playsinline></video>' : '<img src="' + esc(m.url) + '" alt="' + esc(m.name || "") + '">') + '<figcaption><button class="link" data-act="media-copy" data-url="' + esc(m.url) + '">Copy URL</button><button class="icon-btn" data-act="media-del" data-id="' + esc(m.id) + '">' + icon("trash") + '</button></figcaption></figure>').join("") : '<div class="empty">Nothing uploaded yet.</div>';
+    const list = S.media || [];
+    const page = S.page.m || 1;
+    const size = S.pageSize.m || 18;
+    const paged = list.slice((page - 1) * size, page * size);
+
+    $("#mediaGrid").innerHTML = paged.length ? paged.map((m) => '<figure class="media-tile">' + (m.kind === "video" ? '<video src="' + esc(m.url) + '" muted playsinline preload="metadata"></video>' : '<img src="' + esc(m.url) + '" alt="' + esc(m.name || "") + '" loading="lazy" decoding="async">') + '<figcaption><button class="link" data-act="media-copy" data-url="' + esc(m.url) + '">Copy URL</button><button class="icon-btn" data-act="media-del" data-id="' + esc(m.id) + '">' + icon("trash") + '</button></figcaption></figure>').join("") : '<div class="empty">Nothing uploaded yet.</div>';
+
+    renderPaging("#mediaPagination", "#mediaCount", list.length, size, page, (nextPage) => {
+      S.page.m = nextPage;
+      renderMedia();
+    });
   }
 
   const PHEAD = '<thead><tr><th>Code</th><th>Type</th><th>Value</th><th>Min spend</th><th>State</th><th></th></tr></thead><tbody>';
@@ -438,13 +804,29 @@
   async function savePromo(event) {
     event.preventDefault();
     const f = $("#promoForm");
+    const btn = f.querySelector("button[type='submit']");
     const original = f.elements.original.value;
     const body = { code: f.elements.code.value, type: f.elements.type.value, value: f.elements.value.value, label: f.elements.label.value, minSpend: f.elements.minSpend.value, active: f.elements.active.checked };
-    const res = original ? await pa("/admin/promos/" + original, body) : await po("/admin/promos", body);
-    toast("Promo " + (res.promo ? res.promo.code : "saved") + " is live");
-    f.reset();
-    f.elements.original.value = "";
-    await loadPromos();
+    if (btn) {
+      btn.disabled = true;
+      btn.classList.add("is-loading");
+      btn.innerHTML = '<span class="btn-spinner"></span> Saving...';
+    }
+    try {
+      const res = original ? await pa("/admin/promos/" + original, body) : await po("/admin/promos", body);
+      toast("Promo " + (res.promo ? res.promo.code : "saved") + " is live");
+      f.reset();
+      f.elements.original.value = "";
+      await loadPromos();
+    } catch (err) {
+      fail(err);
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.classList.remove("is-loading");
+        btn.innerHTML = original ? "Update promo" : "Save promo";
+      }
+    }
   }
 
   const MSHEAD = '<thead><tr><th>From</th><th>Message</th><th>Received</th><th></th></tr></thead><tbody>';
@@ -483,13 +865,29 @@
   async function saveSettings(event) {
     event.preventDefault();
     const f = $("#settingsForm");
+    const btn = f.querySelector("button[type='submit']");
     const body = {};
     Array.from(f.elements).forEach((el) => {
       if (el.name) body[el.name] = el.type === "checkbox" ? el.checked : el.value;
     });
-    const res = await po("/admin/settings", body);
-    S.cfg = res.settings || S.cfg;
-    toast("Store settings saved");
+    if (btn) {
+      btn.disabled = true;
+      btn.classList.add("is-loading");
+      btn.innerHTML = '<span class="btn-spinner"></span> Saving...';
+    }
+    try {
+      const res = await po("/admin/settings", body);
+      S.cfg = res.settings || S.cfg;
+      toast("Store settings saved");
+    } catch (err) {
+      fail(err);
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.classList.remove("is-loading");
+        btn.innerHTML = "Save store settings";
+      }
+    }
   }
 
   let currentOrder = null;
@@ -509,14 +907,30 @@
     openDrawer("order");
   }
 
-  async function saveOrder() {
+  async function saveOrder(event) {
     if (!currentOrder) return;
+    const btn = event && event.target ? event.target.closest("button") : $("[data-act='order-save']");
     const sel = $("#orderDetail select");
     const track = $("#orderTracking");
-    await pa("/admin/orders/" + currentOrder.id, { status: sel ? sel.value : currentOrder.status, tracking: track ? track.value : "" });
-    toast("Order updated");
-    closeDrawers();
-    await loadOrders();
+    if (btn) {
+      btn.disabled = true;
+      btn.classList.add("is-loading");
+      btn.innerHTML = '<span class="btn-spinner"></span> Saving...';
+    }
+    try {
+      await pa("/admin/orders/" + currentOrder.id, { status: sel ? sel.value : currentOrder.status, tracking: track ? track.value : "" });
+      toast("Order updated");
+      closeDrawers();
+      await loadOrders();
+    } catch (err) {
+      fail(err);
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.classList.remove("is-loading");
+        btn.innerHTML = "Save changes";
+      }
+    }
   }
 
   function boot() {
@@ -525,8 +939,14 @@
     $("#adminLogin").addEventListener("submit", async (event) => {
       event.preventDefault();
       const f = event.target;
+      const btn = f.querySelector("button[type='submit']");
       const err = $("#gateError");
       err.hidden = true;
+      if (btn) {
+        btn.disabled = true;
+        btn.classList.add("is-loading");
+        btn.innerHTML = '<span class="btn-spinner"></span> Signing in...';
+      }
       try {
         const data = await po("/auth/login", { email: f.elements.email.value.trim(), password: f.elements.password.value });
         SG.auth.save(data.token, data.user);
@@ -535,6 +955,12 @@
       } catch (error) {
         err.textContent = error.message || "Login failed.";
         err.hidden = false;
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.classList.remove("is-loading");
+          btn.innerHTML = "Enter Console";
+        }
       }
     });
     $("#logoutBtn").addEventListener("click", () => {
@@ -542,6 +968,10 @@
       showGate();
     });
     $("#burgerBtn").addEventListener("click", () => $("#adminShell").classList.toggle("nav-open"));
+    const backdrop = $("#adminBackdrop");
+    if (backdrop) backdrop.addEventListener("click", () => $("#adminShell").classList.remove("nav-open"));
+    const sideClose = $("#sideCloseBtn");
+    if (sideClose) sideClose.addEventListener("click", () => $("#adminShell").classList.remove("nav-open"));
     $("#sideNav").addEventListener("click", (event) => {
       const link = event.target.closest("[data-tab]");
       if (link) { setTab(link.dataset.tab); $("#adminShell").classList.remove("nav-open"); }
@@ -549,7 +979,7 @@
     $$("[data-open]").forEach((btn) => btn.addEventListener("click", () => {
       const kind = btn.dataset.open;
       if (kind === "product") openNew();
-      if (kind === "category") catAction(null);
+      if (kind === "category") openNewCat();
       if (kind === "refresh") run(LOADERS[S.tab] || loadSummary);
     }));
     $$("[data-close]").forEach((btn) => btn.addEventListener("click", closeDrawers));
@@ -565,9 +995,22 @@
     document.addEventListener("input", inputHandler);
     document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeDrawers(); });
     if ($("#addVariant")) $("#addVariant").addEventListener("click", () => { S.vars.push({ size: "", color: "", stock: 0 }); renderVars(); });
-    if ($("#catReset")) $("#catReset").addEventListener("click", () => catAction(null));
+    if ($("#catReset")) $("#catReset").addEventListener("click", () => openNewCat());
     if ($("#promoReset")) $("#promoReset").addEventListener("click", () => { $("#promoForm").reset(); $("#promoForm").elements.original.value = ""; });
     if ($("#exportSubs")) $("#exportSubs").addEventListener("click", exportSubs);
+
+    const catLabelInput = $("#categoryForm [name='label']");
+    const catSlugInput = $("#categoryForm [name='slug']");
+    if (catLabelInput && catSlugInput) {
+      catLabelInput.addEventListener("input", () => {
+        const orig = $("#categoryForm [name='original']");
+        if (!orig || !orig.value) {
+          catSlugInput.value = catLabelInput.value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        }
+      });
+    }
+
+    bindCatUploader();
     bindMedia();
     $$("#productDrawer .uploader").forEach((box) => {
       const input = box.querySelector('input[type="file"]');
@@ -588,7 +1031,8 @@
         if (kind === "video") pickVideo(files); else pickImages(files);
       });
     });
-    if (isAdmin()) showShell(); else showGate();
+    const loggedUser = SG.auth.user();
+    if (isAdmin(loggedUser)) showShell(); else showGate();
   }
 
   function delegate(event) {
@@ -600,12 +1044,12 @@
     if (act === "dup") run(() => dupProduct(id));
     if (act === "del") run(() => delProduct(id));
     if (act === "toggle") run(() => toggleProduct(id));
-    if (act === "cat-edit") editCat(id);
-    if (act === "cat-del") run(() => catAction(id, true));
-    if (act === "cat-up") run(() => moveCat(id, -1));
-    if (act === "cat-down") run(() => moveCat(id, 1));
+    if (act === "cat-edit" || act === "catEdit") editCat(id);
+    if (act === "cat-del" || act === "catDel") run(() => catAction("catDel", id));
+    if (act === "cat-up" || act === "catUp") run(() => moveCat(id, -1));
+    if (act === "cat-down" || act === "catDown") run(() => moveCat(id, 1));
     if (act === "order-open") run(() => openOrder(id));
-    if (act === "order-save") run(saveOrder);
+    if (act === "order-save") run(() => saveOrder(event));
     if (act === "media-del") run(() => removeMedia(id));
     if (act === "media-copy") run(() => copyText(btn.dataset.url));
     if (act === "promo-edit") editPromo(btn.dataset.code);
@@ -639,7 +1083,7 @@
   }
 
   async function removeMedia(id) {
-    if (!confirm("Delete this file from storage?")) return;
+    if (!(await confirmDialog("Delete this file permanently from storage?", { title: "Delete File", confirmText: "Delete" }))) return;
     await de("/admin/media/" + id);
     toast("File deleted");
     await loadMedia();
@@ -651,14 +1095,14 @@
   }
 
   async function deleteRow(kind, id, reload) {
-    if (!confirm("Delete this record?")) return;
+    if (!(await confirmDialog("Delete this record permanently?", { title: "Delete Record", confirmText: "Delete" }))) return;
     await de("/admin/" + kind + "/" + id);
     toast("Deleted");
     await reload();
   }
 
   async function deletePromo(code) {
-    if (!confirm("Delete promo " + code + "?")) return;
+    if (!(await confirmDialog("Delete promo code " + code + "?", { title: "Delete Promo", confirmText: "Delete" }))) return;
     await de("/admin/promos/" + code);
     toast("Promo deleted");
     await loadPromos();
@@ -677,9 +1121,9 @@
 
   function changeHandler(event) {
     const el = event.target;
-    if (el.id === "prodCatFilter") { S.q.cat = el.value; renderProducts(); }
-    if (el.id === "prodStateFilter") { S.q.st = el.value; renderProducts(); }
-    if (el.id === "orderStatusFilter") { S.q.st = el.value; renderOrders(); }
+    if (el.id === "prodCatFilter") { S.q.cat = el.value; S.page.p = 1; renderProducts(); }
+    if (el.id === "prodStateFilter") { S.q.st = el.value; S.page.p = 1; renderProducts(); }
+    if (el.id === "orderStatusFilter") { S.q.st = el.value; S.page.o = 1; renderOrders(); }
     if (el.dataset.act === "order-status") run(async () => {
       await pa("/admin/orders/" + el.dataset.id, { status: el.value });
       toast("Order updated");
@@ -690,9 +1134,9 @@
 
   function inputHandler(event) {
     const el = event.target;
-    if (el.id === "prodSearch") { S.q.p = el.value; renderProducts(); }
-    if (el.id === "orderSearch") { S.q.o = el.value; renderOrders(); }
-    if (el.id === "custSearch") { S.q.c = el.value; renderCustomers(); }
+    if (el.id === "prodSearch") { S.q.p = el.value; S.page.p = 1; renderProducts(); }
+    if (el.id === "orderSearch") { S.q.o = el.value; S.page.o = 1; renderOrders(); }
+    if (el.id === "custSearch") { S.q.c = el.value; S.page.c = 1; renderCustomers(); }
     if (el.dataset.act === "var-size") { const v = S.vars[Number(el.dataset.id)]; if (v) v.size = el.value; }
     if (el.dataset.act === "var-color") { const v = S.vars[Number(el.dataset.id)]; if (v) v.color = el.value; }
   }

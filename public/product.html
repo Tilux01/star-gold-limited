@@ -8,9 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Inter+Tight:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
-<link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/css/app.css?v=5">
-<link rel="stylesheet" href="/css/pages.css?v=5">
-<link rel="stylesheet" href="/css/theme.css?v=1">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=13">
+<link rel="icon" type="image/png" href="/favicon.png?v=13">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=13">
+<link rel="stylesheet" href="/css/app.css?v=13">
+<link rel="stylesheet" href="/css/pages.css?v=13">
+<link rel="stylesheet" href="/css/theme.css?v=13">
 </head>
 <body data-page="shop">
 <div id="siteHeader"></div>
@@ -21,14 +24,22 @@
 <section class="pdp">
 <div class="container">
 <div class="pdp__grid">
-<div class="gallery">
-<div class="gallery__main">
-<img id="galleryMain" src="/assets/editorial/look-1.jpg" alt="Product">
+<div class="gallery" id="pdpGallery">
+<div class="gallery__main skeleton" id="galleryMainWrap">
+<img id="galleryMain" alt="Product" style="opacity:0;transition:opacity .25s ease">
 <div class="gallery__badges" id="galleryBadges"></div>
 </div>
 <div class="gallery__thumbs" id="galleryThumbs"></div>
 </div>
-<div class="pdp__info" id="pdpInfo"></div>
+<div class="pdp__info" id="pdpInfo">
+  <div class="pdp-skeleton" id="pdpSkeleton">
+    <div class="skeleton" style="height:12px;width:120px;margin-bottom:12px"></div>
+    <div class="skeleton" style="height:32px;width:75%;margin-bottom:16px"></div>
+    <div class="skeleton" style="height:22px;width:140px;margin-bottom:24px"></div>
+    <div class="skeleton" style="height:60px;width:100%;margin-bottom:24px"></div>
+    <div class="skeleton" style="height:48px;width:100%;border-radius:100px"></div>
+  </div>
+</div>
 </div>
 </div>
 </section>
@@ -49,9 +60,9 @@
 </div>
 </section>
 <div id="siteFooter"></div>
-<script src="/js/api.js"></script>
-<script src="/js/ui.js"></script>
-<script src="/js/chrome.js"></script>
-<script src="/js/product.js"></script>
+<script src="/js/api.js?v=12"></script>
+<script src="/js/ui.js?v=12"></script>
+<script src="/js/chrome.js?v=12"></script>
+<script src="/js/product.js?v=12"></script>
 </body>
 </html>

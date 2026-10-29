@@ -7,15 +7,21 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/app.css">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/admin.css">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=13">
+<link rel="icon" type="image/png" href="/favicon.png?v=13">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=13">
+<link rel="stylesheet" href="/css/app.css?v=13">
+<link rel="stylesheet" href="/css/theme.css?v=13">
+<link rel="stylesheet" href="/css/admin.css?v=13">
 </head>
 <body class="admin-body">
 
 <div class="admin-gate" id="adminGate">
   <div class="gate-card">
-    <div class="gate-brand">STAR GOLD<span>Atelier Console</span></div>
+    <div class="gate-brand">
+      <img class="admin-logo-img" src="/assets/logo.png" alt="Star Gold">
+      <div>STAR GOLD<span>Atelier Console</span></div>
+    </div>
     <form id="adminLogin">
       <label>Email<input name="email" type="email" autocomplete="username" required placeholder="admin@stargold.com"></label>
       <label>Password<input name="password" type="password" autocomplete="current-password" required placeholder="Enter password"></label>
@@ -27,8 +33,15 @@
 </div>
 
 <div class="admin-shell" id="adminShell" hidden>
+  <div class="admin-backdrop" id="adminBackdrop"></div>
   <aside class="admin-side" id="adminSide">
-    <div class="side-brand">STAR GOLD<span>Console</span></div>
+    <div class="side-head">
+      <div class="side-brand">
+        <img class="admin-logo-img" src="/assets/logo.png" alt="Star Gold">
+        <div>STAR GOLD<span>Console</span></div>
+      </div>
+      <button class="icon-btn side-close-btn" id="sideCloseBtn" type="button" aria-label="Close menu">&times;</button>
+    </div>
     <nav class="side-nav" id="sideNav">
       <button data-tab="overview">Overview</button>
       <button data-tab="products">Products</button>
@@ -101,6 +114,7 @@
             <button class="btn btn-gold btn-sm" data-open="product">Add product</button>
           </div>
           <div class="table-wrap"><table id="productTable"></table></div>
+          <div class="table-foot" id="prodTableFoot"><div class="muted small" id="prodCount"></div><div class="pagination" id="prodPagination"></div></div>
         </div>
       </section>
 
@@ -112,19 +126,52 @@
             <div class="table-wrap"><table id="categoryTable"></table></div>
           </div>
           <div class="card">
-            <div class="card-head"><h2>Category editor</h2></div>
-            <form id="categoryForm" class="form">
+            <div class="card-head">
+              <h2 id="catFormTitle">Category editor</h2>
+              <span class="muted small" id="catFormMode">New category</span>
+            </div>
+            <form id="categoryForm" class="form" novalidate>
               <input type="hidden" name="original">
-              <label>Name<input name="label" required placeholder="Evening gowns"></label>
-              <label>Slug<input name="slug" placeholder="evening-gowns" pattern="[a-z0-9-]*"></label>
-              <label>Short line<input name="blurb" placeholder="Hand finished silks and satin"></label>
-              <label>Cover image URL<input name="image" placeholder="https://res.cloudinary.com/..."></label>
+              <label>Name *<input name="label" required placeholder="e.g. Evening Gowns" autocomplete="off"></label>
+              <label>Slug<input name="slug" placeholder="e.g. evening-gowns" autocomplete="off"></label>
+              <label>Short line<input name="blurb" placeholder="Hand-finished silks and satin" autocomplete="off"></label>
+              
+              <div class="field">
+                <span>Cover image</span>
+                <input type="hidden" name="image" id="catImageUrl">
+                <div class="cat-image-box" id="catImageBox">
+                  <div class="cat-preview" id="catImgPreview" hidden>
+                    <img id="catImgThumb" src="" alt="Category preview" loading="lazy" decoding="async">
+                    <div class="cat-preview-actions">
+                      <button type="button" class="btn btn-ghost btn-sm" id="catChangeImgBtn">Change image</button>
+                      <button type="button" class="btn btn-danger btn-sm" id="catRemoveImgBtn">Remove</button>
+                    </div>
+                  </div>
+                  <div class="cat-uploader dropzone" id="catUploader">
+                    <input type="file" id="catFileInput" accept="image/*" hidden>
+                    <div class="cat-upload-prompt" id="catUploadPrompt">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                      <strong>Click to upload image</strong> or drag and drop
+                      <small class="muted">PNG, JPG, WEBP up to 10MB</small>
+                    </div>
+                    <div class="cat-upload-progress" id="catUploadProgress" hidden>
+                      <span class="btn-spinner" style="width:20px;height:20px;border-width:2px;"></span>
+                      <span style="font-size:12px;font-weight:500;">Uploading image...</span>
+                    </div>
+                  </div>
+                </div>
+                <details class="cat-url-toggle">
+                  <summary class="small muted" style="cursor:pointer;margin-top:6px;user-select:none;">Or paste image URL</summary>
+                  <input id="catImageUrlInput" placeholder="https://res.cloudinary.com/..." style="margin-top:6px;">
+                </details>
+              </div>
+
               <div class="row2">
-                <label>Position<input name="sortOrder" type="number" min="0" step="1"></label>
+                <label>Position<input name="sortOrder" type="number" min="0" step="1" value="1"></label>
                 <label class="check"><input name="active" type="checkbox" checked> Visible</label>
               </div>
               <div class="form-actions">
-                <button class="btn btn-gold" type="submit">Save category</button>
+                <button class="btn btn-gold" type="submit" id="catSubmitBtn">Save category</button>
                 <button class="btn btn-ghost" type="button" id="catReset">Clear</button>
               </div>
             </form>
@@ -147,6 +194,7 @@
             </select>
           </div>
           <div class="table-wrap"><table id="orderTable"></table></div>
+          <div class="table-foot" id="orderTableFoot"><div class="muted small" id="orderCount"></div><div class="pagination" id="orderPagination"></div></div>
         </div>
       </section>
 
@@ -154,6 +202,7 @@
         <div class="card">
           <div class="toolbar"><input id="custSearch" type="search" placeholder="Search customers"></div>
           <div class="table-wrap"><table id="customerTable"></table></div>
+          <div class="table-foot" id="custTableFoot"><div class="muted small" id="custCount"></div><div class="pagination" id="custPagination"></div></div>
         </div>
       </section>
 
@@ -166,6 +215,7 @@
             <p class="muted small">JPG, PNG, WEBP, MP4, WEBM. Videos up to 60MB.</p>
           </div>
           <div class="media-grid" id="mediaGrid"></div>
+          <div class="table-foot" id="mediaTableFoot"><div class="muted small" id="mediaCount"></div><div class="pagination" id="mediaPagination"></div></div>
         </div>
       </section>
 
@@ -320,9 +370,26 @@
   </div>
 </div>
 
-<div class="toast" id="toast" hidden></div>
+<div class="adm-modal" id="confirmModal" hidden>
+  <div class="adm-back" id="confirmBack"></div>
+  <div class="adm-confirm-card">
+    <div class="adm-confirm-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <div class="adm-confirm-content">
+      <h3 id="confirmTitle">Confirm Action</h3>
+      <p id="confirmMessage">Are you sure you want to proceed?</p>
+    </div>
+    <div class="adm-confirm-actions">
+      <button class="btn btn-ghost" id="confirmCancelBtn" type="button">Cancel</button>
+      <button class="btn btn-danger" id="confirmOkBtn" type="button">Confirm</button>
+    </div>
+  </div>
+</div>
 
-<script src="/js/api.js"></script>
-<script src="/js/ui.js"></script><script src="/js/admin.js"></script>
+<div class="toast" id="toast"></div>
+
+<script src="/js/api.js?v=12"></script>
+<script src="/js/ui.js?v=12"></script><script src="/js/admin.js?v=12"></script>
 </body>
 </html>

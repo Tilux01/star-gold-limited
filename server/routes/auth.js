@@ -140,13 +140,15 @@ router.patch("/me", requireAuth, async (req, res, next) => {
     if (req.body.phone !== undefined) patch.phone = clean(req.body.phone);
     if (req.body.addresses !== undefined && Array.isArray(req.body.addresses)) {
       patch.addresses = req.body.addresses.slice(0, 6).map((item) => ({
+        id: clean(item.id) || ('a' + Date.now()),
         label: clean(item.label).slice(0, 40) || "Address",
-        line1: clean(item.line1).slice(0, 160),
+        address: clean(item.address || item.line1).slice(0, 160),
+        line1: clean(item.line1 || item.address).slice(0, 160),
         line2: clean(item.line2).slice(0, 160),
         city: clean(item.city).slice(0, 80),
         state: clean(item.state).slice(0, 80),
         phone: clean(item.phone).slice(0, 40)
-      })).filter((item) => item.line1);
+      })).filter((item) => item.line1 || item.address);
     }
     if (req.body.newsletter !== undefined) patch.newsletter = Boolean(req.body.newsletter);
 

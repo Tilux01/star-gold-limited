@@ -38,6 +38,7 @@
     mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
     phone: '<path d="M6 3h3l2 5-2.5 1.5a12 12 0 0 0 6 6L16 13l5 2v3a2 2 0 0 1-2.2 2A17 17 0 0 1 4 5.2A2 2 0 0 1 6 3z"/>',
     pin: '<path d="M12 21s7-6.4 7-11a7 7 0 1 0-14 0c0 4.6 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/>',
+    'map-pin': '<path d="M12 21s7-6.4 7-11a7 7 0 1 0-14 0c0 4.6 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/>',
     clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
     filter: '<path d="M4 6h16M7 12h10M10 18h4"/>',
     zoom: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M8.5 11h5M11 8.5v5"/>',
@@ -72,8 +73,9 @@
       Navy:'#1C2A44',Blue:'#3A5A86',Indigo:'#33445F',Denim:'#4C6383',Olive:'#5A5B45',
       Green:'#3F5B4E',Gold:'#C6A15B',Rose:'#C99C9C',Pink:'#E2B4B8',Red:'#A5302F'
     };
-    return map[name] || '#C6A15B';
+    return map[name] || '#1B4DE4';
   };
+  U.colorHex = U.swatchColor;
   U.money = function(v){
     return '\u20A6' + Number(v || 0).toLocaleString('en-NG', {maximumFractionDigits:0});
   };
@@ -86,36 +88,45 @@
     return out.join('');
   };
   U.card = function(p){
-    const img = (p.images && p.images[0]) || '/assets/products/jeans-1.jpg';
-    const alt = (p.images && p.images[1]) || img;
+    const pid = String(p.slug || p.id || '');
+    const img = (Array.isArray(p.images) && p.images[0]) || '/assets/placeholder.svg';
+    const alt = (Array.isArray(p.images) && p.images[1]) || img;
     const inWish = SG.wish.has(p.id);
     const low = (p.stock || 0) <= 6 && (p.stock || 0) > 0;
+    const hasStock = (p.stock === undefined || p.stock > 0) || (Array.isArray(p.variants) && p.variants.some(function(v){ return (v.stock || 0) > 0; }));
     const colors = (p.colors || []).slice(0,5).map(function(c){
       return '<span class="swatch" style="background:'+U.swatchColor(c)+'" title="'+c+'"></span>';
     }).join('');
-    return '<article class="card">'
-      + '<a class="card__media" href="/product.html?p='+encodeURIComponent(p.slug || p.id)+'" aria-label="'+p.name+'">'
-      + '<img src="'+img+'" alt="'+p.name+'" loading="lazy">'
-      + '<img class="card__img--alt" src="'+alt+'" alt="" loading="lazy">'
+    const catLabel = p.categoryLabel || p.category || 'Collection';
+    const originLabel = p.origin ? ' &middot; ' + p.origin : '';
+    return '<article class="card" data-card-id="'+p.id+'">'
+      + '<div class="card__visual">'
+      + '<a class="card__media" href="/product.html?p='+encodeURIComponent(pid)+'" aria-label="'+p.name+'">'
+      + '<img src="'+img+'" alt="'+p.name+'" loading="lazy" decoding="async">'
+      + '<img class="card__img--alt" src="'+alt+'" alt="" loading="lazy" decoding="async">'
       + '</a>'
       + '<div class="card__badges">'+U.badges(p)+'</div>'
       + '<button class="card__wish'+(inWish?' is-active':'')+'" data-wish="'+p.id+'" aria-label="Save '+p.name+'">'+U.icon('heart',15)+'</button>'
       + (low ? '<span class="card__stock">Only '+p.stock+' left</span>' : '')
-      + '<div class="card__quick"><button class="btn btn--sm" data-quick="'+encodeURIComponent(p.slug || p.id)+'">Quick view</button></div>'
+      + '<div class="card__actions">'
+      + '<button type="button" class="card__btn card__btn--quick" data-quick="'+pid+'" aria-label="Quick view '+p.name+'">'+U.icon('eye',13)+'<span>Quick view</span></button>'
+      + '<button type="button" class="card__btn card__btn--add" data-add-cart="'+pid+'" aria-label="Add '+p.name+' to cart"'+(hasStock?'':' disabled')+'>'+U.icon('bag',13)+'<span>'+(hasStock?'Add to cart':'Sold out')+'</span></button>'
+      + '</div>'
+      + '</div>'
       + '<div class="card__body">'
-      + '<span class="card__cat">'+p.categoryLabel+' &middot; '+p.origin+'</span>'
-      + '<h3 class="card__name"><a href="/product.html?p='+encodeURIComponent(p.slug || p.id)+'">'+p.name+'</a></h3>'
+      + '<span class="card__cat">'+catLabel+originLabel+'</span>'
+      + '<h3 class="card__name"><a href="/product.html?p='+encodeURIComponent(pid)+'">'+p.name+'</a></h3>'
       + '<div class="card__meta"><span class="card__price">'+U.money(p.price)+'</span>'
       + (p.compareAt && p.compareAt > p.price ? '<span class="card__was">'+U.money(p.compareAt)+'</span>' : '')
       + '<span class="card__rating">'+star+(p.rating || 5).toFixed(1)+'</span></div>'
-      + '<div class="card__swatches">'+colors+'</div>'
+      + (colors ? '<div class="card__swatches">'+colors+'</div>' : '')
       + '</div></article>';
   };
   U.skeletonGrid = function(n){
     return Array.from({length:n||4}, function(){ return '<div class="card"><div class="card__media skeleton"></div><div class="card__body"><span class="skeleton skeleton--line"></span><span class="skeleton skeleton--line skeleton--short"></span></div></div>'; }).join('');
   };
   U.brandMark = function(){
-    return '<span class="brand__mark">SG</span><span class="brand__text"><span class="brand__name">Star Gold</span><span class="brand__sub">Limited</span></span>';
+    return '<span class="brand__mark"><img class="brand__logo-img" src="/assets/logo.png" alt="Star Gold Limited" width="36" height="32"></span><span class="brand__text"><span class="brand__name">Star Gold</span><span class="brand__sub">Limited</span></span>';
   };
   U.status = function(s){ return ({ pending: 'Awaiting payment', paid: 'Paid', processing: 'Processing', shipped: 'Dispatched', delivered: 'Delivered', cancelled: 'Cancelled' })[s] || String(s || ''); };
   window.SG = window.SG || {};

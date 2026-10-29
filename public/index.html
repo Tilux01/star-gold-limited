@@ -12,9 +12,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Inter+Tight:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
-<link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/css/app.css?v=5">
-<link rel="stylesheet" href="/css/pages.css?v=5">
-<link rel="stylesheet" href="/css/theme.css?v=1">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=13">
+<link rel="icon" type="image/png" href="/favicon.png?v=13">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=13">
+<link rel="stylesheet" href="/css/app.css?v=13">
+<link rel="stylesheet" href="/css/pages.css?v=13">
+<link rel="stylesheet" href="/css/theme.css?v=13">
 </head>
 <body data-page="home">
 <div id="siteHeader"></div>
@@ -23,7 +26,7 @@
     <div class="container container--wide">
       <div class="hero__frame" id="heroFrame">
         <article class="hero__slide is-active" data-slide>
-          <img src="/assets/editorial/look-1.jpg" alt="Editorial portrait in tailored outerwear">
+          <img src="/assets/editorial/look-1.jpg" alt="Editorial portrait in tailored outerwear" fetchpriority="high" decoding="async">
           <div class="hero__scrim"></div>
           <div class="hero__content">
             <span class="eyebrow">The denim edit</span>
@@ -36,7 +39,7 @@
           </div>
         </article>
         <article class="hero__slide" data-slide>
-          <img src="/assets/editorial/look-3.jpg" alt="Black and white editorial portrait">
+          <img src="/assets/editorial/look-3.jpg" alt="Black and white editorial portrait" loading="lazy" decoding="async">
           <div class="hero__scrim"></div>
           <div class="hero__content">
             <span class="eyebrow">Evening, elevated</span>
@@ -49,7 +52,7 @@
           </div>
         </article>
         <article class="hero__slide" data-slide>
-          <img src="/assets/editorial/model-a.jpg" alt="Model wearing a tailored shirt">
+          <img src="/assets/editorial/model-a.jpg" alt="Model wearing a tailored shirt" loading="lazy" decoding="async">
           <div class="hero__scrim"></div>
           <div class="hero__content">
             <span class="eyebrow">Tailored in Istanbul</span>
@@ -62,7 +65,7 @@
           </div>
         </article>
         <article class="hero__slide" data-slide>
-          <img src="/assets/editorial/look-5.jpg" alt="Accessories editorial">
+          <img src="/assets/editorial/look-5.jpg" alt="Accessories editorial" loading="lazy" decoding="async">
           <div class="hero__scrim"></div>
           <div class="hero__content">
             <span class="eyebrow">Leather, honestly made</span>
@@ -324,7 +327,7 @@
   <section class="section section--tight">
     <div class="container">
       <div class="newsletter">
-        <img src="/assets/editorial/look-4.jpg" alt="">
+        <img src="/assets/editorial/look-4.jpg" alt="" loading="lazy" decoding="async">
         <div class="newsletter__copy">
           <span class="eyebrow">The list</span>
           <h2>First look at every drop</h2>
@@ -352,9 +355,9 @@
   </section>
 </main>
 <div id="siteFooter"></div>
-<script src="/js/api.js"></script>
-<script src="/js/ui.js"></script>
-<script src="/js/chrome.js"></script>
-<script src="/js/home.js"></script>
+<script src="/js/api.js?v=12"></script>
+<script src="/js/ui.js?v=12"></script>
+<script src="/js/chrome.js?v=12"></script>
+<script src="/js/home.js?v=12"></script>
 </body>
 </html>

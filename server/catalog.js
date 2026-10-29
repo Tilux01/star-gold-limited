@@ -24,10 +24,14 @@ function resolveItems(products, items) {
       problems.push(`${product.name} is no longer available.`);
       continue;
     }
-    const variant = (product.variants || []).find((row) => row.id === raw.variantId);
+    let variant = (product.variants || []).find((row) => row.id === raw.variantId);
     if (!variant) {
-      problems.push(`Select an available option for ${product.name}.`);
-      continue;
+      if (!product.variants || !product.variants.length) {
+        variant = { id: raw.variantId || "default", size: "Standard", color: "Standard", stock: product.stock !== undefined ? product.stock : 10 };
+      } else {
+        problems.push(`Select an available option for ${product.name}.`);
+        continue;
+      }
     }
     const quantity = Math.max(1, Math.min(20, parseInt(raw.quantity, 10) || 1));
     if (Number(variant.stock || 0) < quantity) {

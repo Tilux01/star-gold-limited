@@ -27,11 +27,30 @@ app.use("/api", require("./routes/misc"));
 app.use("/api", (req, res) => res.status(404).json({ error: "Endpoint not found." }));
 
 const publicDir = path.join(__dirname, "..", "public");
-app.use(express.static(publicDir, { extensions: ["html"], maxAge: "1h" }));
+
+const IMMUTABLE_EXTS = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg", ".ico", ".woff", ".woff2", ".ttf", ".mp4", ".webm"]);
+const ASSET_EXTS = new Set([".css", ".js"]);
+
+app.use(express.static(publicDir, {
+  extensions: ["html"],
+  etag: true,
+  lastModified: true,
+  setHeaders: (res, filePath) => {
+    const ext = path.extname(filePath).toLowerCase();
+    if (IMMUTABLE_EXTS.has(ext)) {
+      res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+    } else if (ASSET_EXTS.has(ext)) {
+      res.setHeader("Cache-Control", "public, max-age=86400, stale-while-revalidate=604800");
+    } else if (ext === ".html") {
+      res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
+    }
+  }
+}));
 
 app.get("*", (req, res, next) => {
   if (req.path.startsWith("/api")) return next();
   if (path.extname(req.path)) return res.status(404).send("Not found");
+  res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
   res.sendFile(path.join(publicDir, "index.html"));
 });
 

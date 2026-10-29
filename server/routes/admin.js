@@ -437,7 +437,7 @@ router.delete("/categories/:id", async (req, res, next) => {
 
 router.post("/categories/reorder", async (req, res, next) => {
   try {
-    const order = asList(req.body.order);
+    const order = asList(req.body.order || req.body.ids);
     const rows = await categories.all();
     let index = 1;
     for (const slug of order) {
