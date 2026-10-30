@@ -268,13 +268,19 @@ textarea.input{height:auto;min-height:120px;padding:12px 14px;line-height:1.6}
 
 .auth-wrap{max-width:1140px;margin:0 auto;padding:26px 0 90px;display:block;background:transparent;border:0;box-shadow:none}
 .auth-shell{display:grid;grid-template-columns:1.02fr .98fr;background:#fff;border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:var(--shadow-md);padding:0;min-height:0;max-height:none}
-.auth-story{background:var(--espresso);color:#fff;min-height:640px;padding:0;position:relative;overflow:hidden}
-.auth-story__media img{object-fit:cover;opacity:.5;filter:grayscale(.15)}
-.auth-story__top,.auth-story__bottom,.auth-story__brand,.auth-story__quote,.auth-story__perks{padding:0 38px}
-.auth-story__tag{display:inline-flex;align-items:center;gap:8px;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.78);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:7px 13px;backdrop-filter:blur(6px)}
-.auth-story__quote{font-family:'Inter Tight';font-size:24px;font-weight:500;letter-spacing:-.03em;line-height:1.24;color:#fff}
-.auth-story__perks li{font-size:12.5px;color:rgba(255,255,255,.8)}
-.auth-story__ico{color:#9DB2FF}
+.auth-story{background:linear-gradient(160deg,#1237B8 0%,#0E2A86 42%,#07132B 100%);color:#fff;min-height:580px;padding:46px 42px 38px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;gap:32px;box-sizing:border-box}
+.auth-story__media{position:absolute;inset:0;opacity:.22;object-fit:cover;width:100%;height:100%;mix-blend-mode:luminosity;pointer-events:none}
+.auth-story__media img{width:100%;height:100%;object-fit:cover;opacity:.5;filter:grayscale(.15)}
+.auth-story__top{position:relative;z-index:2;display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding:0;margin:0}
+.auth-story__brand{display:inline-flex;align-items:center;gap:0;font-family:'Inter Tight',sans-serif;font-size:17px;font-weight:600;letter-spacing:-.02em;color:#fff;text-decoration:none;padding:0;margin:0}
+.auth-story__brand em{font-style:italic;color:#9DB2FF;margin-left:4px}
+.auth-story__tag{display:inline-flex;align-items:center;gap:8px;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.85);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:7px 14px;backdrop-filter:blur(6px);margin:0}
+.auth-story__quote{position:relative;z-index:2;font-family:'Inter Tight',sans-serif;font-size:clamp(22px,2.2vw,27px);font-weight:500;letter-spacing:-.025em;line-height:1.28;color:#fff;margin:0;padding:0;max-width:26ch}
+.auth-story__bottom{position:relative;z-index:2;display:flex;flex-direction:column;gap:18px;padding:0;margin:0}
+.auth-story__perks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.auth-story__perks li{font-size:12.5px;color:rgba(255,255,255,.82);display:flex;align-items:center;gap:12px;line-height:1.4;padding:0}
+.auth-story__ico{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);display:grid;place-items:center;color:#9DB2FF;flex-shrink:0}
+.auth-story__foot{font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.5);border-top:1px solid rgba(255,255,255,.14);padding-top:16px;margin:0}
 .auth-card{background:#fff;padding:44px 46px;display:flex;flex-direction:column;justify-content:center}
 .auth-title{font-family:'Inter Tight';font-size:34px;font-weight:600;letter-spacing:-.04em;line-height:1.06;color:var(--ink)}
 .auth-eyebrow{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:600}
@@ -327,9 +333,9 @@ textarea.input{height:auto;min-height:120px;padding:12px 14px;line-height:1.6}
 textarea.input{height:auto;padding:14px 15px;min-height:130px}
 .input:focus,select.input:focus,textarea.input:focus{outline:0;border-color:var(--gold);box-shadow:0 0 0 3px rgba(27,77,228,.12)}
 .field__label{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:500}
-@media(max-width:1024px){
+ @media(max-width:1024px){
  .auth-shell{grid-template-columns:1fr}
- .auth-story{min-height:0;padding:34px 0}
+ .auth-story{min-height:0;padding:34px 28px;gap:24px}
  .account-layout{grid-template-columns:1fr}
  .account-nav{position:static}
 }
