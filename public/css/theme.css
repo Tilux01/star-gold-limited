@@ -108,7 +108,7 @@ em{font-style:normal}
 
 .marquee{background:var(--ink);color:#fff;border:0}
 .marquee__track{font-family:'Inter Tight';font-size:clamp(20px,2.4vw,30px);letter-spacing:-.02em;text-transform:none}
-.look{border-radius:10px;overflow:hidden;background:var(--bone)}
+.look{border-radius:10px;overflow:hidden;background:var(--bone);margin:0;padding:0;width:100%}
 .look__tag,.editorial__badge{background:#fff;color:var(--ink);border-radius:999px;padding:6px 11px;font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
 .metrics,.stats{border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .metric__value,.stat__value{font-family:'Inter Tight';font-weight:600;letter-spacing:-.03em;color:var(--ink)}
