@@ -917,7 +917,13 @@
     const f = $("#settingsForm");
     Object.keys(cfg).forEach((key) => {
       const el = f.elements[key];
-      if (el) el.value = cfg[key] == null ? "" : cfg[key];
+      if (el) {
+        if (key === "searchSuggestions" && Array.isArray(cfg[key])) {
+          el.value = cfg[key].join(", ");
+        } else {
+          el.value = cfg[key] == null ? "" : cfg[key];
+        }
+      }
     });
   }
 

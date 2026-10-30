@@ -107,6 +107,17 @@
       + '<div class="footer__pay"><span>Paystack</span><span>Visa</span><span>Mastercard</span><span>Bank transfer</span></div></div>'
       + '</div></footer>';
   }
+  function getSuggestions(){
+    if(window.SG && SG.CONFIG && Array.isArray(SG.CONFIG.searchSuggestions) && SG.CONFIG.searchSuggestions.length){
+      return SG.CONFIG.searchSuggestions;
+    }
+    return ['Selvedge denim','Satin gown','Poplin shirt','Leather tote','Chelsea boots','Monogram cap'];
+  }
+  function getTrendingHtml(){
+    return getSuggestions().map(function(t){
+      return '<a class="chip" href="/shop.html?q='+encodeURIComponent(t)+'">'+t+'</a>';
+    }).join('');
+  }
   function overlaysHtml(){
     return '<div class="toast-stack" id="toastStack" aria-live="polite"></div>'
       + '<div class="drawer" id="cartDrawer" aria-hidden="true"><div class="drawer__scrim" data-close-all></div>'
@@ -121,12 +132,13 @@
       + '<button class="icon-btn" type="button" data-close-all aria-label="Close saved pieces">'+U.icon('x',18)+'</button></div>'
       + '<div class="drawer__body" id="wishDrawerBody"></div>'
       + '<div class="drawer__foot" id="wishDrawerFoot"></div></aside></div>'
-      + '<div class="search-overlay" id="searchOverlay" aria-hidden="true"><div class="search-overlay__inner">'
+      + '<div class="search-overlay" id="searchOverlay" aria-hidden="true"><div class="search-overlay__scrim" data-close-all data-search-close></div><div class="search-overlay__inner">'
       + '<form class="search-overlay__bar" id="searchForm" role="search"><span class="search-overlay__icon">'+U.icon('search',20)+'</span>'
       + '<input id="searchInput" type="search" placeholder="Search denim, gowns, bags..." autocomplete="off" aria-label="Search products">'
-      + '<button class="icon-btn" type="button" data-search-close aria-label="Close search">'+U.icon('x',20)+'</button></form>'
-      + '<div class="search-trends"><span class="eyebrow">Trending</span>'
-      + ['Selvedge denim','Satin gown','Poplin shirt','Leather tote','Chelsea boots','Monogram cap'].map(function(t){ return '<a class="chip" href="/shop.html?q='+encodeURIComponent(t)+'">'+t+'</a>'; }).join('')
+      + '<button class="search-cancel-btn" type="button" data-search-close data-close-all aria-label="Cancel search">Cancel</button>'
+      + '<button class="icon-btn search-close-btn" type="button" data-search-close data-close-all aria-label="Close search">'+U.icon('x',20)+'</button></form>'
+      + '<div class="search-trends" id="searchTrends"><span class="eyebrow">Trending</span>'
+      + getTrendingHtml()
       + '</div><div class="search-overlay__results" id="searchResults"></div>'
       + '<p class="search-note">Press Enter to see every result, or Esc to close.</p>'
       + '</div></div>'
@@ -188,6 +200,10 @@
     });
     document.body.classList.remove('is-locked');
     document.documentElement.classList.remove('is-locked');
+    const si = $('#searchInput');
+    if(si) si.value = '';
+    const sr = $('#searchResults');
+    if(sr) sr.innerHTML = '';
   }
   function renderCart(){
     const items = SG.cart.all();
@@ -304,6 +320,10 @@
   function openSearch(){
     const o = $('#searchOverlay');
     if(!o) return;
+    const trends = $('#searchTrends');
+    if(trends) {
+      trends.innerHTML = '<span class="eyebrow">Trending</span>' + getTrendingHtml();
+    }
     o.classList.add('is-open');
     o.setAttribute('aria-hidden','false');
     document.body.classList.add('is-locked');
@@ -537,7 +557,7 @@
       const openWishBtn = e.target.closest('[data-wishlist-open]');
       const openSearchBtn = e.target.closest('[data-search-open]');
       const openMobile = e.target.closest('[data-mobile-open]');
-      const closer = e.target.closest('[data-close-all]');
+      const closer = e.target.closest('[data-close-all], [data-search-close], [data-mobile-close]');
       const wishBtn = e.target.closest('[data-wish]');
       const wishAddBtn = e.target.closest('[data-wish-add]');
       const wishDelBtn = e.target.closest('[data-wish-del]');
@@ -549,7 +569,6 @@
       if(openCartBtn){ e.preventDefault(); C.openCart(); return; }
       if(openSearchBtn){ e.preventDefault(); C.openSearch(); return; }
       if(openMobile){ e.preventDefault(); C.openMenu(); return; }
-      if(e.target.closest('[data-mobile-close]')){ e.preventDefault(); C.closeAll(); return; }
       if(e.target.closest('.mobile-nav a:not([data-wishlist-open])')){ C.closeAll(); return; }
       if(closer){ e.preventDefault(); C.closeAll(); return; }
       if(quickBtn){
@@ -613,24 +632,40 @@
         clearTimeout(window.__sgSearch);
         window.__sgSearch = setTimeout(function(){ C.runSearch(q); }, 260);
       });
+      input.addEventListener('search', function(){
+        if(!input.value.trim()){
+          const box = $('#searchResults');
+          if(box) box.innerHTML = '';
+        }
+      });
     }
     const searchForm = $('#searchForm');
     if(searchForm){
       searchForm.addEventListener('submit', function(e){
         e.preventDefault();
-        const q = $('#searchInput').value.trim();
+        const q = ($('#searchInput') ? $('#searchInput').value.trim() : '');
         window.location.href = '/shop.html' + (q ? '?q=' + encodeURIComponent(q) : '');
-    window.addEventListener('resize', function(){ if(window.innerWidth > 1080) C.closeAll(); });
       });
     }
+    window.addEventListener('resize', function(){ if(window.innerWidth > 1080) C.closeAll(); });
     document.addEventListener('keydown', function(e){
       if(e.key === 'Escape') C.closeAll();
+    });
+    window.addEventListener('sg:config', function(){
+      const trends = $('#searchTrends');
+      if(trends) trends.innerHTML = '<span class="eyebrow">Trending</span>' + getTrendingHtml();
     });
     window.addEventListener('sg:cart', function(){ C.badges(); C.renderCart(); refreshWish(); });
     window.addEventListener('sg:wish', function(){ C.badges(); refreshWish(); if($('#wishDrawer.is-open')) C.renderWish(); });
     C.badges();
     refreshWish();
-    $$('.scrim, .modal__scrim, .drawer__scrim').forEach(function(s){ s.addEventListener('click', C.closeAll); });
+    $$('.scrim, .modal__scrim, .drawer__scrim, .search-overlay__scrim').forEach(function(s){ s.addEventListener('click', C.closeAll); });
+    const sOverlay = $('#searchOverlay');
+    if(sOverlay){
+      sOverlay.addEventListener('click', function(e){
+        if(e.target === sOverlay) C.closeAll();
+      });
+    }
     $$('[data-year]').forEach(function(n){ n.textContent = new Date().getFullYear(); });
   }
   SG.UI.mount = mount;

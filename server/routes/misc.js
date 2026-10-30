@@ -27,6 +27,7 @@ router.get("/config", async (req, res, next) => {
       phone: store.phone,
       instagram: store.instagram,
       announcement: store.announcement,
+      searchSuggestions: store.searchSuggestions || [],
       categories: cats.map((cat) => ({ slug: cat.slug, label: cat.label, image: cat.image || "", blurb: cat.blurb || "" })),
       promos: Object.keys(codes).map((code) => ({ code, label: codes[code].label }))
     });

@@ -16,6 +16,14 @@ const DEFAULTS = {
   freeShippingThreshold: FREE_SHIPPING_THRESHOLD,
   shippingNote: "Lagos same day, nationwide in 2 to 4 days",
   announcement: "Complimentary delivery on orders above NGN 150,000",
+  searchSuggestions: [
+    "Selvedge denim",
+    "Satin gown",
+    "Poplin shirt",
+    "Leather tote",
+    "Chelsea boots",
+    "Monogram cap"
+  ],
   paystackPublicKey: process.env.PAYSTACK_PUBLIC_KEY || "",
   bankName: "Guaranty Trust Bank",
   bankAccount: "0123456789",
@@ -29,12 +37,24 @@ async function read() {
   } catch (err) {
     saved = null;
   }
-  return Object.assign({}, DEFAULTS, saved || {});
+  const merged = Object.assign({}, DEFAULTS, saved || {});
+  if (typeof merged.searchSuggestions === "string") {
+    merged.searchSuggestions = merged.searchSuggestions.split(",").map(s => s.trim()).filter(Boolean);
+  }
+  return merged;
 }
 
 async function save(patch) {
   const current = await read();
-  const next = Object.assign({}, current, patch || {}, { id: "store" });
+  const normalized = Object.assign({}, patch || {});
+  if (normalized.searchSuggestions !== undefined) {
+    if (typeof normalized.searchSuggestions === "string") {
+      normalized.searchSuggestions = normalized.searchSuggestions.split(",").map(s => s.trim()).filter(Boolean);
+    } else if (Array.isArray(normalized.searchSuggestions)) {
+      normalized.searchSuggestions = normalized.searchSuggestions.map(s => String(s).trim()).filter(Boolean);
+    }
+  }
+  const next = Object.assign({}, current, normalized, { id: "store" });
   const existing = await db.get("settings", "store").catch(() => null);
   if (existing) await db.update("settings", "store", next);
   else await db.createWithId("settings", "store", next);
