@@ -23,7 +23,7 @@
   function render(){
     rows.innerHTML = quote.items.map(it => `
       <div class="cart-row" data-id="${it.productId}" data-v="${it.variantId}">
-        <a class="cart-row__media" href="/product.html?p=${it.slug || it.productId}"><img src="${it.image}" alt="${it.name}"></a>
+        <a class="cart-row__media" href="/product.html?p=${it.slug || it.productId}"><img src="${U.thumb ? U.thumb(it.image, 160) : it.image}" alt="${it.name}" loading="lazy" decoding="async"></a>
         <div class="cart-row__info">
           <a class="cart-row__name" href="/product.html?p=${it.slug || it.productId}">${it.name}</a>
           <span class="cart-row__meta">${it.size || ''}${it.size && it.color ? ' / ' : ''}${it.color || ''}</span>

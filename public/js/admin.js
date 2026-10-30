@@ -33,6 +33,16 @@
   const stLabel = (k) => (STATUS.find((x) => x[0] === k) || [k, k])[1];
   const stSel = (v, act, id) => '<select class="mini" data-act="' + act + '" data-id="' + (id || "") + '">' + STATUS.map((o) => '<option value="' + o[0] + '"' + (o[0] === v ? " selected" : "") + ">" + o[1] + "</option>").join("") + "</select>";
   const img = (f) => (!f ? "" : /^(https?:|\/|data:)/.test(f) ? f : "/assets/catalog/" + f);
+  const thumbUrl = (url, size) => {
+    if (!url || typeof url !== "string") return "";
+    if (url.includes("res.cloudinary.com") && url.includes("/upload/")) {
+      const s = size || 100;
+      if (!/\/upload\/[^/]*[wq]_[^/]+\//.test(url)) {
+        return url.replace("/upload/", "/upload/f_auto,q_auto,w_" + s + ",h_" + s + ",c_fill/");
+      }
+    }
+    return url;
+  };
   const CTH = '<thead><tr><th>Customer</th><th>Phone</th><th>Orders</th><th>Spent</th><th>Last order</th></tr></thead><tbody>';
   const when = (v) => { if (!v) return "n/a"; try { return SG.formatDateTime(v); } catch (e) { return String(v).slice(0, 10); } };
   function toast(msg, bad) {
@@ -265,7 +275,7 @@
 
     $("#productTable").innerHTML = '<thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>State</th><th></th></tr></thead>'
       + '<tbody>' + (paged.length ? paged.map((row) => {
-        return '<tr><td><div class="cell-prod"><span class="thumb">' + (row.images && row.images[0] ? '<img src="' + esc(row.images[0]) + '" alt="" loading="lazy" decoding="async">' : '') + '</span><span class="grow"><strong>' + esc(row.name) + '</strong><small>' + esc(row.id) + '</small></span></div></td><td>' + esc(row.category || "") + '</td><td><strong>' + money(row.price) + '</strong></td><td>' + Number(row.stock || 0) + '</td><td><button class="pill' + (row.active === false ? '' : ' pill-live') + '" data-act="toggle" data-id="' + esc(row.id) + '">' + (row.active === false ? 'Hidden' : 'Live') + '</button></td><td class="row-actions"><button class="icon-btn" data-act="edit" data-id="' + esc(row.id) + '">' + icon("edit") + '</button><button class="icon-btn" data-act="dup" data-id="' + esc(row.id) + '">' + icon("copy") + '</button><button class="icon-btn" data-act="del" data-id="' + esc(row.id) + '">' + icon("trash") + '</button></td></tr>';
+        return '<tr><td><div class="cell-prod"><span class="thumb">' + (row.images && row.images[0] ? '<img src="' + esc(thumbUrl(row.images[0], 96)) + '" alt="" loading="lazy" decoding="async">' : '') + '</span><span class="grow"><strong>' + esc(row.name) + '</strong><small>' + esc(row.id) + '</small></span></div></td><td>' + esc(row.category || "") + '</td><td><strong>' + money(row.price) + '</strong></td><td>' + Number(row.stock || 0) + '</td><td><button class="pill' + (row.active === false ? '' : ' pill-live') + '" data-act="toggle" data-id="' + esc(row.id) + '">' + (row.active === false ? 'Hidden' : 'Live') + '</button></td><td class="row-actions"><button class="icon-btn" data-act="edit" data-id="' + esc(row.id) + '">' + icon("edit") + '</button><button class="icon-btn" data-act="dup" data-id="' + esc(row.id) + '">' + icon("copy") + '</button><button class="icon-btn" data-act="del" data-id="' + esc(row.id) + '">' + icon("trash") + '</button></td></tr>';
       }).join("") : '<tr><td colspan="6"><div class="empty">No products match this filter.</div></td></tr>') + '</tbody>';
 
     renderPaging("#prodPagination", "#prodCount", rows.length, size, page, (nextPage) => {
@@ -350,7 +360,7 @@
     openDrawer("product");
   }
   function renderImgs() {
-    $("#imageThumbs").innerHTML = S.imgs.length ? S.imgs.map((src, i) => '<figure class="thumb-item"><img src="' + esc(src) + '" alt=""><button type="button" data-act="img-del" data-i="' + i + '">' + icon("x", 14) + '</button></figure>').join("") : '<p class="muted small">No images yet. Upload files or paste a URL below.</p>';
+    $("#imageThumbs").innerHTML = S.imgs.length ? S.imgs.map((src, i) => '<figure class="thumb-item"><img src="' + esc(thumbUrl(src, 120)) + '" alt=""><button type="button" data-act="img-del" data-i="' + i + '">' + icon("x", 14) + '</button></figure>').join("") : '<p class="muted small">No images yet. Upload files or paste a URL below.</p>';
     $("#productForm").elements.images.value = JSON.stringify(S.imgs);
   }
 
@@ -529,7 +539,7 @@
     table.innerHTML = '<thead><tr><th>Order</th><th>Category</th><th>Products</th><th>Status</th><th></th></tr></thead><tbody>'
       + S.cats.map((c) => '<tr>'
       + '<td><div class="row-actions"><button class="icon-btn" data-act="cat-up" data-id="' + esc(c.id) + '">' + icon("up") + '</button><button class="icon-btn" data-act="cat-down" data-id="' + esc(c.id) + '">' + icon("down") + '</button></div></td>'
-      + '<td><div class="cell-prod"><span class="thumb">' + (c.image ? '<img src="' + esc(c.image) + '" alt="" loading="lazy" decoding="async">' : '') + '</span><span><strong>' + esc(c.label) + '</strong><small>/' + esc(c.slug) + '</small></span></div></td>'
+      + '<td><div class="cell-prod"><span class="thumb">' + (c.image ? '<img src="' + esc(thumbUrl(c.image, 96)) + '" alt="" loading="lazy" decoding="async">' : '') + '</span><span><strong>' + esc(c.label) + '</strong><small>/' + esc(c.slug) + '</small></span></div></td>'
       + '<td>' + Number(c.count || 0) + '</td>'
       + '<td><span class="pill' + (c.active === false ? '' : ' pill-live') + '">' + (c.active === false ? 'Hidden' : 'Live') + '</span></td>'
       + '<td class="row-actions"><button class="icon-btn" data-act="cat-edit" data-id="' + esc(c.id) + '">' + icon("edit") + '</button><button class="icon-btn bad" data-act="cat-del" data-id="' + esc(c.id) + '">' + icon("trash") + '</button></td>'
@@ -816,7 +826,7 @@
     const size = S.pageSize.m || 18;
     const paged = list.slice((page - 1) * size, page * size);
 
-    $("#mediaGrid").innerHTML = paged.length ? paged.map((m) => '<figure class="media-tile">' + (m.kind === "video" ? '<video src="' + esc(m.url) + '" muted playsinline preload="metadata"></video>' : '<img src="' + esc(m.url) + '" alt="' + esc(m.name || "") + '" loading="lazy" decoding="async">') + '<figcaption><button class="link" data-act="media-copy" data-url="' + esc(m.url) + '">Copy URL</button><button class="icon-btn" data-act="media-del" data-id="' + esc(m.id) + '">' + icon("trash") + '</button></figcaption></figure>').join("") : '<div class="empty">Nothing uploaded yet.</div>';
+    $("#mediaGrid").innerHTML = paged.length ? paged.map((m) => '<figure class="media-tile">' + (m.kind === "video" ? '<video src="' + esc(m.url) + '" muted playsinline preload="metadata"></video>' : '<img src="' + esc(thumbUrl(m.url, 320)) + '" alt="' + esc(m.name || "") + '" loading="lazy" decoding="async">') + '<figcaption><button class="link" data-act="media-copy" data-url="' + esc(m.url) + '">Copy URL</button><button class="icon-btn" data-act="media-del" data-id="' + esc(m.id) + '">' + icon("trash") + '</button></figcaption></figure>').join("") : '<div class="empty">Nothing uploaded yet.</div>';
 
     renderPaging("#mediaPagination", "#mediaCount", list.length, size, page, (nextPage) => {
       S.page.m = nextPage;

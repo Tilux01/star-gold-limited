@@ -203,8 +203,9 @@
       return;
     }
     body.innerHTML = items.map(function(it){
+      const thumb = U.thumb ? U.thumb(it.image, 120) : it.image;
       return '<div class="line-item">'
-        + '<a class="line-item__media" href="/product.html?p='+it.slug+'"><img src="'+it.image+'" alt="'+it.name+'" loading="lazy" decoding="async"></a>'
+        + '<a class="line-item__media" href="/product.html?p='+it.slug+'"><img src="'+thumb+'" alt="'+it.name+'" loading="lazy" decoding="async"></a>'
         + '<div class="line-item__mid"><p class="line-item__name">'+it.name+'</p>'
         + '<p class="line-item__meta">'+[it.size,it.color].filter(Boolean).join(' / ')+'</p>'
         + '<div class="qty" data-line="'+it.variantId+'"><button type="button" data-qty="-1" aria-label="Decrease">'+U.icon('minus',13)+'</button><span>'+it.qty+'</span><button type="button" data-qty="1" aria-label="Increase">'+U.icon('plus',13)+'</button></div></div>'
@@ -254,7 +255,8 @@
         return;
       }
       body.innerHTML = valid.map(function(it){
-        const img = (Array.isArray(it.images) && it.images[0]) || '/assets/placeholder.svg';
+        const rawImg = (Array.isArray(it.images) && it.images[0]) || '/assets/placeholder.svg';
+        const img = U.thumb ? U.thumb(rawImg, 120) : rawImg;
         const slug = encodeURIComponent(it.slug || it.id);
         const cat = it.categoryLabel || it.category || 'Luxury';
         const origin = it.origin ? ' &bull; ' + it.origin : '';
@@ -316,8 +318,10 @@
       const list = data.products || [];
       if(!list.length){ box.innerHTML = '<p class="search-empty">No pieces matched that search. Try denim, gowns or bags.</p>'; return; }
       box.innerHTML = list.map(function(p){
+        const raw = (p.images && p.images[0]) || '/assets/placeholder.svg';
+        const img = U.thumb ? U.thumb(raw, 96) : raw;
         return '<a class="search-hit" href="/product.html?p='+p.slug+'">'
-          + '<span class="search-hit__img"><img src="'+p.images[0]+'" alt="'+p.name+'" loading="lazy" decoding="async"></span>'
+          + '<span class="search-hit__img"><img src="'+img+'" alt="'+p.name+'" loading="lazy" decoding="async"></span>'
           + '<span class="search-hit__body"><span class="search-hit__name">'+p.name+'</span><span class="search-hit__meta">'+p.categoryLabel+' / '+p.origin+'</span></span>'
           + '<span class="search-hit__price">'+U.money(p.price)+'</span></a>';
       }).join('');
@@ -386,13 +390,15 @@
         : '';
       const thumbsHtml = images.length > 1
         ? '<div class="qv__thumbs">' + images.map(function(src, idx){
-            return '<button type="button" class="qv__thumb'+(idx===0?' is-active':'')+'" data-qv-thumb="'+idx+'" aria-label="View photo '+(idx+1)+'"><img src="'+src+'" alt="" loading="lazy" decoding="async"></button>';
+            const t = U.thumb ? U.thumb(src, 120) : src;
+            return '<button type="button" class="qv__thumb'+(idx===0?' is-active':'')+'" data-qv-thumb="'+idx+'" aria-label="View photo '+(idx+1)+'"><img src="'+t+'" alt="" loading="lazy" decoding="async"></button>';
           }).join('') + '</div>'
         : '';
 
+      const mainImgSrc = U.img ? U.img(images[0], 800) : images[0];
       body.innerHTML = '<div class="quickview">'
         + '<div class="qv__media">'
-        + '<div class="qv__main-wrap"><img id="qvMainImg" src="'+images[0]+'" alt="'+p.name+'" loading="lazy" decoding="async"></div>'
+        + '<div class="qv__main-wrap"><img id="qvMainImg" src="'+mainImgSrc+'" alt="'+p.name+'" loading="lazy" decoding="async"></div>'
         + thumbsHtml
         + '</div>'
         + '<div class="qv__body">'
@@ -420,7 +426,7 @@
         tb.addEventListener('click', function(){
           const idx = parseInt(tb.getAttribute('data-qv-thumb'), 10);
           const mainImg = body.querySelector('#qvMainImg');
-          if(mainImg && images[idx]) mainImg.src = images[idx];
+          if(mainImg && images[idx]) mainImg.src = U.img ? U.img(images[idx], 800) : images[idx];
           body.querySelectorAll('[data-qv-thumb]').forEach(function(t){ t.classList.toggle('is-active', t === tb); });
         });
       });

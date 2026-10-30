@@ -9,7 +9,8 @@
   function promo() { return localStorage.getItem("sg.promo") || ""; }
 
   function itemRow(it) {
-    const img = it.image ? '<img src="' + it.image + '" alt="">' : '';
+    const src = it.image ? (U && U.thumb ? U.thumb(it.image, 120) : it.image) : '';
+    const img = src ? '<img src="' + src + '" alt="" loading="lazy" decoding="async">' : '';
     return '<div class="sum-item">' + img + '<div><p>' + it.name + '</p><span>' + (it.size || "") + ' / ' + (it.color || "") + ' x ' + it.quantity + '</span></div><strong>' + money(it.lineTotal) + '</strong></div>';
   }
 

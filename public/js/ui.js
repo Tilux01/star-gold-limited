@@ -87,10 +87,32 @@
     if (p.badge) out.push('<span class="badge badge--soft">'+p.badge+'</span>');
     return out.join('');
   };
+  U.img = function(url, width) {
+    if (!url || typeof url !== 'string') return '/assets/placeholder.svg';
+    if (url.includes('res.cloudinary.com') && url.includes('/upload/')) {
+      const w = width || 600;
+      if (!/\/upload\/[^/]*[wq]_[^/]+\//.test(url)) {
+        return url.replace('/upload/', '/upload/f_auto,q_auto,w_' + w + ',c_limit/');
+      }
+    }
+    return url;
+  };
+  U.thumb = function(url, size) {
+    if (!url || typeof url !== 'string') return '/assets/placeholder.svg';
+    if (url.includes('res.cloudinary.com') && url.includes('/upload/')) {
+      const s = size || 120;
+      if (!/\/upload\/[^/]*[wq]_[^/]+\//.test(url)) {
+        return url.replace('/upload/', '/upload/f_auto,q_auto,w_' + s + ',h_' + s + ',c_fill/');
+      }
+    }
+    return url;
+  };
   U.card = function(p){
     const pid = String(p.slug || p.id || '');
-    const img = (Array.isArray(p.images) && p.images[0]) || '/assets/placeholder.svg';
-    const alt = (Array.isArray(p.images) && p.images[1]) || img;
+    const rawImg = (Array.isArray(p.images) && p.images[0]) || '/assets/placeholder.svg';
+    const rawAlt = (Array.isArray(p.images) && p.images[1]) || '';
+    const img = U.img(rawImg, 500);
+    const alt = (rawAlt && rawAlt !== rawImg) ? U.img(rawAlt, 500) : '';
     const inWish = SG.wish.has(p.id);
     const low = (p.stock || 0) <= 6 && (p.stock || 0) > 0;
     const hasStock = (p.stock === undefined || p.stock > 0) || (Array.isArray(p.variants) && p.variants.some(function(v){ return (v.stock || 0) > 0; }));
@@ -103,7 +125,7 @@
       + '<div class="card__visual">'
       + '<a class="card__media" href="/product.html?p='+encodeURIComponent(pid)+'" aria-label="'+p.name+'">'
       + '<img src="'+img+'" alt="'+p.name+'" loading="lazy" decoding="async">'
-      + '<img class="card__img--alt" src="'+alt+'" alt="" loading="lazy" decoding="async">'
+      + (alt ? '<img class="card__img--alt" src="'+alt+'" alt="" loading="lazy" decoding="async">' : '')
       + '</a>'
       + '<div class="card__badges">'+U.badges(p)+'</div>'
       + '<button class="card__wish'+(inWish?' is-active':'')+'" data-wish="'+p.id+'" aria-label="Save '+p.name+'">'+U.icon('heart',15)+'</button>'

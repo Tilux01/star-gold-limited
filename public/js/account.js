@@ -182,7 +182,11 @@
         + '</div>'
         + '<div class="order-card-item__body">'
         + '<div class="order-card-item__thumbs">'
-        + items.map((i) => '<img src="' + (i.image || '/assets/placeholder.svg') + '" alt="' + SG.escapeHtml(i.name || '') + '" title="' + SG.escapeHtml(i.name || '') + '" loading="lazy" decoding="async">').join('')
+        + items.map((i) => {
+          const raw = i.image || '/assets/placeholder.svg';
+          const src = SG.UI && SG.UI.thumb ? SG.UI.thumb(raw, 96) : raw;
+          return '<img src="' + src + '" alt="' + SG.escapeHtml(i.name || '') + '" title="' + SG.escapeHtml(i.name || '') + '" loading="lazy" decoding="async">';
+        }).join('')
         + '</div>'
         + '<div class="order-card-item__meta">'
         + '<span>' + items.length + ' item' + (items.length > 1 ? 's' : '') + ' &middot; <strong>' + orderTotal + '</strong></span>'

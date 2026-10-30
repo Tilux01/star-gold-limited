@@ -55,7 +55,8 @@
     if (wrap) wrap.classList.remove('skeleton');
     const mainImg = $('#galleryMain');
     if (mainImg) {
-      mainImg.src = p.images[0] || '/assets/placeholder.svg';
+      const raw0 = p.images[0] || '/assets/placeholder.svg';
+      mainImg.src = U.img ? U.img(raw0, 1000) : raw0;
       mainImg.alt = p.name;
       mainImg.decoding = 'async';
       mainImg.style.opacity = '1';
@@ -72,12 +73,13 @@
 
     const thumbsEl = $('#galleryThumbs');
     if (thumbsEl) {
-      thumbsEl.innerHTML = p.images.map((src, i) =>
-        `<button class="thumb${i === state.img ? ' is-active' : ''}" data-img="${i}" type="button"><img src="${src}" alt="${p.name} view ${i + 1}" loading="lazy" decoding="async"></button>`
-      ).join('');
+      thumbsEl.innerHTML = p.images.map((src, i) => {
+        const t = U.thumb ? U.thumb(src, 140) : src;
+        return `<button class="thumb${i === state.img ? ' is-active' : ''}" data-img="${i}" type="button"><img src="${t}" alt="${p.name} view ${i + 1}" loading="lazy" decoding="async"></button>`;
+      }).join('');
       thumbsEl.querySelectorAll('[data-img]').forEach(b => b.addEventListener('click', () => {
         state.img = Number(b.dataset.img);
-        if (mainImg) mainImg.src = p.images[state.img];
+        if (mainImg) mainImg.src = U.img ? U.img(p.images[state.img], 1000) : p.images[state.img];
         thumbsEl.querySelectorAll('[data-img]').forEach(x => x.classList.toggle('is-active', x === b));
       }));
     }

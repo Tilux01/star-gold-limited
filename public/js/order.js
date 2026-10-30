@@ -21,11 +21,14 @@
   }
   function render(data) {
     const o = data.order, cust = o.customer || {};
-    const items = (o.items || []).map((it) => '<div class="line-item">'
-      + '<a class="line-item__media" href="/product.html?p=' + it.productId + '"><img src="' + it.image + '" alt="' + it.name + '"></a>'
-      + '<div class="line-item__mid"><p class="line-item__name">' + it.name + '</p>'
-      + '<p class="line-item__meta">' + (it.size || 'One size') + ' / ' + (it.color || 'Default') + ' / Qty ' + it.quantity + '</p></div>'
-      + '<div class="line-item__right"><span class="line-item__price">' + SG.money(it.lineTotal) + '</span></div></div>').join('');
+    const items = (o.items || []).map((it) => {
+      const src = it.image ? (U && U.thumb ? U.thumb(it.image, 140) : it.image) : '/assets/placeholder.svg';
+      return '<div class="line-item">'
+        + '<a class="line-item__media" href="/product.html?p=' + it.productId + '"><img src="' + src + '" alt="' + it.name + '" loading="lazy" decoding="async"></a>'
+        + '<div class="line-item__mid"><p class="line-item__name">' + it.name + '</p>'
+        + '<p class="line-item__meta">' + (it.size || 'One size') + ' / ' + (it.color || 'Default') + ' / Qty ' + it.quantity + '</p></div>'
+        + '<div class="line-item__right"><span class="line-item__price">' + SG.money(it.lineTotal) + '</span></div></div>';
+    }).join('');
     const wa = SGChrome.WA + '?text=' + encodeURIComponent(data.whatsapp || '');
     const address = [cust.address, cust.city, cust.state].filter(Boolean).join(', ');
     el('orderTitle').textContent = 'Thank you, ' + (cust.name || 'friend').split(' ')[0];

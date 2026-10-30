@@ -554,15 +554,20 @@ td {
 td:first-child {
   white-space: normal;
 }
-tbody tr:last-child td { border-bottom: 0; }
-td.row-actions, td .row-actions {
-  display: flex;
+td.row-actions {
+  text-align: right;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+div.row-actions {
+  display: inline-flex;
   gap: 6px;
   align-items: center;
   justify-content: flex-end;
-  white-space: nowrap;
+  vertical-align: middle;
 }
-td.row-actions .icon-btn, td .row-actions .icon-btn {
+td.row-actions .icon-btn,
+.row-actions .icon-btn {
   width: 32px;
   height: 32px;
   min-width: 32px;
@@ -572,6 +577,11 @@ td.row-actions .icon-btn, td .row-actions .icon-btn {
   padding: 0;
   border-radius: 6px;
   cursor: pointer;
+  vertical-align: middle;
+  margin-left: 6px;
+}
+td.row-actions .icon-btn:first-child {
+  margin-left: 0;
 }
 .cell-prod {
   display: flex;

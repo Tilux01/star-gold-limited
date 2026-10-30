@@ -99,11 +99,26 @@ function randomId() {
   return crypto.randomBytes(9).toString("hex");
 }
 
+const memCache = new Map();
+const CACHE_TTL_MS = 60 * 1000;
+
+function invalidateCache(col) {
+  if (col) memCache.delete(col);
+  else memCache.clear();
+}
+
 async function all(collection) {
   await ready();
   if (mode === "firebase") {
+    const entry = memCache.get(collection);
+    const now = Date.now();
+    if (entry && (now - entry.time < CACHE_TTL_MS)) {
+      return entry.data.map((r) => Object.assign({}, r));
+    }
     const data = await firebase.read(collection);
-    return rowsFrom(data);
+    const rows = rowsFrom(data);
+    memCache.set(collection, { time: now, data: rows });
+    return rows.map((r) => Object.assign({}, r));
   }
   return (memory[collection] || []).slice();
 }
@@ -122,6 +137,12 @@ async function find(collection, predicate) {
 async function get(collection, id) {
   if (!id) return null;
   await ready();
+  const entry = memCache.get(collection);
+  if (entry && (Date.now() - entry.time < CACHE_TTL_MS)) {
+    const s = String(id).trim();
+    const hit = entry.data.find((row) => String(row.id).trim() === s || String(row.slug || "").trim() === s);
+    if (hit) return Object.assign({}, hit);
+  }
   if (mode === "firebase") {
     const data = await firebase.read(collection + "/" + key(id));
     if (!data || typeof data !== "object") return null;
@@ -134,6 +155,7 @@ async function create(collection, data) {
   const id = data.id || randomId();
   const record = Object.assign({}, data, { id });
   await ready();
+  invalidateCache(collection);
   if (mode === "firebase") {
     await firebase.write(collection + "/" + key(id), normalize(record));
     return record;
@@ -146,6 +168,7 @@ async function create(collection, data) {
 
 async function update(collection, id, patch) {
   await ready();
+  invalidateCache(collection);
   if (mode === "firebase") {
     const current = await get(collection, id);
     if (!current) return null;
@@ -163,6 +186,7 @@ async function update(collection, id, patch) {
 
 async function remove(collection, id) {
   await ready();
+  invalidateCache(collection);
   if (mode === "firebase") {
     await firebase.remove(collection + "/" + key(id));
     return true;
