@@ -10,8 +10,14 @@ const promoStore = require("../promos");
 const { requireAuth, requireAdmin } = require("../auth");
 
 const router = express.Router();
-const uploadDir = path.join(__dirname, "..", "..", "public", "uploads");
-fs.mkdirSync(uploadDir, { recursive: true });
+const uploadDir = process.env.VERCEL
+  ? path.join("/tmp", "uploads")
+  : path.join(__dirname, "..", "..", "public", "uploads");
+try {
+  fs.mkdirSync(uploadDir, { recursive: true });
+} catch (err) {
+  // Ignore filesystem error in read-only serverless environments
+}
 
 const upload = multer({
   storage: multer.memoryStorage(),
