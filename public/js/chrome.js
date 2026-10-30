@@ -148,6 +148,8 @@
   }
   SGChrome.footerHtml = footerHtml;
   SGChrome.overlaysHtml = overlaysHtml;
+  SGChrome.getSuggestions = getSuggestions;
+  SGChrome.getTrendingHtml = getTrendingHtml;
   SGChrome.WA = WA;
 })();
 
@@ -321,8 +323,8 @@
     const o = $('#searchOverlay');
     if(!o) return;
     const trends = $('#searchTrends');
-    if(trends) {
-      trends.innerHTML = '<span class="eyebrow">Trending</span>' + getTrendingHtml();
+    if(trends && C.getTrendingHtml) {
+      trends.innerHTML = '<span class="eyebrow">Trending</span>' + C.getTrendingHtml();
     }
     o.classList.add('is-open');
     o.setAttribute('aria-hidden','false');
@@ -653,7 +655,7 @@
     });
     window.addEventListener('sg:config', function(){
       const trends = $('#searchTrends');
-      if(trends) trends.innerHTML = '<span class="eyebrow">Trending</span>' + getTrendingHtml();
+      if(trends && C.getTrendingHtml) trends.innerHTML = '<span class="eyebrow">Trending</span>' + C.getTrendingHtml();
     });
     window.addEventListener('sg:cart', function(){ C.badges(); C.renderCart(); refreshWish(); });
     window.addEventListener('sg:wish', function(){ C.badges(); refreshWish(); if($('#wishDrawer.is-open')) C.renderWish(); });
