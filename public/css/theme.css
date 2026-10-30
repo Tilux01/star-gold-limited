@@ -398,5 +398,34 @@ table{max-width:100%}
   .admin-table{min-width:640px}
   .toast{left:12px;right:12px;max-width:none}
   .modal__box{width:calc(100vw - 24px);max-width:none}
-  .drawer__panel{width:min(92vw,380px)}
+  .drawer__panel,.cart-drawer__panel{
+    width:100%!important;
+    max-width:100%!important;
+    left:0!important;
+    right:0!important;
+    border-left:none!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+  }
+  .drawer__head{
+    padding:18px 20px!important;
+    padding-top:max(18px,calc(14px + env(safe-area-inset-top,0px)))!important;
+  }
+  .drawer__body{
+    padding:10px 20px!important;
+    -webkit-overflow-scrolling:touch;
+  }
+  .drawer__foot{
+    padding:16px 20px calc(20px + env(safe-area-inset-bottom,0px))!important;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .drawer__foot .btn{
+    width:100%;
+  }
+  .remove-btn{
+    width:34px;
+    height:34px;
+  }
 }
