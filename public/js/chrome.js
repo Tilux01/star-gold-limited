@@ -222,12 +222,13 @@
     }
     body.innerHTML = items.map(function(it){
       const thumb = U.thumb ? U.thumb(it.image, 120) : it.image;
-      return '<div class="line-item">'
+      const key = SG.cart.key ? SG.cart.key(it) : (it.productId + '::' + (it.variantId || 'default'));
+      return '<div class="line-item" data-line-key="'+key+'">'
         + '<a class="line-item__media" href="/product.html?p='+it.slug+'"><img src="'+thumb+'" alt="'+it.name+'" loading="lazy" decoding="async"></a>'
         + '<div class="line-item__mid"><p class="line-item__name">'+it.name+'</p>'
         + '<p class="line-item__meta">'+[it.size,it.color].filter(Boolean).join(' / ')+'</p>'
-        + '<div class="qty" data-line="'+it.variantId+'"><button type="button" data-qty="-1" aria-label="Decrease">'+U.icon('minus',13)+'</button><span>'+it.qty+'</span><button type="button" data-qty="1" aria-label="Increase">'+U.icon('plus',13)+'</button></div></div>'
-        + '<div class="line-item__right"><span class="line-item__price">'+U.money(it.price*it.qty)+'</span><button class="remove-btn" type="button" data-remove="'+it.variantId+'" aria-label="Remove">'+U.icon('trash',15)+'</button></div>'
+        + '<div class="qty" data-line="'+key+'" data-pid="'+it.productId+'" data-vid="'+(it.variantId || '')+'"><button type="button" data-qty="-1" aria-label="Decrease">'+U.icon('minus',13)+'</button><span>'+it.qty+'</span><button type="button" data-qty="1" aria-label="Increase">'+U.icon('plus',13)+'</button></div></div>'
+        + '<div class="line-item__right"><span class="line-item__price">'+U.money(it.price*it.qty)+'</span><button class="remove-btn" type="button" data-cart-remove="'+key+'" data-remove="'+key+'" data-pid="'+it.productId+'" data-vid="'+(it.variantId || '')+'" aria-label="Remove">'+U.icon('trash',15)+'</button></div>'
         + '</div>';
     }).join('');
     const sub = SG.cart.subtotal();
@@ -565,8 +566,8 @@
       const wishDelBtn = e.target.closest('[data-wish-del]');
       const quickBtn = e.target.closest('[data-quick]');
       const addCartBtn = e.target.closest('[data-add-cart]');
-      const qtyBtn = e.target.closest('[data-qty]');
-      const rmBtn = e.target.closest('[data-remove]');
+      const qtyBtn = e.target.closest('#cartDrawer [data-qty], [data-qty]');
+      const rmBtn = e.target.closest('#cartDrawer [data-remove], #cartDrawer .remove-btn, [data-cart-remove]');
       if(openWishBtn){ e.preventDefault(); C.openWish(); return; }
       if(openCartBtn){ e.preventDefault(); C.openCart(); return; }
       if(openSearchBtn){ e.preventDefault(); C.openSearch(); return; }
@@ -614,14 +615,23 @@
         const line = qtyBtn.closest('[data-line]');
         if(!line) return;
         e.preventDefault();
-        SG.cart.setQty(line.getAttribute('data-line'), parseInt(qtyBtn.getAttribute('data-qty'), 10));
+        const lineKey = line.getAttribute('data-line');
+        const pid = line.getAttribute('data-pid');
+        const delta = parseInt(qtyBtn.getAttribute('data-qty'), 10) || 0;
+        if(SG.cart.changeQty){
+          SG.cart.changeQty(lineKey, delta, pid);
+        } else {
+          SG.cart.setQty(lineKey, delta, pid);
+        }
         C.renderCart();
         C.badges();
         return;
       }
       if(rmBtn){
         e.preventDefault();
-        SG.cart.remove(rmBtn.getAttribute('data-remove'));
+        const remKey = rmBtn.getAttribute('data-cart-remove') || rmBtn.getAttribute('data-remove');
+        const pid = rmBtn.getAttribute('data-pid');
+        SG.cart.remove(remKey, pid);
         C.renderCart();
         C.badges();
         return;

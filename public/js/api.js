@@ -222,7 +222,32 @@
       emit("cart");
     },
     key(item) {
-      return item.productId + "::" + (item.variantId || "default");
+      if (!item) return "";
+      const pid = item.productId || item.id || "";
+      const vid = item.variantId || "default";
+      return pid + "::" + vid;
+    },
+    findIndex(keyOrVariantId, productId) {
+      const items = cart.all();
+      if (!keyOrVariantId && !productId) return -1;
+      const targetKey = String(keyOrVariantId || "").trim();
+      const targetPid = String(productId || "").trim();
+      return items.findIndex((i) => {
+        const itemKey = cart.key(i);
+        const itemPid = String(i.productId || i.id || "").trim();
+        const itemVid = String(i.variantId || "default").trim();
+        const rawVid = String(i.variantId || "").trim();
+
+        if (targetKey && itemKey === targetKey) return true;
+        if (targetPid && itemPid === targetPid) {
+          if (!targetKey || targetKey === itemVid || targetKey === rawVid || targetKey === "default" || targetKey === "null" || targetKey === "undefined") {
+            return true;
+          }
+        }
+        if (targetKey && itemPid === targetKey) return true;
+        if (targetKey && rawVid && rawVid === targetKey) return true;
+        return false;
+      });
     },
     add(product, variant, qty) {
       const items = cart.all();
@@ -248,21 +273,44 @@
       cart.save(items);
       return items;
     },
-    setQty(key, qty) {
+    setQty(key, qty, productId) {
       const items = cart.all();
-      const idx = items.findIndex((i) => cart.key(i) === key);
+      const idx = cart.findIndex(key, productId);
       if (idx > -1) {
-        if (qty <= 0) items.splice(idx, 1);
-        else items[idx].qty = Math.min(99, qty);
+        const val = parseInt(qty, 10);
+        if (isNaN(val) || val <= 0) items.splice(idx, 1);
+        else items[idx].qty = Math.max(1, Math.min(99, val));
         cart.save(items);
       }
     },
-    remove(key) {
-      cart.save(cart.all().filter((i) => cart.key(i) !== key));
+    changeQty(key, delta, productId) {
+      const items = cart.all();
+      const idx = cart.findIndex(key, productId);
+      if (idx > -1) {
+        const d = parseInt(delta, 10) || 0;
+        const nextQty = (items[idx].qty || 1) + d;
+        if (nextQty <= 0) items.splice(idx, 1);
+        else items[idx].qty = Math.max(1, Math.min(99, nextQty));
+        cart.save(items);
+      }
+    },
+    remove(key, productId) {
+      const items = cart.all();
+      const idx = cart.findIndex(key, productId);
+      if (idx > -1) {
+        items.splice(idx, 1);
+        cart.save(items);
+      } else if (key) {
+        const cleanKey = String(key).trim();
+        cart.save(items.filter((i) => {
+          return cart.key(i) !== cleanKey && i.variantId !== cleanKey && i.productId !== cleanKey;
+        }));
+      }
     },
     clear() {
-      cart.save([]);
+      write(CART_KEY, []);
       localStorage.removeItem(PROMO_KEY);
+      emit("cart");
     },
     count() {
       return cart.all().reduce((n, i) => n + i.qty, 0);
