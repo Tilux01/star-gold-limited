@@ -291,14 +291,22 @@
   .stats{gap:12px}
   .stat strong{font-size:24px}
   .newsletter{padding:28px;border-radius:var(--r-lg)}
-  .card__actions{opacity:1;transform:none;left:6px;right:6px;bottom:6px;gap:4px}
-  .card__wish{opacity:1;transform:none}
-  .card__btn{height:33px;padding:0 4px;font-size:10px;gap:3px}
-}
-
-@media(max-width:420px){
-  .card__actions{grid-template-columns:1fr;gap:4px}
-  .card__btn{height:30px;font-size:10px}
+  .card__actions{
+    opacity:1;
+    transform:none;
+    left:6px;
+    right:6px;
+    bottom:6px;
+    display:flex;
+    align-items:center;
+    gap:4px;
+    z-index:5;
+  }
+  .card__wish{opacity:1;transform:none;top:6px;right:6px;width:28px;height:28px}
+  .card__btn{height:30px;min-height:30px;padding:0 8px;font-size:10px;gap:3px}
+  .card__btn--quick{width:30px;min-width:30px;max-width:30px;padding:0;border-radius:50%;justify-content:center;flex-shrink:0}
+  .card__btn--quick span{display:none}
+  .card__btn--add{flex:1;border-radius:999px;justify-content:center;white-space:nowrap}
 }
 
 .shop-layout{display:grid;grid-template-columns:252px 1fr;gap:48px;padding-bottom:96px}
