@@ -145,14 +145,33 @@
   function openDrawer(name) {
     const clean = String(name || "").replace(/^#/, "").replace(/Drawer$/, "");
     const el = $("#" + clean + "Drawer");
-    if (el) el.hidden = false;
+    if (el) {
+      el.hidden = false;
+      el.removeAttribute("hidden");
+      el.style.display = "flex";
+      document.body.classList.add("adm-locked");
+    }
   }
   function closeDrawer(name) {
     const clean = String(name || "").replace(/^#/, "").replace(/Drawer$/, "");
     const el = $("#" + clean + "Drawer");
-    if (el) el.hidden = true;
+    if (el) {
+      el.hidden = true;
+      el.setAttribute("hidden", "");
+      el.style.display = "none";
+    }
+    if (!$$(".adm-drawer:not([hidden])").some((d) => d.style.display !== "none")) {
+      document.body.classList.remove("adm-locked");
+    }
   }
-  function closeDrawers() { $$(".adm-drawer").forEach((d) => { d.hidden = true; }); }
+  function closeDrawers() {
+    $$(".adm-drawer").forEach((d) => {
+      d.hidden = true;
+      d.setAttribute("hidden", "");
+      d.style.display = "none";
+    });
+    document.body.classList.remove("adm-locked");
+  }
   function drawerFor(el) { return el.closest(".adm-drawer"); }
   function isAdmin(user) { return !!user && (user.role === "admin" || user.isAdmin === true); }
   function showGate(message) {
@@ -260,13 +279,27 @@
   }
 
   function prodById(id) {
-    return S.prod.find((row) => row.id === id) || null;
+    if (!id) return null;
+    const s = String(id).trim();
+    return S.prod.find((row) => String(row.id).trim() === s || String(row.slug || "").trim() === s) || null;
   }
 
-  function openProduct(rowOrId) {
-    const row = (typeof rowOrId === "object" && rowOrId !== null)
+  async function openProduct(rowOrId) {
+    let row = (typeof rowOrId === "object" && rowOrId !== null)
       ? rowOrId
       : prodById(rowOrId);
+    if (!row && rowOrId) {
+      try {
+        const cleanId = String(rowOrId).trim();
+        const data = await g("/admin/products");
+        if (data && Array.isArray(data.products)) {
+          S.prod = data.products;
+          row = prodById(cleanId);
+        }
+      } catch (e) {
+        console.warn("Fallback product fetch failed:", e);
+      }
+    }
     if (!row && rowOrId) {
       toast("Product not found", true);
       return;
@@ -274,6 +307,7 @@
     const form = $("#productForm");
     form.reset();
     S.edit = row ? row.id : null;
+    if (form.elements.id) form.elements.id.value = row ? row.id : "";
     S.imgs = row && Array.isArray(row.images) ? row.images.slice() : [];
     S.vid = row && row.video ? row.video : "";
     S.vars = row && Array.isArray(row.variants) ? row.variants.map((v) => ({ size: v.size || "One Size", color: v.color || "", stock: Number(v.stock || 0) })) : [];
@@ -282,6 +316,16 @@
     const btn = $("#saveProduct");
     if (btn) btn.textContent = row ? "Update product" : "Save product";
     form.elements.name.value = row ? row.name || "" : "";
+
+    if (row && row.category) {
+      const picker = $("#productCat");
+      if (picker && !picker.querySelector('option[value="' + esc(row.category) + '"]')) {
+        const opt = document.createElement("option");
+        opt.value = row.category;
+        opt.textContent = row.categoryLabel || row.category;
+        picker.appendChild(opt);
+      }
+    }
     form.elements.category.value = row ? row.category || "" : (S.cats[0] ? S.cats[0].slug : "");
     form.elements.price.value = row ? row.price || 0 : "";
     form.elements.compareAt.value = row && row.compareAt ? row.compareAt : "";
@@ -295,7 +339,9 @@
     form.elements.featured.checked = row ? !!row.featured : false;
     form.elements.active.checked = row ? row.active !== false : true;
     if (form.elements.mediaUrl) form.elements.mediaUrl.value = "";
-    if (!S.cats.length) loadCats().then(() => { form.elements.category.value = row ? row.category || "" : (S.cats[0] ? S.cats[0].slug : ""); });
+    if (!S.cats.length) loadCats().then(() => {
+      if (row && row.category) form.elements.category.value = row.category;
+    });
     renderImgs();
     renderVars();
     renderVid();
@@ -403,6 +449,7 @@
       video: S.vid,
       variants: domVars.length ? domVars : S.vars.filter((v) => v.size || v.color)
     };
+    const editId = S.edit || (form.elements.id ? form.elements.id.value.trim() : null);
     if (!body.name || !body.price) return toast("Name and price are required", true);
     if (btn) {
       btn.disabled = true;
@@ -410,8 +457,8 @@
       btn.innerHTML = '<span class="btn-spinner"></span> Saving...';
     }
     try {
-      if (S.edit) {
-        await pa("/admin/products/" + encodeURIComponent(S.edit), body);
+      if (editId) {
+        await pa("/admin/products/" + encodeURIComponent(editId), body);
         toast("Product updated successfully");
       } else {
         await po("/admin/products", body);
@@ -425,7 +472,7 @@
       if (btn) {
         btn.disabled = false;
         btn.classList.remove("is-loading");
-        btn.innerHTML = S.edit ? "Update product" : "Save product";
+        btn.innerHTML = editId ? "Update product" : "Save product";
       }
     }
   }
@@ -984,8 +1031,10 @@
     }));
     $$("[data-close]").forEach((btn) => btn.addEventListener("click", closeDrawers));
     document.addEventListener("click", delegate);
+    const prodForm = $("#productForm");
+    if (prodForm) prodForm.addEventListener("submit", saveProduct);
     document.addEventListener("submit", (event) => {
-      const formId = event.target.getAttribute("id");
+      const formId = event.target && event.target.getAttribute ? event.target.getAttribute("id") : null;
       if (formId === "productForm") saveProduct(event);
       if (formId === "categoryForm") saveCat(event);
       if (formId === "promoForm") savePromo(event);
@@ -1040,7 +1089,7 @@
     if (!btn) return;
     const act = btn.dataset.act;
     const id = btn.dataset.id;
-    if (act === "edit") openProduct(id);
+    if (act === "edit") run(() => openProduct(id));
     if (act === "dup") run(() => dupProduct(id));
     if (act === "del") run(() => delProduct(id));
     if (act === "toggle") run(() => toggleProduct(id));

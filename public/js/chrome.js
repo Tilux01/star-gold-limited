@@ -61,6 +61,7 @@
       + '<div class="mobile-nav__chips">'+cats().map(function(c){ return '<a class="chip" href="/shop.html?category='+c[0]+'">'+c[1]+'</a>'; }).join('')
       + '<a class="chip" href="/shop.html?origin=Turkey">Turkey Wears</a><a class="chip" href="/shop.html?origin=China">Chinese Wears</a></div></div>'
       + '<div class="mobile-nav__foot">'
+      + '<button class="btn btn--outline btn--block" type="button" data-wishlist-open>'+U.icon('heart',16)+' Saved pieces (<span id="mobWishCount">0</span>)</button>'
       + '<a class="btn btn--dark btn--block" href="/account.html">'+U.icon('user',16)+' My account</a>'
       + '<a class="btn btn--outline btn--block" href="https://wa.me/'+BIZ.whatsapp+'" target="_blank" rel="noopener">'+U.icon('whatsapp',16)+' Chat with us</a>'
       + '</div></div></div>';
@@ -114,6 +115,12 @@
       + '<button class="icon-btn" type="button" data-close-all aria-label="Close bag">'+U.icon('x',18)+'</button></div>'
       + '<div class="drawer__body" id="cartDrawerBody"></div>'
       + '<div class="drawer__foot" id="cartDrawerFoot"></div></aside></div>'
+      + '<div class="drawer" id="wishDrawer" aria-hidden="true"><div class="drawer__scrim" data-close-all></div>'
+      + '<aside class="drawer__panel" role="dialog" aria-label="Your saved pieces"><div class="drawer__head">'
+      + '<span class="drawer__title" id="wishDrawerTitle">Saved pieces</span>'
+      + '<button class="icon-btn" type="button" data-close-all aria-label="Close saved pieces">'+U.icon('x',18)+'</button></div>'
+      + '<div class="drawer__body" id="wishDrawerBody"></div>'
+      + '<div class="drawer__foot" id="wishDrawerFoot"></div></aside></div>'
       + '<div class="search-overlay" id="searchOverlay" aria-hidden="true"><div class="search-overlay__inner">'
       + '<form class="search-overlay__bar" id="searchForm" role="search"><span class="search-overlay__icon">'+U.icon('search',20)+'</span>'
       + '<input id="searchInput" type="search" placeholder="Search denim, gowns, bags..." autocomplete="off" aria-label="Search products">'
@@ -153,11 +160,23 @@
     const w = SG.wish.all().length;
     const wc = $('#wishCount');
     if(wc){ wc.textContent = w; wc.hidden = w === 0; }
+    const mwc = $('#mobWishCount');
+    if(mwc){ mwc.textContent = w; }
   }
   function openCart(){
+    closeAll();
     const d = $('#cartDrawer');
     if(!d) return;
     renderCart();
+    d.classList.add('is-open');
+    d.setAttribute('aria-hidden','false');
+    document.body.classList.add('is-locked');
+  }
+  function openWish(){
+    closeAll();
+    const d = $('#wishDrawer');
+    if(!d) return;
+    renderWish();
     d.classList.add('is-open');
     d.setAttribute('aria-hidden','false');
     document.body.classList.add('is-locked');
@@ -202,10 +221,72 @@
         + '<p class="secure-note">'+U.icon('lock',13)+' Secure checkout with Paystack</p>';
     }
   }
+  function renderWish(){
+    const ids = SG.wish.all();
+    const body = $('#wishDrawerBody');
+    const foot = $('#wishDrawerFoot');
+    const title = $('#wishDrawerTitle');
+    if(title) title.textContent = ids.length ? 'Saved pieces (' + ids.length + ')' : 'Saved pieces';
+    if(!body) return;
+    if(!ids.length){
+      body.innerHTML = '<div class="cart-empty">' + U.icon('heart',34)
+        + '<h3>No saved pieces yet</h3>'
+        + '<p>Tap the heart icon on any piece while exploring to build your private wishlist.</p>'
+        + '<a class="btn btn--dark" href="/shop.html">Explore collection</a></div>';
+      if(foot) foot.innerHTML = '<button class="btn btn--outline btn--block" type="button" data-close-all>Continue browsing</button>';
+      return;
+    }
+    body.innerHTML = '<div style="padding:40px 0;text-align:center"><div class="skeleton" style="width:40px;height:40px;border-radius:50%;margin:0 auto 12px"></div><p class="sum-note" style="margin:0;font-size:13px">Loading saved pieces...</p></div>';
+    if(foot) foot.innerHTML = '';
+
+    Promise.all(ids.map(function(id){
+      return SG.api.get('/products/' + encodeURIComponent(id))
+        .then(function(r){ return r.product; })
+        .catch(function(){ return null; });
+    })).then(function(items){
+      const valid = (items || []).filter(Boolean);
+      if(!valid.length){
+        body.innerHTML = '<div class="cart-empty">' + U.icon('heart',34)
+          + '<h3>No saved pieces found</h3>'
+          + '<p>The pieces you saved are no longer available in the store.</p>'
+          + '<a class="btn btn--dark" href="/shop.html">Browse new arrivals</a></div>';
+        if(foot) foot.innerHTML = '<button class="btn btn--outline btn--block" type="button" data-close-all>Close</button>';
+        return;
+      }
+      body.innerHTML = valid.map(function(it){
+        const img = (Array.isArray(it.images) && it.images[0]) || '/assets/placeholder.svg';
+        const slug = encodeURIComponent(it.slug || it.id);
+        const cat = it.categoryLabel || it.category || 'Luxury';
+        const origin = it.origin ? ' &bull; ' + it.origin : '';
+        return '<div class="line-item" data-wish-row="'+it.id+'">'
+          + '<a class="line-item__media" href="/product.html?p='+slug+'"><img src="'+img+'" alt="'+it.name+'" loading="lazy" decoding="async"></a>'
+          + '<div class="line-item__mid">'
+          + '<a class="line-item__name" href="/product.html?p='+slug+'" style="color:inherit;text-decoration:none;display:block">'+it.name+'</a>'
+          + '<p class="line-item__meta">'+cat+origin+'</p>'
+          + '<span class="line-item__price">'+U.money(it.price)+(it.compareAt && it.compareAt > it.price ? ' <s>'+U.money(it.compareAt)+'</s>' : '')+'</span>'
+          + '</div>'
+          + '<div class="line-item__right">'
+          + '<button class="btn btn--sm btn--gold" type="button" data-wish-add="'+slug+'" style="font-size:11px;padding:6px 12px;white-space:nowrap">Add to bag</button>'
+          + '<button class="remove-btn" type="button" data-wish-del="'+it.id+'" aria-label="Remove from saved pieces">'+U.icon('trash',15)+'</button>'
+          + '</div>'
+          + '</div>';
+      }).join('');
+      if(foot){
+        foot.innerHTML = '<div class="sum-row"><span>Total saved</span><strong>'+valid.length+' piece'+(valid.length>1?'s':'')+'</strong></div>'
+          + '<a class="btn btn--dark btn--block" href="/account.html?tab=wishlist">View in account</a>'
+          + '<button class="btn btn--outline btn--block" type="button" data-close-all>Continue shopping</button>';
+      }
+    }).catch(function(err){
+      console.error('Wishlist load error:', err);
+      body.innerHTML = '<div class="cart-empty"><p>Unable to load favorites right now.</p><button class="btn btn--outline" type="button" data-close-all>Close</button></div>';
+    });
+  }
   const Chr = SGChrome;
   Chr.toast = toast;
   Chr.badges = badges;
   Chr.openCart = openCart;
+  Chr.openWish = openWish;
+  Chr.renderWish = renderWish;
   Chr.openMenu = function(){ const mn = $('#mobileNav'); if(!mn) return; mn.classList.add('is-open'); mn.setAttribute('aria-hidden','false'); document.body.classList.add('is-locked'); document.documentElement.classList.add('is-locked'); };
   Chr.closeAll = closeAll;
   Chr.renderCart = renderCart;
@@ -447,19 +528,23 @@
     }
     document.addEventListener('click', function(e){
       const openCartBtn = e.target.closest('[data-cart-open]');
+      const openWishBtn = e.target.closest('[data-wishlist-open]');
       const openSearchBtn = e.target.closest('[data-search-open]');
       const openMobile = e.target.closest('[data-mobile-open]');
       const closer = e.target.closest('[data-close-all]');
       const wishBtn = e.target.closest('[data-wish]');
+      const wishAddBtn = e.target.closest('[data-wish-add]');
+      const wishDelBtn = e.target.closest('[data-wish-del]');
       const quickBtn = e.target.closest('[data-quick]');
       const addCartBtn = e.target.closest('[data-add-cart]');
       const qtyBtn = e.target.closest('[data-qty]');
       const rmBtn = e.target.closest('[data-remove]');
+      if(openWishBtn){ e.preventDefault(); C.openWish(); return; }
       if(openCartBtn){ e.preventDefault(); C.openCart(); return; }
       if(openSearchBtn){ e.preventDefault(); C.openSearch(); return; }
       if(openMobile){ e.preventDefault(); C.openMenu(); return; }
       if(e.target.closest('[data-mobile-close]')){ e.preventDefault(); C.closeAll(); return; }
-      if(e.target.closest('.mobile-nav a')){ C.closeAll(); return; }
+      if(e.target.closest('.mobile-nav a:not([data-wishlist-open])')){ C.closeAll(); return; }
       if(closer){ e.preventDefault(); C.closeAll(); return; }
       if(quickBtn){
         e.preventDefault();
@@ -471,6 +556,23 @@
         e.preventDefault();
         e.stopPropagation();
         C.handleCardAddToCart(addCartBtn.getAttribute('data-add-cart'), addCartBtn);
+        return;
+      }
+      if(wishAddBtn){
+        e.preventDefault();
+        e.stopPropagation();
+        C.handleCardAddToCart(wishAddBtn.getAttribute('data-wish-add'), wishAddBtn);
+        return;
+      }
+      if(wishDelBtn){
+        e.preventDefault();
+        e.stopPropagation();
+        const delId = wishDelBtn.getAttribute('data-wish-del');
+        SG.wish.toggle(delId);
+        C.toast('Removed from saved pieces');
+        C.badges();
+        refreshWish();
+        C.renderWish();
         return;
       }
       if(wishBtn){
@@ -519,7 +621,7 @@
       if(e.key === 'Escape') C.closeAll();
     });
     window.addEventListener('sg:cart', function(){ C.badges(); C.renderCart(); refreshWish(); });
-    window.addEventListener('sg:wish', function(){ C.badges(); refreshWish(); });
+    window.addEventListener('sg:wish', function(){ C.badges(); refreshWish(); if($('#wishDrawer.is-open')) C.renderWish(); });
     C.badges();
     refreshWish();
     $$('.scrim, .modal__scrim, .drawer__scrim').forEach(function(s){ s.addEventListener('click', C.closeAll); });
@@ -528,6 +630,8 @@
   SG.UI.mount = mount;
   SG.UI.toast = C.toast;
   SG.UI.openCart = C.openCart;
+  SG.UI.openWish = C.openWish;
+  SG.UI.renderWish = C.renderWish;
   SG.UI.refreshWish = refreshWish;
   window.alert = function(msg) { C.toast(String(msg || ''), 'info'); };
 })();
