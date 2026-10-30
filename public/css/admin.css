@@ -113,44 +113,54 @@ html, body.admin-body {
   top: 0;
   align-self: start;
   height: 100vh;
+  max-height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 24px 16px;
+  gap: 10px;
+  padding: 16px 14px;
   background: var(--paper);
   border-right: 1px solid var(--line);
   box-sizing: border-box;
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 .side-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  flex-shrink: 0;
 }
 .side-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 9px;
   font-family: 'Inter Tight', 'Inter', sans-serif;
-  padding: 2px 8px;
-  font-size: 12px;
+  padding: 2px 6px;
+  font-size: 11.5px;
   font-weight: 600;
-  letter-spacing: .22em;
+  letter-spacing: .2em;
   text-transform: uppercase;
   color: var(--ink);
 }
+.admin-side .admin-logo-img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
 .side-brand span {
   display: block;
-  margin-top: 4px;
-  font-size: 9.5px;
+  margin-top: 2px;
+  font-size: 9px;
   font-weight: 500;
-  letter-spacing: .24em;
+  letter-spacing: .2em;
   color: var(--muted);
 }
 .side-close-btn {
   display: none;
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   border: 1px solid var(--line);
   background: #fff;
@@ -162,27 +172,30 @@ html, body.admin-body {
 .side-nav {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   flex: 1;
-  overflow-y: auto;
+  min-height: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 .side-nav button {
   appearance: none;
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 10px 14px;
+  padding: 7px 12px;
   border: 1px solid transparent;
-  border-radius: 999px;
+  border-radius: 8px;
   background: transparent;
   color: var(--muted);
   font-family: inherit;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 500;
   letter-spacing: -.005em;
   text-align: left;
   cursor: pointer;
-  transition: background .2s ease, color .2s ease, border-color .2s ease;
+  transition: background .18s ease, color .18s ease, border-color .18s ease;
+  flex-shrink: 0;
 }
 .side-nav button:hover {
   background: var(--bone);
@@ -196,27 +209,35 @@ html, body.admin-body {
 }
 .side-foot {
   display: grid;
-  gap: 8px;
-  padding: 0 4px;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 8px 0 0;
+  border-top: 1px solid var(--line);
   margin-top: auto;
+  flex-shrink: 0;
 }
 .side-foot a, .side-foot button {
   width: 100%;
-  height: 38px;
+  height: 32px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 999px;
+  border-radius: 6px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 500;
   text-decoration: none;
   cursor: pointer;
+  white-space: nowrap;
+  box-sizing: border-box;
 }
 .side-foot a {
   background: var(--bone);
   color: var(--ink);
   border: 1px solid var(--line);
+}
+.side-foot a:hover {
+  background: var(--line);
 }
 .side-foot button {
   background: transparent;
@@ -1299,12 +1320,20 @@ td.row-actions .icon-btn, td .row-actions .icon-btn {
     transform: translateX(-100%);
     transition: transform .28s cubic-bezier(.22, 1, .36, 1);
     box-shadow: 20px 0 60px rgba(11, 27, 63, .25);
-    padding: 20px 16px;
+    padding: 16px 14px;
     background: var(--paper);
     border-right: 1px solid var(--line);
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 12px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .admin-side::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
   }
   .admin-shell.nav-open .admin-side {
     transform: translateX(0);

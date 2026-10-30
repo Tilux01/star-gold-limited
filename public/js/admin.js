@@ -194,6 +194,8 @@
     const tt = $("#tabTitle"); if (tt) tt.textContent = name.charAt(0).toUpperCase() + name.slice(1);
     if (LOADERS[name]) run(LOADERS[name]);
     $("#adminScroll").scrollTop = 0;
+    const side = $("#adminSide"); if (side) side.scrollTop = 0;
+    const sNav = $("#sideNav"); if (sNav) sNav.scrollTop = 0;
   }
   async function loadSummary() {
     const data = await g("/admin/summary");
